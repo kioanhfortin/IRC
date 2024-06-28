@@ -5,7 +5,7 @@ int main (int argc, char **argv)
     //check nbre of args
     if (argc != 3)
     {
-        std::cerr << e.what() << '\n' << std::endl;
+        std::cout << "Correct usage " << argv[0] << " <port> <password>" << std::endl;
         return 1;
     }
     //class init
