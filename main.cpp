@@ -9,6 +9,8 @@ int main (int argc, char **argv)
         return 1;
     }
     //class init
+    if (parsing(argv[1], argv[2]))
+        return 1;
     Server server(std::stoi(argv[1]), argv[2]);
     //check storage
     std::cout << "Port : " << server.get_port() << std::endl;

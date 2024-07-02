@@ -23,4 +23,7 @@ private:
     std::string password_;
 };
 
+int parsing(std::string arg1, std::string arg2);
+int check_digit(std::string arg1);
+
 #endif

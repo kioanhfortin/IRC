@@ -4,7 +4,7 @@ int check_digit(std::string arg1)
 {
     for (size_t i = 0; i < arg1.length(); i++)
     {
-        if(!std::isdigit(arg1[i]))
+        if(!std::isdigit(arg1[i]) && arg1[i] != '-')
             return 1;
     }
     return 0;
