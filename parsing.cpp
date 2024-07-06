@@ -20,7 +20,7 @@ int parsing(std::string arg1, std::string arg2)
     {
         if (check_digit(arg1) == 1)
         {
-            std::cerr << "Port should be a number" << std::endl;
+            std::cerr << RED << "Port should be a number" << std::endl;
             return 1;
         }
         i = std::stoi(arg1);
@@ -31,18 +31,18 @@ int parsing(std::string arg1, std::string arg2)
         }
         if (arg2.empty())
         {
-            std::cerr << "Password should not be empty" << std::endl;
+            std::cerr << RED << "Password should not be empty" << std::endl;
             return 1;
         }
     }
     catch(const std::invalid_argument& e)
     {
-        std::cerr << e.what() << std::endl;
+        std::cerr << RED << e.what() << std::endl;
         return 1;
     }
     catch(const std::out_of_range& e)
     {
-        std::cerr << e.what() << std::endl;
+        std::cerr << RED << e.what() << std::endl;
         return 1;
     }
     return 0;
