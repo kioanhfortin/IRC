@@ -42,7 +42,7 @@ void    Server::ParseNewData(int fd)
         {
             buff.resize(byte_Receive);
             std::cout << GREEN << "Client received input" << std::endl;
-            // ProcessNewData(buff); //code fonction that receive command, trigger command, and write the message receive
+            ProcessNewData(fd, buff); //code fonction that receive command, trigger command, and write the message receive
         }
     }
     catch (const std::exception& e)
@@ -51,16 +51,58 @@ void    Server::ParseNewData(int fd)
     }
 }
 
-void    Server::ProcessNewData(std::string buff)
+void    Server::initCommandMap()
 {
-    (void)buff;
+    commandMap_["KICK"] = &Server::handleKick;
+    commandMap_["INVITE"] = &Server::handleInvite;
+    commandMap_["TOPIC"] = &Server::handleTopic;
+    commandMap_["MODE"] = &Server::handleMode;
+}
+
+void    Server::ProcessNewData(int fd, std::string data)
+{
+    std::istringstream iss(data);
     std::string command;
-    if (command == "VALID COMMAND") //KICK INVITE TOPIC MODE(i, t, k, o, l) 
+    iss >> command;
+
+    CommandMap::iterator it = commandMap_.find(command);
+    if (it != commandMap_.end())
     {
-        // send();
+        std::string arg1, arg2;
+        iss >> arg1 >> arg2; // fetch the good data;
+        (this->*(it->second))(fd, arg1, arg2);
     }
     else
     {
         std::cerr << "Unknown command received :" << command << std::endl;
+        // sendCommand(fd, "ERROR: Unknown command");
     }
+}
+
+void Server::handleKick(int fd, const std::string& channel, const std::string& user)
+{
+    (void)fd;
+    (void)channel;
+    (void)user;
+}
+
+void Server::handleInvite(int fd, const std::string& channel, const std::string& user)
+{
+    (void)fd;
+    (void)channel;
+    (void)user;
+}
+
+void Server::handleTopic(int fd, const std::string& channel, const std::string& topic)
+{
+    (void)fd;
+    (void)channel;
+    (void)topic;
+}
+
+void Server::handleMode(int fd, const std::string& channel, const std::string& mode)
+{
+    (void)fd;
+    (void)channel;
+    (void)mode;
 }

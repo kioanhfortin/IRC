@@ -1,9 +1,15 @@
 #ifndef SERVER_H
 # define SERVER_H
 # include <string>
+# include <map>
+# include <set>
+# include <vector>
+# include <sstream>
 # include <iostream>
 # include <sys/socket.h>
 # include <unistd.h>
+// # include <limits.h>
+
 
 #ifndef MAX_BUFF
 # define MAX_BUFF 1024
@@ -30,11 +36,23 @@ public:
     void            set_password(std::string new_password);
 
     void            ParseNewData(int fd);
-    void            ProcessNewData(std::string buff);
+    void            ProcessNewData(int fd, std::string buff);
 
 private:
     int             port_;
     std::string     password_;
+    // int             serverSocket_;
+
+    typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
+    typedef std::map<std::string, CommandHandler> CommandMap;
+    CommandMap commandMap_;
+
+    void handleKick(int fd, const std::string& channel, const std::string& user);
+    void handleInvite(int fd, const std::string& channel, const std::string& user);
+    void handleTopic(int fd, const std::string& channel, const std::string& topic);
+    void handleMode(int fd, const std::string& channel, const std::string& mode);
+
+    void initCommandMap();
 };
 
 int                 parsing(std::string arg1, std::string arg2);
