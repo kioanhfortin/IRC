@@ -45,8 +45,8 @@ void    Server::ParseNewData(int fd)
 {
     try
     {
-        std::string buff(BUFFER_SIZE, 0);
         char buffer[BUFFER_SIZE];
+        memset(buffer, 0, BUFFER_SIZE);
         size_t byte_Receive = recv(fd, buffer, BUFFER_SIZE, 0);
 
         // Check if client is disconnected
@@ -59,10 +59,9 @@ void    Server::ParseNewData(int fd)
         }
         else
         {
-            buff = buffer;
-            buff.resize(byte_Receive);
-            std::cout << GREEN << "Client received input : " << buff << std::endl;
-            ProcessNewData(fd, buff); //code fonction that receive command, trigger command, and write the message receive
+            std::string data(buffer, byte_Receive);
+            std::cout << GREEN << "Client received input" << std::endl;
+            ProcessNewData(fd, data); //code fonction that receive command, trigger command, and write the message receive
         }
     }
     catch (const std::exception& e)
@@ -81,6 +80,7 @@ void    Server::initCommandMap()
 
 void    Server::ProcessNewData(int fd, std::string data)
 {
+    Server::initCommandMap();
     std::istringstream iss(data);
     std::string command;
     iss >> command;
@@ -178,19 +178,7 @@ int Server::initSocket(int port)
 
     while(1)
     {
-        // memset(buffer, 0, BUFFER_SIZE);
-        // ssize_t bytesReceived = recv(clientSocket, buffer, BUFFER_SIZE, 0);
-        // if (bytesReceived < 0)
-        // {
-        //     std::cerr << "Error receiving message." << std::endl;
-        //     close(clientSocket);
-        //     close(serverSocket);
-        //     return -1;
-        // }
         ParseNewData(clientSocket_);
-        // std::cout << "Message received from client: " << buffer << std::endl;
-        // std::string msg = std::string(buffer); //convert buffer into string
-
     }
 
     // Close sockets
