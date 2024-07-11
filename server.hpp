@@ -1,26 +1,31 @@
 #ifndef SERVER_H
 # define SERVER_H
+# include "client.hpp"
 # include <string>
 # include <cstring>
 # include <map>
 # include <set>
-// # include <vector>
+# include <vector>
 # include <sstream>
 # include <iostream>
 # include <sys/socket.h>
 # include <unistd.h>
 # include <arpa/inet.h>
+# include <netinet/in.h>
+# include <poll.h>
 // # include <limits.h>
 
 
-#ifndef MAX_BUFF
-# define MAX_BUFF 1024
+#ifndef BUFFER_SIZE
+# define BUFFER_SIZE 1024
 #endif
 
 #define RED     "\033[31m"
 #define GREEN   "\033[32m"
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
+
+class Client;
 
 class Server
 {
@@ -36,6 +41,7 @@ public:
     void            set_port(int new_port);
     std::string     get_password() const;
     void            set_password(std::string new_password);
+    int            initSocket(int port);
 
     void            ParseNewData(int fd);
     void            ProcessNewData(int fd, std::string buff);
@@ -43,6 +49,8 @@ public:
 private:
     int             port_;
     std::string     password_;
+    std::vector<pollfd>					pollfd_;
+    std::vector<Client> client_;
     // int             serverSocket_;
 
     typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
@@ -55,9 +63,12 @@ private:
     void handleMode(int fd, const std::string& channel, const std::string& mode);
 
     void initCommandMap();
+
+
+    /*int socket_fd;*/
 };
 
-int                 parsing(std::string arg1, std::string arg2);
-int                 check_digit(std::string arg1);
+int             parsing(std::string arg1, std::string arg2);
+int             check_digit(std::string arg1);
 
 #endif
