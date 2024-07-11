@@ -15,7 +15,6 @@
 # include <poll.h>
 // # include <limits.h>
 
-
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
 #endif
@@ -41,17 +40,22 @@ public:
     void            set_port(int new_port);
     std::string     get_password() const;
     void            set_password(std::string new_password);
-    int            initSocket(int port);
+    int             get_serverSocket() const;
+    void            set_serverSocket(int new_serverSocket);
+    int             get_clientSocket() const;
+    void            set_clientSocket(int new_clientSocket);
 
     void            ParseNewData(int fd);
     void            ProcessNewData(int fd, std::string buff);
 
+    int            initSocket(int port);
 private:
     int             port_;
     std::string     password_;
+    int             serverSocket_;
+    int             clientSocket_;
     std::vector<pollfd>					pollfd_;
     std::vector<Client> client_;
-    // int             serverSocket_;
 
     typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
     typedef std::map<std::string, CommandHandler> CommandMap;
