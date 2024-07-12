@@ -123,7 +123,6 @@ void    Server::ParseNewData(int fd)
             std::cout << GREEN << "Client received input" << std::endl;
             ProcessNewData(fd, data); //code fonction that receive command, trigger command, and write the message receive
         }
-        closeClient(clientSocket_);
     }
     catch (const std::exception& e)
     {
