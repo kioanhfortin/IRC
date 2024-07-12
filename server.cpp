@@ -170,7 +170,7 @@ void Server::handleNick(int fd, const std::string& nickname, const std::string& 
     (void)unused;
     std::cout << YELLOW << "Nick Handler on" << std::endl;
     if (client_.find(fd) == client_.end()) {
-        client_[fd] == nickname;
+        client_[fd] = nickname;
         std::cout << "User set nickname to " << nickname << std::endl;
         // sendCommand(fd, "Nickname set to " + nickname);
     }
