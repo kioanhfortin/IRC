@@ -235,7 +235,6 @@ void Server::handleMode(int fd, const std::string& channel, const std::string& m
     std::cout << YELLOW << "Kick Mode on" << std::endl;
 }
 
-
 void    Server::closeClient(int clientSocket) {
     close(clientSocket);
     client_.erase(clientSocket);

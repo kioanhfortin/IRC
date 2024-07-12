@@ -49,11 +49,13 @@ public:
     void            ProcessNewData(int fd, std::string buff);
 
     int            initSocket(int port);
+
 private:
     int             port_;
     std::string     password_;
     int             serverSocket_;
     int             clientSocket_;
+
     std::vector<pollfd>					pollfd_;
     std::map<int, std::string> client_;
     std::map<std::string, std::set<int> > channel_s;
