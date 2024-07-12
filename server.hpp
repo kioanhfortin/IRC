@@ -57,11 +57,11 @@ private:
     int             clientSocket_;
 
     std::vector<pollfd>					pollfd_;
-    std::map<int, std::string> client_;
-    std::map<std::string, std::set<int> > channel_s;
-    std::map<std::string, std::string> topics_;
-    std::map<std::string, std::set<int> > channelOperators_;
-    std::map<int, std::pair<std::string, std::string> > userInfo_;
+    // std::map<int, std::string> client_;
+    // std::map<std::string, std::set<int> > channel_s;
+    // std::map<std::string, std::string> topics_;
+    // std::map<std::string, std::set<int> > channelOperators_;
+    // std::map<int, std::pair<std::string, std::string> > userInfo_;
 
     typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
     typedef std::map<std::string, CommandHandler> CommandMap;

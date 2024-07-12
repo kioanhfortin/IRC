@@ -76,18 +76,18 @@ int Server::initSocket(int port)
 
     std::cout << "Server is listening on port " << port << std::endl;
 
+    // Accept a client connection
+    clientSocket_ = accept(serverSocket_, (struct sockaddr *)&clientAddr, &clientAddrLen);
+    if (clientSocket_ < 0) {
+        std::cerr << "Error accepting client." << std::endl;
+        close(serverSocket_);
+        return -1;
+    }
 
     // Receive message from client
     initCommandMap();
     while(1)
     {
-        // Accept a client connection
-        clientSocket_ = accept(serverSocket_, (struct sockaddr *)&clientAddr, &clientAddrLen);
-        if (clientSocket_ < 0) {
-            std::cerr << "Error accepting client." << std::endl;
-            close(serverSocket_);
-            return -1;
-        }
         ParseNewData(clientSocket_);
     }
 
@@ -167,15 +167,17 @@ void    Server::ProcessNewData(int fd, std::string data)
 void Server::handleNick(int fd, const std::string& nickname, const std::string& unused)
 {
     (void)unused;
+    (void)fd;
+    (void)nickname;
     std::cout << YELLOW << "Nick Handler on" << std::endl;
-    if (client_.find(fd) == client_.end()) {
-        client_[fd] = nickname;
-        std::cout << "User set nickname to " << nickname << std::endl;
-        // sendCommand(fd, "Nickname set to " + nickname);
-    }
-    else {
-        std::cerr << "Nickname already set for this user." << std::endl;
-    }
+    // if (client_.find(fd) == client_.end()) {
+    //     client_[fd] = nickname;
+    //     std::cout << "User set nickname to " << nickname << std::endl;
+    //     // sendCommand(fd, "Nickname set to " + nickname);
+    // }
+    // else {
+    //     std::cerr << "Nickname already set for this user." << std::endl;
+    // }
 }
 
 void Server::handleUser(int fd, const std::string& channel, const std::string& user)
@@ -236,5 +238,5 @@ void Server::handleMode(int fd, const std::string& channel, const std::string& m
 
 void    Server::closeClient(int clientSocket) {
     close(clientSocket);
-    client_.erase(clientSocket);
+    // client_.erase(clientSocket);
 }
