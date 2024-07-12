@@ -55,12 +55,20 @@ private:
     int             serverSocket_;
     int             clientSocket_;
     std::vector<pollfd>					pollfd_;
-    std::vector<Client> client_;
+    std::map<int, std::string> client_;
+    std::map<std::string, std::set<int> > channel_s;
+    std::map<std::string, std::string> topics_;
+    std::map<std::string, std::set<int> > channelOperators_;
+    std::map<int, std::pair<std::string, std::string> > userInfo_;
 
     typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
     typedef std::map<std::string, CommandHandler> CommandMap;
     CommandMap commandMap_;
 
+    void handleNick(int fd, const std::string& nickname, const std::string& unused);
+    void handleUser(int fd, const std::string& channel, const std::string& user);
+    void handleJoin(int fd, const std::string& channel, const std::string& user);
+    void handlePart(int fd, const std::string& channel, const std::string& user);
     void handleKick(int fd, const std::string& channel, const std::string& user);
     void handleInvite(int fd, const std::string& channel, const std::string& user);
     void handleTopic(int fd, const std::string& channel, const std::string& topic);
@@ -68,6 +76,7 @@ private:
 
     void initCommandMap();
 
+    void closeClient(int clientSocket);
 
     /*int socket_fd;*/
 };
