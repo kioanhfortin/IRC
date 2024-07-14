@@ -1,19 +1,23 @@
 #ifndef CLIENT_H
 # define CLIENT_H
+# include "server.hpp"
+# include <string>
 
-#include "server.hpp"
 
 
-
-class Client 
+class Client
 {
-	private:
-		/* std::string		_nickname; */
+public :
+    Client(int fd, std::string IPadd);
+    int             get_Fd() const;
+    void            set_Fd(int new_fd);
+    std::string             get_IpAdd() const;
+    void            set_IpAdd(std::string new_IpAdd);
+    ~Client();
 
-	public:
-		Client();
-		~Client();
-
+private:
+    int Fd_;
+    std::string IPadd_;
 };
 
 #endif

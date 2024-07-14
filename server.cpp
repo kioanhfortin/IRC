@@ -2,7 +2,7 @@
 
 Server::Server(int port, const std::string &password) : port_(port), password_(password) {
     std::cout << "Constructor Server called" << std::endl;
-    initSocket(port_);
+    start();
 }
 
 Server::~Server() {
@@ -43,12 +43,6 @@ void    Server::set_clientSocket(int new_clientSocket) {
 
 int Server::initSocket(int port)
 {
-
-    // int serverSocket, clientSocket;
-    struct sockaddr_in serverAddr, clientAddr;
-    socklen_t clientAddrLen = sizeof(clientAddr);
-    // char buffer[BUFFER_SIZE];
-
     // Create socket
     serverSocket_ = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket_ < 0) {
@@ -57,11 +51,11 @@ int Server::initSocket(int port)
     }
 
     // Bind socket to an IP/Port
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-    serverAddr.sin_port = htons(port);
+    serverAddr_.sin_family = AF_INET;
+    serverAddr_.sin_addr.s_addr = INADDR_ANY;
+    serverAddr_.sin_port = htons(port);
 
-    if (bind(serverSocket_, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+    if (bind(serverSocket_, (struct sockaddr *)&serverAddr_, sizeof(serverAddr_)) < 0) {
         std::cerr << "Error binding socket." << std::endl;
         close(serverSocket_);
         return -1;
@@ -75,28 +69,74 @@ int Server::initSocket(int port)
     }
 
     std::cout << "Server is listening on port " << port << std::endl;
+    return 0;
+}
 
-    // Accept a client connection
-    clientSocket_ = accept(serverSocket_, (struct sockaddr *)&clientAddr, &clientAddrLen);
-    if (clientSocket_ < 0) {
-        std::cerr << "Error accepting client." << std::endl;
-        close(serverSocket_);
-        return -1;
+void Server::start()
+{
+    //  int serverSocket, clientSocket;
+   clientAddrLen_ = sizeof(clientAddr_);
+
+    if (initSocket(port_) == -1)
+    {
+        std::cerr << "Failed to initialize socket" << std::endl;
+        return;
     }
 
     // Receive message from client
     initCommandMap();
+    struct pollfd serverPollfd;
+    serverPollfd.fd = serverSocket_;
+    serverPollfd.events = POLLIN;
+    fds_.push_back(serverPollfd);
+
     while(1)
     {
-        ParseNewData(clientSocket_);
+        int pollCount = poll(fds_.data(), fds_.size(), -1);
+        if (pollCount == -1)
+        {
+            std::cerr << "Poll error" << std::endl;
+            return;
+        }
+        for (size_t i = 0; i < fds_.size(); i++)
+        {
+            if (fds_[i].revents && POLLIN)
+            {
+                if (fds_[i].fd == serverSocket_)
+                {
+                     // Accept a client connection
+                    clientSocket_ = accept(serverSocket_, (struct sockaddr *)&clientAddr_, &clientAddrLen_);
+                    if (clientSocket_ == -1) {
+                        std::cerr << "Error accepting client" << std::endl;
+                        continue;
+                    }
+                    struct pollfd clientPollfd;
+                    clientPollfd.fd = clientSocket_;
+                    clientPollfd.events = POLL_IN;
+                    fds_.push_back(clientPollfd);
+                    std::cout << GREEN << "Accepted connection from client" << std::endl;
+                }
+                else
+                    ParseNewData(fds_[i].fd);
+            }
+        }
     }
 
     // Close sockets
     close(clientSocket_);
     close(serverSocket_);
 
-    return 0;
 }
+
+// bool    Server::ClientFdsCheck(int fd)
+// {
+//     for (int i = 0; i < fds_.size(); i++;)
+//     {
+//         if (fd == fds_[i])
+//             return 1;
+//     }
+//     return 0;
+// }
 
 void    Server::ParseNewData(int fd)
 {
@@ -238,5 +278,5 @@ void Server::handleMode(int fd, const std::string& channel, const std::string& m
 
 void    Server::closeClient(int clientSocket) {
     close(clientSocket);
-    // client_.erase(clientSocket);
+    client_.erase(clientSocket);
 }

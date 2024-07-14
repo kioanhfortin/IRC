@@ -24,7 +24,6 @@
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
 
-class Client;
 
 class Server
 {
@@ -45,23 +44,29 @@ public:
     int             get_clientSocket() const;
     void            set_clientSocket(int new_clientSocket);
 
+    void            start();
+    int             initSocket(int port);
     void            ParseNewData(int fd);
     void            ProcessNewData(int fd, std::string buff);
 
-    int            initSocket(int port);
 
 private:
     int             port_;
-    std::string     password_;
     int             serverSocket_;
+    std::string     password_;
     int             clientSocket_;
 
-    std::vector<pollfd>					pollfd_;
-    // std::map<int, std::string> client_;
-    // std::map<std::string, std::set<int> > channel_s;
-    // std::map<std::string, std::string> topics_;
-    // std::map<std::string, std::set<int> > channelOperators_;
-    // std::map<int, std::pair<std::string, std::string> > userInfo_;
+
+    std::vector<struct pollfd> fds_;
+
+    struct sockaddr_in serverAddr_, clientAddr_;
+    socklen_t clientAddrLen_;
+
+    std::map<int, std::string> client_;
+    std::map<std::string, std::set<int> > channel_s;
+    std::map<std::string, std::string> topics_;
+    std::map<std::string, std::set<int> > channelOperators_;
+    std::map<int, std::pair<std::string, std::string> > userInfo_;
 
     typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
     typedef std::map<std::string, CommandHandler> CommandMap;
@@ -77,6 +82,7 @@ private:
     void handleMode(int fd, const std::string& channel, const std::string& mode);
 
     void initCommandMap();
+    // bool ClientFdsCheck(int fd);
 
     void closeClient(int clientSocket);
 
