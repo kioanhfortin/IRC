@@ -14,6 +14,7 @@
 # include <netinet/in.h>
 # include <poll.h>
 // # include <limits.h>
+# include "client.hpp"
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -24,7 +25,8 @@
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
 
-
+class Client;
+ 
 class Server
 {
 
@@ -49,6 +51,8 @@ public:
     void            ParseNewData(int fd);
     void            ProcessNewData(int fd, std::string buff);
 
+    void            addClient();
+
 
 private:
     int             port_;
@@ -56,8 +60,10 @@ private:
     std::string     password_;
     int             clientSocket_;
 
+    std::vector<Client>					clients_;
 
-    std::vector<struct pollfd> fds_;
+
+    std::vector<pollfd> fds_;
 
     struct sockaddr_in serverAddr_, clientAddr_;
     socklen_t clientAddrLen_;
