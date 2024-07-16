@@ -128,9 +128,13 @@ void Server::start()
         }
     }
 
+
+    for(size_t i  = 0; i < fds_.size(); i++)
+        close(fds_[i].fd);
+
     // Close sockets
-    close(clientSocket_);
-    close(serverSocket_);
+   // close(clientSocket_);
+  //  close(serverSocket_);
 
 }
 
@@ -181,8 +185,8 @@ void    Server::ParseNewData(int fd)
 
 void    Server::initCommandMap()
 {
-    commandMap_["NICK"] = &Server::handleNick; /*
-    commandMap_["USER"] = &Server::handleUser;
+    commandMap_["NICK"] = &Server::handleNick; 
+    commandMap_["USER"] = &Server::handleUser; /*
     commandMap_["JOIN"] = &Server::handleJoin;
     commandMap_["PART"] = &Server::handlePart;
     commandMap_["KICK"] = &Server::handleKick;
@@ -232,6 +236,32 @@ void Server::handleNick(Client& client, const std::vector<std::string>& params)
 void    Server::closeClient(int clientSocket) {
     close(clientSocket);
     client_.erase(clientSocket);
+}
+
+
+void Server::handleUser(Client& client, const std::vector<std::string>& params) {
+    // Vérifier que nous avons au moins 4 paramètres
+    if (params.size() < 4) {
+        std::string error = "ERROR :Not enough parameters for USER command\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        return;
+    }
+
+    // Extraire les paramètres de la commande USER
+    std::string username = params[0];
+    std::string mode = params[1];
+    std::string unused = params[2];
+    std::string realname = params[3];
+
+    // Mettre à jour les informations du client
+    client.setUserName(username);
+    client.setRealName(realname);
+
+    // Envoyer une confirmation de réussite au client
+    std::string response = "USER command completed for " + client.getNickName() + "\n";
+    send(client.get_Fd(), response.c_str(), response.size(), 0);
+    
+    std::cout << "USER command processed: " << client.getNickName() << " set username to " << username << " and real name to " << realname << std::endl;
 }
 
 

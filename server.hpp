@@ -16,6 +16,7 @@
 // # include <limits.h>
 # include "client.hpp"
 
+
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
 #endif
@@ -24,6 +25,8 @@
 #define GREEN   "\033[32m"
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
+
+
 
 class Client;
  
@@ -80,8 +83,8 @@ private:
     CommandMap commandMap_;
 
     void handleNick(Client& client, const std::vector<std::string>& params);
-   /* void handleUser(Client& client, const std::vector<std::string>& params);
-    void handleJoin(Client& client, const std::vector<std::string>& params);
+   void handleUser(Client& client, const std::vector<std::string>& params);
+    /* void handleJoin(Client& client, const std::vector<std::string>& params);
     void handlePart(Client& client, const std::vector<std::string>& params);
     void handleKick(Client& client, const std::vector<std::string>& params);
     void handleInvite(Client& client, const std::vector<std::string>& params);

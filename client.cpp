@@ -40,6 +40,11 @@ std::string Client::getUserName() const
     return userName_;
 }
 
+std::string Client::getRealName() const
+{
+    return realName_;
+}
+
 void Client::setNickName(std::string newName)
 {
     nickName_ = newName;
@@ -48,4 +53,9 @@ void Client::setNickName(std::string newName)
 void Client::setUserName(std::string newName)
 {
     userName_ = newName;
+}
+
+void Client::setRealName(std::string newName)
+{
+    realName_ = newName;
 }
