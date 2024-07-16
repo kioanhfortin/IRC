@@ -49,7 +49,7 @@ public:
     void            start();
     int             initSocket(int port);
     void            ParseNewData(int fd);
-    void            ProcessNewData(int fd, std::string buff);
+    void            ProcessNewData(int fd, const std::string& data);
 
     void            addClient();
 
@@ -74,23 +74,25 @@ private:
     std::map<std::string, std::set<int> > channelOperators_;
     std::map<int, std::pair<std::string, std::string> > userInfo_;
 
-    typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
-    typedef std::map<std::string, CommandHandler> CommandMap;
+       typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);
+    //typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
+     typedef std::map<std::string, CommandHandler> CommandMap;
     CommandMap commandMap_;
 
-    void handleNick(int fd, const std::string& nickname, const std::string& unused);
-    void handleUser(int fd, const std::string& channel, const std::string& user);
-    void handleJoin(int fd, const std::string& channel, const std::string& user);
-    void handlePart(int fd, const std::string& channel, const std::string& user);
-    void handleKick(int fd, const std::string& channel, const std::string& user);
-    void handleInvite(int fd, const std::string& channel, const std::string& user);
-    void handleTopic(int fd, const std::string& channel, const std::string& topic);
-    void handleMode(int fd, const std::string& channel, const std::string& mode);
+    void handleNick(Client& client, const std::vector<std::string>& params);
+   /* void handleUser(Client& client, const std::vector<std::string>& params);
+    void handleJoin(Client& client, const std::vector<std::string>& params);
+    void handlePart(Client& client, const std::vector<std::string>& params);
+    void handleKick(Client& client, const std::vector<std::string>& params);
+    void handleInvite(Client& client, const std::vector<std::string>& params);
+    void handleTopic(Client& client, const std::vector<std::string>& params);
+    void handleMode(Client& client, const std::vector<std::string>& params); */
 
     void initCommandMap();
     // bool ClientFdsCheck(int fd);
 
     void closeClient(int clientSocket);
+    Client& getClientByFd(int fd);
 
     /*int socket_fd;*/
 };

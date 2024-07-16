@@ -1,6 +1,6 @@
 #include "client.hpp"
 
-Client::Client(int fd) : Fd_(fd)
+Client::Client(int fd, std::string hostname) : Fd_(fd), hostname_(hostname)
 {
     std::cout << "Constructor Client called" << std::endl;
 }
@@ -38,4 +38,14 @@ std::string Client::getNickName() const
 std::string Client::getUserName() const 
 {
     return userName_;
+}
+
+void Client::setNickName(std::string newName)
+{
+    nickName_ = newName;
+}
+
+void Client::setUserName(std::string newName)
+{
+    userName_ = newName;
 }

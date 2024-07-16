@@ -8,7 +8,7 @@
 class Client
 {
 public :
-    Client(int fd);
+    Client(int fd, std::string hostname);
     int             get_Fd() const;
     void            set_Fd(int new_fd);
     std::string             get_IpAdd() const;
@@ -18,10 +18,14 @@ public :
 
 	std::string getNickName() const;
 	std::string getUserName() const;
-	
+
+	void setNickName(std::string newName);
+	void setUserName(std::string newName);
+
 
 private:
     int Fd_;
+    std::string hostname_;
     std::string IPadd_;
 	std::string nickName_;
 	std::string userName_;
