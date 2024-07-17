@@ -1,7 +1,7 @@
 #ifndef SERVER_H
 # define SERVER_H
 # include "client.hpp"
-# include <string>
+// # include <string>
 # include <cstring>
 # include <map>
 # include <set>
@@ -54,8 +54,10 @@ public:
     void            ParseNewData(int fd);
     void            ProcessNewData(int fd, const std::string& data);
 
-    void            addClient();
+    // void            addClient();
 
+    void            CloseFds();
+    Client*         findClientByFd(int fd);
 
 private:
     int             port_;
@@ -71,7 +73,7 @@ private:
     struct sockaddr_in serverAddr_, clientAddr_;
     socklen_t clientAddrLen_;
 
-    std::map<int, std::string> client_;
+    // std::map<int, std::string> client_;
     std::map<std::string, std::set<int> > channel_s;
     std::map<std::string, std::string> topics_;
     std::map<std::string, std::set<int> > channelOperators_;
@@ -83,13 +85,13 @@ private:
     CommandMap commandMap_;
 
     void handleNick(Client& client, const std::vector<std::string>& params);
-   void handleUser(Client& client, const std::vector<std::string>& params);
-    /* void handleJoin(Client& client, const std::vector<std::string>& params);
+    void handleUser(Client& client, const std::vector<std::string>& params);
+    void handleJoin(Client& client, const std::vector<std::string>& params);
     void handlePart(Client& client, const std::vector<std::string>& params);
     void handleKick(Client& client, const std::vector<std::string>& params);
     void handleInvite(Client& client, const std::vector<std::string>& params);
     void handleTopic(Client& client, const std::vector<std::string>& params);
-    void handleMode(Client& client, const std::vector<std::string>& params); */
+    void handleMode(Client& client, const std::vector<std::string>& params);
 
     void initCommandMap();
     // bool ClientFdsCheck(int fd);

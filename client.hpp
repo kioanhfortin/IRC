@@ -12,22 +12,24 @@ public :
     ~Client();
 
 
-    std::string             get_IpAdd() const;
+    std::string     get_IpAdd() const;
     int             get_Fd() const;
-	std::string getNickName() const;
-	std::string getUserName() const;
-    std::string getRealName() const;
-
+	std::string     getNickName() const;
+	std::string     getUserName() const;
+    std::string     getRealName() const;
+    std::string     getHostname() const;
+    
     void            set_IpAdd(std::string new_IpAdd);
-	void setNickName(std::string newName);
-	void setUserName(std::string newName);
-    void setRealName(std::string newName);
     void            set_Fd(int new_fd);
+	void            setNickName(std::string newName);
+	void            setUserName(std::string newName);
+    void            setRealName(std::string newName);
+    void            setHostname(std::string newName);
 
 
 private:
     int Fd_;
-    std::string hostname_;
+    std::string hostName_;
     std::string IPadd_;
 	std::string nickName_;
 	std::string userName_;

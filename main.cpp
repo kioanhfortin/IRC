@@ -20,8 +20,8 @@ int main (int argc, char **argv)
     //class init
     Server server(std::stoi(argv[1]), argv[2]);
     //check storage
-    std::cout << "Port : " << server.get_port() << std::endl;
-    std::cout << "Password : " << server.get_password() << std::endl;
+    std::cout << WHITE << "Port : " << server.get_port() << std::endl;
+    std::cout << WHITE << "Password : " << server.get_password() << std::endl;
     
     return 0;
 }

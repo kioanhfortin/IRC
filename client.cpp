@@ -1,61 +1,57 @@
 #include "client.hpp"
 
-Client::Client(int fd, std::string hostname) : Fd_(fd), hostname_(hostname)
-{
-    std::cout << "Constructor Client called" << std::endl;
+Client::Client(int fd, std::string hostname) : Fd_(fd), hostName_(hostname) {
+    std::cout << WHITE << "Constructor Client called" << std::endl;
 }
 
 Client::~Client() {
-    std::cout << "Destructor Client called" << std::endl;
+    std::cout << WHITE << "Destructor Client called" << std::endl;
 }
 
-int       Client::get_Fd() const
-{
+int       Client::get_Fd() const {
     return Fd_;
 }
 
-void      Client::set_Fd(int new_fd)
-{
-    Fd_ = new_fd;
-}
-
-std::string       Client::get_IpAdd() const
-{
+std::string       Client::get_IpAdd() const {
     return IPadd_;
 }
 
-void            Client::set_IpAdd(std::string new_IpAdd)
-{
-    IPadd_ = new_IpAdd;
-}
-
-
-std::string Client::getNickName() const
-{
+std::string Client::getNickName() const {
     return nickName_;
 }
 
-std::string Client::getUserName() const 
-{
+std::string Client::getUserName() const {
     return userName_;
 }
 
-std::string Client::getRealName() const
-{
+std::string Client::getRealName() const {
     return realName_;
 }
 
-void Client::setNickName(std::string newName)
-{
+std::string     Client::getHostname() const {
+    return hostName_;
+}
+
+void      Client::set_Fd(int new_fd) {
+    Fd_ = new_fd;
+}
+
+void            Client::set_IpAdd(std::string new_IpAdd) {
+    IPadd_ = new_IpAdd;
+}
+
+void Client::setNickName(std::string newName) {
     nickName_ = newName;
 }
 
-void Client::setUserName(std::string newName)
-{
+void Client::setUserName(std::string newName) {
     userName_ = newName;
 }
 
-void Client::setRealName(std::string newName)
-{
+void Client::setRealName(std::string newName) {
     realName_ = newName;
+}
+
+void            Client::setHostname(std::string newName) {
+    hostName_ = newName;
 }
