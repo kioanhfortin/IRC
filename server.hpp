@@ -57,7 +57,8 @@ public:
     // void            addClient();
 
     void            CloseFds();
-    Client*         findClientByFd(int fd);
+    int             findNickname(std::string nickname);
+    int             findUsername(std::string username);
 
 private:
     int             port_;
@@ -66,8 +67,6 @@ private:
     int             clientSocket_;
 
     std::vector<Client>					clients_;
-
-
     std::vector<pollfd> fds_;
 
     struct sockaddr_in serverAddr_, clientAddr_;
@@ -79,9 +78,9 @@ private:
     std::map<std::string, std::set<int> > channelOperators_;
     std::map<int, std::pair<std::string, std::string> > userInfo_;
 
-       typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);
-    //typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
-     typedef std::map<std::string, CommandHandler> CommandMap;
+    typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);
+    // typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
+    typedef std::map<std::string, CommandHandler> CommandMap;
     CommandMap commandMap_;
 
     void handleNick(Client& client, const std::vector<std::string>& params);

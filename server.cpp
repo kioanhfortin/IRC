@@ -218,6 +218,7 @@ void Server::ProcessNewData(int fd, const std::string& data) {
 
 void Server::handleNick(Client& client, const std::vector<std::string>& params)
 {
+    std::cout << client.getNickName() << std::endl;
     if (params.size() < 1) {
         std::string error = "ERROR : No nickname given\n";
         send(client.get_Fd(), error.c_str(), error.size(), 0);
@@ -225,45 +226,52 @@ void Server::handleNick(Client& client, const std::vector<std::string>& params)
         return;
     }
     //Nb check valid Nickname and already in use
+    if (findNickname(params[1]) == 1) {
+        std::string error = "ERROR : Nickname already exist\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        std::cerr << RED << "Nickname already exist. Redo the command with a different Nickname" << std::endl;
+        return;
+    }
     client.setNickName(params[1]);
     std::string response = "Client NICKNAME set to : " + client.getNickName() + "\n";
-     std::cerr << GREEN << "Client NICKNAME set to : " << client.getNickName() << std::endl;
+    std::cerr << GREEN << "Client NICKNAME set to : " << client.getNickName() << std::endl;
     send(client.get_Fd(), response.c_str(), response.size(), 0);
+}
+
+int     Server::findNickname(std::string nickname)
+{
+    for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
+    {
+        if (it->getNickName() == nickname)
+            return 1;
+    }
+    return 0;
 }
 
 void    Server::closeClient(int clientSocket) {
     close(clientSocket);
 }
 
-Client* Server::findClientByFd(int fd)
-{
-    for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
-    {
-        if (it->get_Fd() == fd)
-            return &(*it);
-    }
-    return nullptr;
-}
-
 void Server::handleUser(Client& client, const std::vector<std::string>& params) {
-    // Vérifier que nous avons au moins 4 paramètres
-    Client* client_temp = findClientByFd(client.get_Fd());
-    if (!client_temp) {
-        std::string error = "ERROR : USER command wrong fd\n";
-        send(client_temp->get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "USER command received from and unknown client fd" << std::endl;
-        return ;
-    }
+    // Vérifier que nous avons au moins 4 paramètres && que le realname comment par un :
     if (params.size() < 4 || params[3][0] != ':') {
         std::string error = "ERROR : USER <username> <hostname> <servername> <:realname>\n";
-        send(client_temp->get_Fd(), error.c_str(), error.size(), 0);
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
         std::cerr << RED << "USER command received with wrong argument format" << std::endl;
+        return;
+    }
+    // Vérifier que le username n'existe pas déjà
+    if (findUsername(params[0]) == 1)
+    {
+        std::string error = "ERROR : Username already exist\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        std::cerr << RED << "Username already exist. Redo the command with a different Username" << std::endl;
         return;
     }
 
     // Mettre à jour les informations du client
-    client_temp->setUserName(params[0]);
-    client_temp->setHostname(params[1]);
+    client.setUserName(params[0]);
+    client.setHostname(params[1]);
 
     std::string realname;
     for (size_t i = 3; i < params.size(); i++){
@@ -271,15 +279,24 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
             realname += ' ';
         realname += params[i];
     }
-    client_temp->setRealName(realname);
+    client.setRealName(realname);
 
     // Envoyer une confirmation de réussite au client
-    std::string response = "USER command completed for " + client_temp->getNickName() + "\n";
-    send(client_temp->get_Fd(), response.c_str(), response.size(), 0);
+    std::string response = "USER command completed for " + client.getNickName() + "\n";
+    send(client.get_Fd(), response.c_str(), response.size(), 0);
     
-    std::cout << "USER command processed: <" << client_temp->getNickName() << "> set username to <" << client_temp->getUserName() << "> and real name to <" << client_temp->getRealName() << ">" << std::endl;
+    std::cout << "USER command processed: <" << client.getNickName() << "> set username to <" << client.getUserName() << "> and real name to <" << client.getRealName() << ">" << std::endl;
 }
 
+int     Server::findUsername(std::string username)
+{
+    for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
+    {
+        if (it->getUserName() == username)
+            return 1;
+    }
+    return 0;
+}
 
 Client& Server::getClientByFd(int fd) {
     for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it) {
