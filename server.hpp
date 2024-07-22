@@ -13,6 +13,7 @@
 # include <arpa/inet.h>
 # include <netinet/in.h>
 # include <poll.h>
+# include <cctype>
 // # include <limits.h>
 # include "client.hpp"
 #include "channel.hpp"
@@ -37,6 +38,11 @@ class Server
 {
 
 public:
+    struct ValidInput {
+        bool isValid;
+        std::string errorMessage;
+    };
+
     // Server();
     Server(int port, const std::string &password);
     // Server(const Server &other);
@@ -63,8 +69,10 @@ public:
     // void            addClient();
 
     void            CloseFds();
-    int             findNickname(std::string nickname);
+
+    bool            findNickname(std::string nickname);
     int             findUsername(std::string username);
+    Server::ValidInput    validNickname(const std::string nickname);
     //Client*  getClientBy(int fd);
     Channel* findChannel(const std::string& channelName);
 

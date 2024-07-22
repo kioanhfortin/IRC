@@ -1,8 +1,5 @@
 #include "server.hpp"
 
-
-#include "server.hpp"
-
 Server::Server(int port, const std::string &password) : port_(port), password_(password) {
     std::cout << WHITE << "Constructor Server called" << std::endl;
     start();
@@ -214,38 +211,6 @@ void Server::ProcessNewData(int fd, const std::string& data) {
         std::cerr << RED << "Unknown command received: " << command << std::endl;
         // sendCommand(fd, "ERROR: Unknown command");
     }
-}
-
-void Server::handleNick(Client& client, const std::vector<std::string>& params)
-{
-    std::cout << client.getNickName() << std::endl;
-    if (params.size() < 1) {
-        std::string error = "ERROR : No nickname given\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "NICK command received with wrong argument" << std::endl;
-        return;
-    }
-    //Nb check valid Nickname and already in use
-    if (findNickname(params[1]) == 1) {
-        std::string error = "ERROR : Nickname already exist\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "Nickname already exist. Redo the command with a different Nickname" << std::endl;
-        return;
-    }
-    client.setNickName(params[1]);
-    std::string response = "Client NICKNAME set to : " + client.getNickName() + "\n";
-    std::cerr << GREEN << "Client NICKNAME set to : " << client.getNickName() << std::endl;
-    send(client.get_Fd(), response.c_str(), response.size(), 0);
-}
-
-int     Server::findNickname(std::string nickname)
-{
-    for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
-    {
-        if (it->getNickName() == nickname)
-            return 1;
-    }
-    return 0;
 }
 
 void    Server::closeClient(int clientSocket) {
