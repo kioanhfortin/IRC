@@ -15,6 +15,7 @@
 # include <poll.h>
 // # include <limits.h>
 # include "client.hpp"
+#include "channel.hpp"
 
 
 #ifndef BUFFER_SIZE
@@ -27,7 +28,7 @@
 #define WHITE   "\033[37m"
 
 
-
+class Channel;
 class Client;
  
 class Server
@@ -59,6 +60,8 @@ public:
     void            CloseFds();
     int             findNickname(std::string nickname);
     int             findUsername(std::string username);
+    //Client*  getClientBy(int fd);
+    Channel* findChannel(const std::string& channelName);
 
 private:
     int             port_;
@@ -67,6 +70,7 @@ private:
     int             clientSocket_;
 
     std::vector<Client>					clients_;
+    std::vector<Channel>                 channels_;
     std::vector<pollfd> fds_;
 
     struct sockaddr_in serverAddr_, clientAddr_;

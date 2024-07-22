@@ -307,11 +307,60 @@ Client& Server::getClientByFd(int fd) {
     throw std::runtime_error("Client not found");
 }
 
-void Server::handleJoin(Client& client, const std::vector<std::string>& params)
-{
-    (void)client;
-    (void)params;
-    std::cout << YELLOW << "Join Handler on" << std::endl;
+void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
+    if (params.empty()) {
+        std::string error = "ERROR :No channel given\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        return;
+    }
+
+    std::string channelName = params[0];
+
+    // Check if the channel already exists
+    Channel* channel = findChannel(channelName);
+    if (channel == nullptr) {
+        // Create the channel if it does not exist
+        channels_.push_back(Channel(channelName));
+        channel = &channels_.back();
+    }
+
+    // Add the client to the channel
+    channel->addClient(client.get_Fd());
+
+    // Notify the client that they have joined the channel
+    std::string response = ":" + client.getNickName() + " JOIN :" + channelName + "\n";
+    send(client.get_Fd(), response.c_str(), response.size(), 0);
+
+    // Notify other clients in the channel
+    const std::vector<int>& clients = channel->getClients();
+    for (std::vector<int>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
+        int fd = *it;
+        if (fd != client.get_Fd()) {
+            send(fd, response.c_str(), response.size(), 0);
+        }
+    }
+
+    // Optionally send the topic of the channel if it exists
+    std::map<std::string, std::string>::iterator topicIt = topics_.find(channelName);
+    if (topicIt != topics_.end()) {
+        std::string topic = "TOPIC " + channelName + " :" + topicIt->second + "\n";
+        send(client.get_Fd(), topic.c_str(), topic.size(), 0);
+    }
+
+    // Send the list of users in the channel to the new client
+    std::string names = "353 " + client.getNickName() + " = " + channelName + " :";
+    for (std::vector<int>::const_iterator it = clients.begin(); it != clients.end(); ++it) {
+        int fd = *it;
+        Client& member = getClientByFd(fd);
+        names += member.getNickName() + " ";
+    }
+    
+    names += "\n";
+    send(client.get_Fd(), names.c_str(), names.size(), 0);
+
+    // End of names list
+    std::string endOfNames = "366 " + client.getNickName() + " " + channelName + " :End of /NAMES list\n";
+    send(client.get_Fd(), endOfNames.c_str(), endOfNames.size(), 0);
 }
 
 void Server::handlePart(Client& client, const std::vector<std::string>& params)
@@ -348,3 +397,35 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
     (void)params;
     std::cout << YELLOW << "Kick Mode on" << std::endl;
 }
+
+
+/*
+Client* Server::getClient(int fd) {
+    for (size_t i = 0; i < clients_.size(); ++i) {
+        if (clients_[i].get_Fd() == fd) {
+            return &clients_[i];
+        }
+    }
+    return nullptr; // Client not found
+} */
+
+// Predicate function object to find a channel by name
+struct ChannelNameEquals {
+    ChannelNameEquals(const std::string& name) : name_(name) {}
+
+    bool operator()(const Channel& channel) const {
+        return channel.getName() == name_;
+    }
+
+    std::string name_;
+};
+
+Channel* Server::findChannel(const std::string& channelName) {
+    std::vector<Channel>::iterator it = std::find_if(channels_.begin(), channels_.end(),
+                                                     ChannelNameEquals(channelName));
+    if (it != channels_.end()) {
+        return &(*it); 
+    }
+    return nullptr; 
+}
+
