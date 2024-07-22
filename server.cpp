@@ -308,6 +308,14 @@ Client& Server::getClientByFd(int fd) {
 }
 
 void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
+
+    // Channel Name Validity:
+    // Channel Existence
+    //User Permissions:
+    //Channel Limits:
+    //Channel Mode Settings:
+    //Initial User Addition:
+    //Password Protection:
     if (params.empty()) {
         std::string error = "ERROR :No channel given\n";
         send(client.get_Fd(), error.c_str(), error.size(), 0);
