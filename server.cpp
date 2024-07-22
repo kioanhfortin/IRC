@@ -182,6 +182,8 @@ void    Server::initCommandMap()
     commandMap_["INVITE"] = &Server::handleInvite;
     commandMap_["TOPIC"] = &Server::handleTopic;
     commandMap_["MODE"] = &Server::handleMode;
+    commandMap_["PRIVATE MESSAGE"] = &Server::handlePrivMsg;
+    
 }
 
 
@@ -432,3 +434,45 @@ Channel* Server::findChannel(const std::string& channelName) {
             channels_.erase(it);
         }
     }
+
+std::string privMsg(Client client, std::string recipient, std::string message)
+{
+    return (":" + client.getNickName() + " Private Message " + recipient + " :" + message);
+}
+
+void Server::handlePrivMsg(Client& client, const std::vector<std::string>& params)
+{
+        std::cout << "Enter In Private Message" << std::endl;
+        //check client state
+
+
+    if (params.size() < 3)
+	{
+        std::cout << "Private Message  :Not enough parameters" << std::endl;
+		return;
+	}
+    try
+    {
+        Client  recipient = findClient(params[1]);      
+        std::string  msg = params[2]; // we hav to check msg
+        std::cout << "message = " << "[" << msg << "]" << std::endl;
+        std::string paquet = privMsg(client, recipient.getNickName(), msg);
+        std::cout << paquet << recipient.get_Fd() << std::endl;
+        if (send(recipient.get_Fd(), paquet.c_str(), paquet.length(), 0) < 0)
+            throw std::out_of_range("error while sendig in private message");
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+}
+
+Client		&Server::findClient(std::string name)
+{
+	for (unsigned int i = 0; i < clients_.size(); i++)
+	{
+		if (clients_[i].getNickName() == name)
+			return (clients_[i]);
+	}
+	throw(std::out_of_range("Error while searching for user"));
+}

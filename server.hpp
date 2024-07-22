@@ -95,6 +95,9 @@ private:
     std::map<std::string, std::set<int> > channelOperators_;
     std::map<int, std::pair<std::string, std::string> > userInfo_;
 
+
+    Client		&findClient(std::string name);
+
     typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);
     // typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
     typedef std::map<std::string, CommandHandler> CommandMap;
@@ -108,6 +111,7 @@ private:
     void handleInvite(Client& client, const std::vector<std::string>& params);
     void handleTopic(Client& client, const std::vector<std::string>& params);
     void handleMode(Client& client, const std::vector<std::string>& params);
+    void handlePrivMsg(Client& client, const std::vector<std::string>& params);
 
     void initCommandMap();
     // bool ClientFdsCheck(int fd);
