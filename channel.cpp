@@ -1,6 +1,6 @@
 #include "channel.hpp"
 
-Channel::Channel(const std::string& name) : name_(name) {}
+Channel::Channel(const std::string& name) : name_(name), topic_(), fd_(0), password_("") {}
 
 void Channel::addClient(int clientFd) {
     clients_.push_back(clientFd);
@@ -33,3 +33,11 @@ void Channel::setTopic(const std::string& topic) {
 const std::vector<int>& Channel::getClients() const {
     return clients_;
 }
+
+int Channel::getFd() const {return fd_;}
+void					Channel::setFd(int fd) {fd_ = fd;}
+
+
+    bool Channel::isEmpty() const {
+        return clients_.empty();
+    }

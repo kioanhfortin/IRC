@@ -28,6 +28,8 @@
 #define WHITE   "\033[37m"
 
 
+
+
 class Channel;
 class Client;
  
@@ -54,6 +56,9 @@ public:
     int             initSocket(int port);
     void            ParseNewData(int fd);
     void            ProcessNewData(int fd, const std::string& data);
+
+
+       void deleteChannel(const std::string& name);
 
     // void            addClient();
 

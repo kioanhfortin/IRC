@@ -373,9 +373,33 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
 
 void Server::handlePart(Client& client, const std::vector<std::string>& params)
 {
-    (void)client;
-    (void)params;
-    std::cout << YELLOW << "Part Handler on" << std::endl;
+    if (params.size() < 2) {
+        std::cout << " :Not enough parameters" << std::endl;
+            return;
+        }
+
+
+    try
+    {
+        std::string channelName = params[1];
+         Channel* chan = findChannel(channelName);
+
+        if (chan == NULL) {
+            std::cout << " :No such channel" << std::endl;
+            return;
+            }
+        chan->removeClient(client.get_Fd());
+        if (chan->getFd() == client.get_Fd())
+            chan->setFd(0);
+        if (chan->isEmpty()) {
+            deleteChannel(channelName);
+        }
+    }
+    catch(const std::exception& e)
+    {
+        std::cout << " :An error occurred" << std::endl;
+    }
+
 }
 
 void Server::handleKick(Client& client, const std::vector<std::string>& params)
@@ -437,3 +461,9 @@ Channel* Server::findChannel(const std::string& channelName) {
     return nullptr; 
 }
 
+    void Server::deleteChannel(const std::string& name) {
+        std::vector<Channel>::iterator it = std::find_if(channels_.begin(), channels_.end(), ChannelNameEquals(name));
+        if (it != channels_.end()) {
+            channels_.erase(it);
+        }
+    }
