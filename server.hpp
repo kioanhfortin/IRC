@@ -73,7 +73,7 @@ public:
     bool            findNickname(std::string nickname);
     int             findUsername(std::string username);
     Server::ValidInput    validNickname(const std::string nickname);
-    //Client*  getClientBy(int fd);
+    Client*  getClientBy(int fd);
     Channel* findChannel(const std::string& channelName);
 
 private:
