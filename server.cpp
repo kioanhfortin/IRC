@@ -1,4 +1,4 @@
-#include "server.hpp"
+# include "server.hpp"
 
 Server::Server(int port, const std::string &password) : port_(port), password_(password) {
     std::cout << WHITE << "Constructor Server called" << std::endl;
@@ -105,7 +105,7 @@ void Server::start()
                 if (fds_[i].fd == serverSocket_)
                 {
                      // Accept a client connection
-                     char hostname[1024];
+                    char hostname[1024];
                     clientSocket_ = accept(serverSocket_, (struct sockaddr *)&clientAddr_, &clientAddrLen_);
                     if (clientSocket_ == -1) {
                         std::cerr << "Error accepting client" << std::endl;
@@ -206,7 +206,8 @@ void Server::ProcessNewData(int fd, const std::string& data) {
     tokens.erase(tokens.begin());
 
     CommandMap::iterator it = commandMap_.find(command);
-    if (it != commandMap_.end()) {
+    if (it != commandMap_.end())
+    {
         Client& client = getClientByFd(fd);
         (this->*(it->second))(client, tokens);
     } else {
@@ -219,70 +220,24 @@ void    Server::closeClient(int clientSocket) {
     close(clientSocket);
 }
 
-void Server::handleUser(Client& client, const std::vector<std::string>& params) {
-    // Vérifier que nous avons au moins 4 paramètres && que le realname comment par un :
-    if (params.size() < 4 || params[3][0] != ':') {
-        std::string error = "ERROR : USER <username> <hostname> <servername> <:realname>\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "USER command received with wrong argument format" << std::endl;
-        return;
-    }
-    // Vérifier que le username n'existe pas déjà
-    if (findUsername(params[0]) == 1)
-    {
-        std::string error = "ERROR : Username already exist\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "Username already exist. Redo the command with a different Username" << std::endl;
-        return;
-    }
-
-    // Mettre à jour les informations du client
-    client.setUserName(params[0]);
-    client.setHostname(params[1]);
-
-    std::string realname;
-    for (size_t i = 3; i < params.size(); i++){
-        if (i != 3)
-            realname += ' ';
-        realname += params[i];
-    }
-    client.setRealName(realname);
-
-    // Envoyer une confirmation de réussite au client
-    std::string response = "USER command completed for " + client.getNickName() + "\n";
-    send(client.get_Fd(), response.c_str(), response.size(), 0);
-    
-    std::cout << "USER command processed: <" << client.getNickName() << "> set username to <" << client.getUserName() << "> and real name to <" << client.getRealName() << ">" << std::endl;
-}
-
-int     Server::findUsername(std::string username)
-{
-    for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
-    {
-        if (it->getUserName() == username)
-            return 1;
-    }
-    return 0;
-}
-
-Client& Server::getClientByFd(int fd) {
-    for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it) {
-        if (it->get_Fd() == fd) {
-            return *it;
-        }
-    }
-    throw std::runtime_error("Client not found");
-}
-
 void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
 
     // Channel Name Validity:
     // Channel Existence
-    //User Permissions:
-    //Channel Limits:
-    //Channel Mode Settings:
-    //Initial User Addition:
-    //Password Protection:
+    // User Permissions:
+    // Channel Limits:
+    // Channel Mode Settings:
+    // Initial User Addition:
+    // Password Protection:
+
+    // Vérifier que le client est bien registered avant d'effectuer 
+    if (client.getRegistered() == false)
+    {
+        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
+        return;
+    }
     if (params.empty()) {
         std::string error = "ERROR :No channel given\n";
         send(client.get_Fd(), error.c_str(), error.size(), 0);
@@ -340,6 +295,14 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
 
 void Server::handlePart(Client& client, const std::vector<std::string>& params)
 {
+    // Vérifier que le client est bien registered avant d'effectuer 
+    if (client.getRegistered() == false)
+    {
+        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
+        return;
+    }
     if (params.size() < 2) {
         std::cout << " :Not enough parameters" << std::endl;
             return;
@@ -371,6 +334,14 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
 
 void Server::handleKick(Client& client, const std::vector<std::string>& params)
 {
+    // Vérifier que le client est bien registered avant d'effectuer 
+    if (client.getRegistered() == false)
+    {
+        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
+        return;
+    }
     (void)client;
     (void)params;
     std::cout << YELLOW << "Kick Handler on" << std::endl;
@@ -378,6 +349,14 @@ void Server::handleKick(Client& client, const std::vector<std::string>& params)
 
 void Server::handleInvite(Client& client, const std::vector<std::string>& params)
 {
+    // Vérifier que le client est bien registered avant d'effectuer 
+    if (client.getRegistered() == false)
+    {
+        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
+        return;
+    }
     (void)client;
     (void)params;
     std::cout << YELLOW << "Invite Handler on" << std::endl;
@@ -385,6 +364,14 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
 
 void Server::handleTopic(Client& client, const std::vector<std::string>& params)
 {
+    // Vérifier que le client est bien registered avant d'effectuer 
+    if (client.getRegistered() == false)
+    {
+        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
+        return;
+    }
     (void)client;
     (void)params;
     std::cout << YELLOW << "Kick Topic on" << std::endl;
@@ -392,6 +379,14 @@ void Server::handleTopic(Client& client, const std::vector<std::string>& params)
 
 void Server::handleMode(Client& client, const std::vector<std::string>& params)
 {
+    // Vérifier que le client est bien registered avant d'effectuer 
+    if (client.getRegistered() == false)
+    {
+        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
+        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
+        return;
+    }
     (void)client;
     (void)params;
     std::cout << YELLOW << "Kick Mode on" << std::endl;

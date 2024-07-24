@@ -19,6 +19,7 @@ public :
 	std::string     getUserName() const;
     std::string     getRealName() const;
     std::string     getHostname() const;
+    bool            getRegistered() const;
     
     void            set_IpAdd(std::string new_IpAdd);
     void            set_Fd(int new_fd);
@@ -26,7 +27,7 @@ public :
 	void            setUserName(std::string newName);
     void            setRealName(std::string newName);
     void            setHostname(std::string newName);
-
+    void            registerClient();
 
 private:
     int Fd_;
@@ -35,6 +36,7 @@ private:
 	std::string nickName_;
 	std::string userName_;
     std::string realName_;
+    bool Registered;
 };
 
 #endif
