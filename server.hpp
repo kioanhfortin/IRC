@@ -1,7 +1,6 @@
 #ifndef SERVER_H
 # define SERVER_H
 # include "client.hpp"
-// # include <string>
 # include <cstring>
 # include <map>
 # include <set>
@@ -14,10 +13,8 @@
 # include <netinet/in.h>
 # include <poll.h>
 # include <cctype>
-// # include <limits.h>
 # include "client.hpp"
-#include "channel.hpp"
-
+# include "channel.hpp"
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -27,9 +24,6 @@
 #define GREEN   "\033[32m"
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
-
-
-
 
 class Channel;
 class Client;
@@ -64,18 +58,20 @@ public:
     void            ProcessNewData(int fd, const std::string& data);
 
 
-       void deleteChannel(const std::string& name);
+    void                    deleteChannel(const std::string& name);
 
     // void            addClient();
 
-    void            CloseFds();
+    void                    CloseFds();
 
-    bool            findNickname(std::string nickname);
-    int             findUsername(std::string username);
-    Server::ValidInput    validNickname(const std::string nickname);
-    Client*  getClientBy(int fd);
-    Channel* findChannel(const std::string& channelName);
+    bool                    findNickname(std::string nickname);
+    int                     findUsername(std::string username);
+    Server::ValidInput      validNickname(const std::string nickname);
+    Client*                 getClientBy(int fd);
+    Channel*                findChannel(const std::string& channelName);
 
+    bool                    isClientInvited(const Client& client, const std::string& channelName);
+    bool                    isChannelInviteOnly(const std::string& channelName);
 private:
     int             port_;
     int             serverSocket_;
@@ -89,12 +85,10 @@ private:
     struct sockaddr_in serverAddr_, clientAddr_;
     socklen_t clientAddrLen_;
 
-    // std::map<int, std::string> client_;
     std::map<std::string, std::set<int> > channel_s;
     std::map<std::string, std::string> topics_;
     std::map<std::string, std::set<int> > channelOperators_;
     std::map<int, std::pair<std::string, std::string> > userInfo_;
-
 
     Client		&findClient(std::string name);
 
@@ -102,6 +96,10 @@ private:
     // typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
     typedef std::map<std::string, CommandHandler> CommandMap;
     CommandMap commandMap_;
+
+    //A utiliser pour enregistrer les invitations
+    std::map<std::string, bool> inviteOnlyChannels_;
+    std::map<std::string, std::set<int> > invitedClients_;
 
     void handleNick(Client& client, const std::vector<std::string>& params);
     void handleUser(Client& client, const std::vector<std::string>& params);
