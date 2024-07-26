@@ -24,7 +24,6 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
         std::cerr << RED << "Username already exist. Redo the command with a different Username" << std::endl;
         return;
     }
-
     // Mettre à jour les informations du client
     client.setUserName(params[0]);
     client.setHostname(params[1]);
@@ -36,7 +35,6 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
         realname += params[i];
     }
     client.setRealName(realname);
-
     // Envoyer une confirmation de réussite au client
     std::string response = "USER command completed for " + client.getNickName() + "\n";
     send(client.get_Fd(), response.c_str(), response.size(), 0);

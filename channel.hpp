@@ -4,10 +4,8 @@
 # include "client.hpp"
 
 # include <string>
-
-
-#include <vector>
-#include <string>
+# include <vector>
+# include <string>
 
 class Client;
 

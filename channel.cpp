@@ -35,9 +35,9 @@ const std::vector<int>& Channel::getClients() const {
 }
 
 int Channel::getFd() const {return fd_;}
+
 void					Channel::setFd(int fd) {fd_ = fd;}
 
-
-    bool Channel::isEmpty() const {
-        return clients_.empty();
-    }
+bool Channel::isEmpty() const {
+    return clients_.empty();
+}
