@@ -183,6 +183,7 @@ void    Server::initCommandMap()
     commandMap_["TOPIC"] = &Server::handleTopic;
     commandMap_["MODE"] = &Server::handleMode;
     commandMap_["PRIVATE MESSAGE"] = &Server::handlePrivMsg;
+    commandMap_["PASSWORD"] = &Server::handlePass;
     
 }
 
@@ -485,4 +486,23 @@ Client		&Server::findClient(std::string name)
 			return (clients_[i]);
 	}
 	throw(std::out_of_range("Error while searching for user"));
+}
+
+void Server::handlePass(Client& client, const std::vector<std::string>& params) {
+    if (params.size() < 2) {
+        std::cerr << "ERROR: No password given : " << std::endl;
+        return;
+    }
+
+    std::string password = params[1];
+    client.setPassword(password);
+
+    if (password != password_) {
+        std::cerr << "ERROR: Incorrect password" << std::endl;
+        // Optionally, you can disconnect the client or handle the error as needed
+        return;
+    }
+
+    std::cout << "Password accepted" << std::endl;
+    // Proceed with the next steps for authenticated clients
 }

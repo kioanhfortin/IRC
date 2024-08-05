@@ -63,3 +63,11 @@ bool            Client::getRegistered() const {
 void            Client::registerClient() {
     Registered = true;
 }
+
+void Client::setPassword(const std::string& password) {
+    password_ = password;
+}
+
+const std::string& Client::getPassword() const {
+    return password_;
+}

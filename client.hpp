@@ -20,6 +20,7 @@ public :
     std::string     getRealName() const;
     std::string     getHostname() const;
     bool            getRegistered() const;
+    const std::string& getPassword() const;
     
     void            set_IpAdd(std::string new_IpAdd);
     void            set_Fd(int new_fd);
@@ -28,15 +29,18 @@ public :
     void            setRealName(std::string newName);
     void            setHostname(std::string newName);
     void            registerClient();
+    void setPassword(const std::string& password);
 
 private:
     int Fd_;
     std::string hostName_;
     std::string IPadd_;
-	std::string nickName_;
+	std::string nickName_; 
 	std::string userName_;
     std::string realName_;
     bool Registered;
+    std::string password_;
+   
 };
 
 #endif
