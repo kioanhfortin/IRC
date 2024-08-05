@@ -184,6 +184,8 @@ void    Server::initCommandMap()
     commandMap_["MODE"] = &Server::handleMode;
     commandMap_["PRIVATE MESSAGE"] = &Server::handlePrivMsg;
     commandMap_["PASSWORD"] = &Server::handlePass;
+    commandMap_["OPERATOR"] = &Server::handleOper;
+    commandMap_["PING"] = &Server::handlePing;
     
 }
 
@@ -499,10 +501,50 @@ void Server::handlePass(Client& client, const std::vector<std::string>& params) 
 
     if (password != password_) {
         std::cerr << "ERROR: Incorrect password" << std::endl;
-        // Optionally, you can disconnect the client or handle the error as needed
+
         return;
     }
 
     std::cout << "Password accepted" << std::endl;
-    // Proceed with the next steps for authenticated clients
+
+}
+
+void Server::handleOper(Client& client, const std::vector<std::string>& params)
+{
+
+    // Print out the parameters for debugging
+	for (size_t i = 0; i < params.size(); i++)
+		std::cout << params.at(i) << std::endl;
+
+    // Check if there are enough parameters
+    if (params.size() < 3)
+    {
+        std::cout <<  client.getNickName()  <<  " OPER :Not enough parameters" << std::endl;
+        return;
+    }
+
+    std::string pswd = params.at(2);
+    if (pswd != password_)
+    {
+        std::cout <<  client.getNickName()  <<  "OPER :Password incorrect" << std::endl;
+        return ;
+    }
+    else
+    {
+        std::cout <<  client.getNickName()  <<  "OPER ::You are now an IRC operator" << std::endl;
+    }
+
+    return ;
+}
+
+void Server::handlePing(Client& client, const std::vector<std::string>& params)
+{
+    client.getNickName(); // just to use the parameters client
+    if (params.size() < 2)
+	{
+		std::cout << "Error: Ping" << std::endl;
+		return;
+	}
+    std::cout << "Pong " + params[1] << std::endl;
+    return; 
 }
