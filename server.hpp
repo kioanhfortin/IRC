@@ -113,6 +113,9 @@ private:
     void handlePass(Client& client, const std::vector<std::string>& params);
     void handleOper(Client& client, const std::vector<std::string>& params);
     void handlePing(Client& client, const std::vector<std::string>& params);
+    void handleList(Client& client, const std::vector<std::string>& params);
+    void handleName(Client& client, const std::vector<std::string>& params);
+    void handleNotice(Client& client, const std::vector<std::string>& params);
 
     void initCommandMap();
     // bool ClientFdsCheck(int fd);

@@ -1,12 +1,12 @@
 # include "server.hpp"
 
 Server::Server(int port, const std::string &password) : port_(port), password_(password) {
-    std::cout << "Constructor Server called" << std::endl;
-    initSocket(port_);
+    std::cout << WHITE << "Constructor Server called" << std::endl;
+    start();
 }
 
 Server::~Server() {
-    std::cout << "Destructor Server called" << std::endl;
+    std::cout << WHITE <<"Destructor Server called" << std::endl;
 }
 
 int     Server::get_port() const {
@@ -25,50 +25,71 @@ void            Server::set_password(std::string new_password) {
     password_ = new_password;
 }
 
+int          Server::get_serverSocket() const {
+    return serverSocket_;
+}
+
+void    Server::set_serverSocket(int new_serverSocket) {
+    serverSocket_ = new_serverSocket;
+}
+
+int          Server::get_clientSocket() const {
+    return clientSocket_;
+}
+
+void    Server::set_clientSocket(int new_clientSocket) {
+    clientSocket_ = new_clientSocket;
+}
+
 int Server::initSocket(int port)
 {
-
-    int serverSocket, clientSocket;
-    struct sockaddr_in serverAddr, clientAddr;
-    socklen_t clientAddrLen = sizeof(clientAddr);
-    char buffer[BUFFER_SIZE];
-
     // Create socket
-    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSocket < 0) {
+    serverSocket_ = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSocket_ < 0) {
         std::cerr << "Error creating socket." << std::endl;
         return -1;
     }
 
     // Bind socket to an IP/Port
-    serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = INADDR_ANY;
-    serverAddr.sin_port = htons(port);
+    serverAddr_.sin_family = AF_INET;
+    serverAddr_.sin_addr.s_addr = INADDR_ANY;
+    serverAddr_.sin_port = htons(port);
 
-    if (bind(serverSocket, (struct sockaddr *)&serverAddr, sizeof(serverAddr)) < 0) {
+    if (bind(serverSocket_, (struct sockaddr *)&serverAddr_, sizeof(serverAddr_)) < 0) {
         std::cerr << "Error binding socket." << std::endl;
-        close(serverSocket);
+        close(serverSocket_);
         return -1;
     }
 
     // Listen for incoming connections
-    if (listen(serverSocket, 5) < 0) {
+    if (listen(serverSocket_, 5) < 0) {
         std::cerr << "Error listening on socket." << std::endl;
-        close(serverSocket);
+        close(serverSocket_);
         return -1;
     }
 
     std::cout << "Server is listening on port " << port << std::endl;
+    return 0;
+}
 
-    // Accept a client connection
-    clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddr, &clientAddrLen);
-    if (clientSocket < 0) {
-        std::cerr << "Error accepting client." << std::endl;
-        close(serverSocket);
-        return -1;
+void Server::start()
+{
+    //  int serverSocket, clientSocket;
+   clientAddrLen_ = sizeof(clientAddr_);
+    if (initSocket(port_) == -1)
+    {
+        std::cerr << RED << "Failed to initialize socket" << std::endl;
+        return;
     }
 
     // Receive message from client
+    initCommandMap();
+    struct pollfd serverPollfd;
+    serverPollfd.fd = serverSocket_;
+    serverPollfd.events = POLLIN;
+    fds_.push_back(serverPollfd);
+
+    std::cout << GREEN << "IRC running" << std::endl;
     while(1)
     {
         int pollCount = poll(fds_.data(), fds_.size(), -1);
@@ -165,6 +186,9 @@ void    Server::initCommandMap()
     commandMap_["PASSWORD"] = &Server::handlePass;
     commandMap_["OPERATOR"] = &Server::handleOper;
     commandMap_["PING"] = &Server::handlePing;
+    commandMap_["LIST"] = &Server::handleList;
+    commandMap_["NAMES"] = &Server::handleName;
+    commandMap_["NOTICE"] = &Server::handleNotice;
     
 }
 
@@ -390,25 +414,34 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
 }
 
 
-
+/*
 Client* Server::getClient(int fd) {
     for (size_t i = 0; i < clients_.size(); ++i) {
         if (clients_[i].get_Fd() == fd) {
             return &clients_[i];
         }
     }
+    return nullptr; // Client not found
+} */
 
-    std::string password = params[1];
-    client.setPassword(password);
+// Predicate function object to find a channel by name
+struct ChannelNameEquals {
+    ChannelNameEquals(const std::string& name) : name_(name) {}
 
-    if (password != password_) {
-        std::cerr << "ERROR: Incorrect password" << std::endl;
-        // Optionally, you can disconnect the client or handle the error as needed
-        return;
+    bool operator()(const Channel& channel) const {
+        return channel.getName() == name_;
     }
 
-    std::cout << "Password accepted" << std::endl;
-    // Proceed with the next steps for authenticated clients
+    std::string name_;
+};
+
+Channel* Server::findChannel(const std::string& channelName) {
+    std::vector<Channel>::iterator it = std::find_if(channels_.begin(), channels_.end(),
+                                                     ChannelNameEquals(channelName));
+    if (it != channels_.end()) {
+        return &(*it); 
+    }
+    return nullptr; 
 }
 
     void Server::deleteChannel(const std::string& name) {
@@ -517,4 +550,58 @@ void Server::handlePing(Client& client, const std::vector<std::string>& params)
 	}
     std::cout << "Pong " + params[1] << std::endl;
     return; 
+}
+
+
+
+void Server::handleList(Client& client, const std::vector<std::string>& params)
+{
+    if (params.size() == 1 ||params.size() == 2)
+    {
+        if (channels_.size() == 0)
+        {
+            std::cout << ":No such channel" << std::endl;
+            return;
+        }
+        for (size_t i = 0; i < channels_.size(); i++)
+        {
+
+            std::cout <<  client.getNickName() << std::endl;
+        }
+		std::cout <<  client.getNickName()  << std::endl;
+        return;
+    }
+
+    if (params.size() > 1)
+    {
+        std::cout << "Return another time for the list!" << std::endl;
+    }
+    return;
+}
+
+
+
+void Server::handleName(Client& client, const std::vector<std::string>& params)
+{
+	if (params.size() == 1)
+	{
+		std::vector<std::string> tmp;
+		tmp.push_back("List");
+		handleList(client, tmp);
+		return;
+	}
+
+	if (params.size() > 1)
+	{
+		std::cout << "We will get back to you later" << std::endl;
+	}
+	return;
+}
+
+
+void Server::handleNotice(Client& client, const std::vector<std::string>& params)
+{
+    std::cout << "Welcome to notice" << std::endl;
+    client.getNickName();
+    params[0];
 }
