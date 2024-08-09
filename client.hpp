@@ -30,6 +30,7 @@ public :
     void            setHostname(std::string newName);
     void            registerClient();
     void setPassword(const std::string& password);
+    void reply(const std::string& message);
 
 private:
     int Fd_;

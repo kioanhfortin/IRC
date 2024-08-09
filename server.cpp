@@ -115,6 +115,7 @@ void Server::start()
                     struct pollfd clientPollfd = {new_client_fd, POLLIN, 0};
                     fds_.push_back(clientPollfd);
                     std::cout << GREEN << "Accepted connection from client" << std::endl;
+                    break;
                 }
             }
             ParseNewData(fds_[i].fd);

@@ -71,3 +71,11 @@ void Client::setPassword(const std::string& password) {
 const std::string& Client::getPassword() const {
     return password_;
 }
+
+
+void Client::reply(const std::string& message) {
+    // Implementation for sending a message to the client
+    std::cout << "Reply to client: " << message << std::endl;
+    if (send(get_Fd(), message.c_str(), message.size(), 0) < 0)
+        throw(std::out_of_range("Error, message not sent"));
+}

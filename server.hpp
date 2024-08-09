@@ -19,6 +19,13 @@
 
 # include "client.hpp"
 # include "channel.hpp"
+# include "utils.hpp"
+
+// Error Messages
+const std::string ERR_NICKNAMEINUSE = "433 * :Nickname is already in use";
+const std::string ERR_NONICKNAMEGIVEN = "431 * :No nickname given";
+const std::string ERR_ERRONEUSNICKNAME = "432 * :Erroneous nickname";
+
 
 
 #ifndef BUFFER_SIZE
