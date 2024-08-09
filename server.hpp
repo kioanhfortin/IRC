@@ -13,8 +13,13 @@
 # include <netinet/in.h>
 # include <poll.h>
 # include <cctype>
+# include <fcntl.h>
+# include <csignal>
+#include <netdb.h>  // For NI_MAXHOST and NI_NUMERICSERV
+
 # include "client.hpp"
 # include "channel.hpp"
+
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -24,6 +29,7 @@
 #define GREEN   "\033[32m"
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
+extern bool g_interrupt;
 
 class Channel;
 class Client;
@@ -53,7 +59,7 @@ public:
     void            set_clientSocket(int new_clientSocket);
 
     void            start();
-    int             initSocket(int port);
+    void             initSocket(int port);
     void            ParseNewData(int fd);
     void            ProcessNewData(int fd, const std::string& data);
 

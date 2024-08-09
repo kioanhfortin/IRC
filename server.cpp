@@ -41,94 +41,87 @@ void    Server::set_clientSocket(int new_clientSocket) {
     clientSocket_ = new_clientSocket;
 }
 
-int Server::initSocket(int port)
+void Server::initSocket(int port)
 {
+    int val = 1;
     // Create socket
     serverSocket_ = socket(AF_INET, SOCK_STREAM, 0);
-    if (serverSocket_ < 0) {
-        std::cerr << "Error creating socket." << std::endl;
-        return -1;
-    }
+    if (serverSocket_ < 0)
+        throw std::runtime_error("Error creating socket.");
 
-    // Bind socket to an IP/Port
+    // enable socket to be bound to an adress alrady in use
+    if(setsockopt(serverSocket_, SOL_SOCKET, SO_REUSEADDR, &val, sizeof(val)))
+        throw std::runtime_error("Error creating socket options.");
+
+    if (fcntl(serverSocket_, F_SETFL, O_NONBLOCK) == -1) 
+        throw std::runtime_error("Error while setting socket to NON-BLOCKING.");
+
+    
+
+    // Bind socket to an IP/Port...... severAddr: This structure holds the address information for the server
+    memset(&serverAddr_, 0, sizeof(serverAddr_));
     serverAddr_.sin_family = AF_INET;
     serverAddr_.sin_addr.s_addr = INADDR_ANY;
     serverAddr_.sin_port = htons(port);
 
-    if (bind(serverSocket_, (struct sockaddr *)&serverAddr_, sizeof(serverAddr_)) < 0) {
-        std::cerr << "Error binding socket." << std::endl;
-        close(serverSocket_);
-        return -1;
-    }
+    if (bind(serverSocket_, (struct sockaddr *)&serverAddr_, sizeof(serverAddr_)) < 0)
+        throw std::runtime_error("Error binding socket.");
 
     // Listen for incoming connections
-    if (listen(serverSocket_, 5) < 0) {
-        std::cerr << "Error listening on socket." << std::endl;
-        close(serverSocket_);
-        return -1;
-    }
-
-    std::cout << "Server is listening on port " << port << std::endl;
-    return 0;
+    if (listen(serverSocket_, 1000) < 0)
+        throw std::runtime_error("Error listening on socket.");
 }
 
 void Server::start()
 {
+    char hostname[2048];
     //  int serverSocket, clientSocket;
    clientAddrLen_ = sizeof(clientAddr_);
-    if (initSocket(port_) == -1)
-    {
+    initSocket(port_);
+    if (serverSocket_ < 0) {
         std::cerr << RED << "Failed to initialize socket" << std::endl;
         return;
     }
-
+    std::cout << "Server is listening on port " << port_ << std::endl;
     // Receive message from client
     initCommandMap();
-    struct pollfd serverPollfd;
-    serverPollfd.fd = serverSocket_;
-    serverPollfd.events = POLLIN;
+    struct pollfd serverPollfd = {serverSocket_, POLLIN, 0};
     fds_.push_back(serverPollfd);
 
-    std::cout << GREEN << "IRC running" << std::endl;
-    while(1)
+    std::cout << GREEN << "IRC Running" << std::endl;
+    while(g_interrupt == false)
     {
-        int pollCount = poll(fds_.data(), fds_.size(), -1);
-        if (pollCount == -1)
-        {
-            std::cerr << "Poll error" << std::endl;
-            return;
-        }
+        if(poll(fds_.begin().base(), fds_.size(), -1) < 0)
+            break;
         for (size_t i = 0; i < fds_.size(); i++)
         {
-            if (fds_[i].revents && POLLIN)
+            if (fds_[i].revents == 0)
+                continue;
+            if ((fds_[i].revents && POLLIN ) == POLLIN)
             {
-                if (fds_[i].fd == serverSocket_)
+                if(fds_[i].fd == serverSocket_)
                 {
-                     // Accept a client connection
-                    char hostname[1024];
-                    clientSocket_ = accept(serverSocket_, (struct sockaddr *)&clientAddr_, &clientAddrLen_);
-                    if (clientSocket_ == -1) {
-                        std::cerr << "Error accepting client" << std::endl;
-                        continue;
-                    }
-                    clients_.push_back(Client(clientSocket_, hostname));
-                    struct pollfd clientPollfd;
-                    clientPollfd.fd = clientSocket_;
-                    clientPollfd.events = POLL_IN;
+                    // Accept a client connection
+                    sockaddr_in s_address = {};
+                    socklen_t s_size = sizeof(s_address);
+                    int new_client_fd;
+                    new_client_fd = accept(serverSocket_, (sockaddr *) &s_address, &s_size);
+                    //new_client_fd = accept(serverSocket_, (struct sockaddr *)&clientAddr_, &clientAddrLen_);
+                    if(new_client_fd < 0)
+                        throw std::runtime_error("Error accepting client");
+                    if (getnameinfo((struct sockaddr *) &s_address, sizeof(s_address), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV) != 0)
+                        throw std::runtime_error("Error while getting hostname on new client.");
+                    clients_.push_back(Client(new_client_fd, hostname));
+                    struct pollfd clientPollfd = {new_client_fd, POLLIN, 0};
                     fds_.push_back(clientPollfd);
                     std::cout << GREEN << "Accepted connection from client" << std::endl;
                 }
-                else
-                    ParseNewData(fds_[i].fd);
             }
+            ParseNewData(fds_[i].fd);
         }
     }
-
-
-    // Close sockets
-    CloseFds();
-   // close(clientSocket_);
-  //  close(serverSocket_);
+    for (size_t i = 0; i < fds_.size(); i++)
+		close(fds_[i].fd);
 
 }
 
