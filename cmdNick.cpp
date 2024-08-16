@@ -25,7 +25,6 @@ void Server::handleNick(Client& client, const std::vector<std::string>& params)
     }
 
     client.setNickName(newNickName);
-    std::string response = "Client NICKNAME set to : " + client.getNickName() + "\n";
     std::cerr << GREEN << "Client NICKNAME set to : " << client.getNickName() << std::endl;
     client.reply("NickName set!");
 }

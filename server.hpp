@@ -25,7 +25,9 @@
 const std::string ERR_NICKNAMEINUSE = "433 * :Nickname is already in use";
 const std::string ERR_NONICKNAMEGIVEN = "431 * :No nickname given";
 const std::string ERR_ERRONEUSNICKNAME = "432 * :Erroneous nickname";
-
+const std::string ERR_NEEDMOREPARAMS = "Need more parameters";
+const std::string ERR_ALREADYREGISTRED = "Already registered";
+const std::string ERR_USERNAMEINUSE = "Username already in use";
 
 
 #ifndef BUFFER_SIZE

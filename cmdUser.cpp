@@ -3,25 +3,19 @@
 void Server::handleUser(Client& client, const std::vector<std::string>& params) {
     // Vérifier que nous avons au moins 4 paramètres && que le realname comment par un :
     if (params.size() < 4 || params[3][0] != ':') {
-        std::string error = "ERR_NEEDMOREPARAMS : USER <username> <hostname> <servername> <:realname>\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "ERR_NEEDMOREPARAMS : USER <username> <hostname> <servername> <:realname>\n" << std::endl;
+        client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
     // Vérifier que le client n'est pas déjà registered
     if (client.getRegistered() == true)
     {
-        std::string error = "ERR_ALREADYREGISTRED : client is already registered\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "ERR_ALREADYREGISTRED : client is already registered\n" << std::endl;
+        client.reply(ERR_ALREADYREGISTRED);
         return;
     }
     // Vérifier que le username n'existe pas déjà
     if (findUsername(params[0]) == 1)
     {
-        std::string error = "ERROR : Username already exist\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "Username already exist. Redo the command with a different Username" << std::endl;
+       client.reply(ERR_USERNAMEINUSE);
         return;
     }
     // Mettre à jour les informations du client
@@ -39,7 +33,9 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
     std::string response = "USER command completed for " + client.getNickName() + "\n";
     send(client.get_Fd(), response.c_str(), response.size(), 0);
     
-    std::cout << "USER command processed: client <" << client.get_Fd() << "> set username to <" << client.getUserName() << "> and real name to <" << client.getRealName() << ">" << std::endl;
+    
+    std::cout << "USER command processed: client <" << client.get_Fd() << "> set username to <" 
+    << client.getUserName() << "> and real name to <" << client.getRealName() << ">" << std::endl;
 }
 
 int     Server::findUsername(std::string username)
