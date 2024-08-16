@@ -115,6 +115,7 @@ void Server::start()
                     struct pollfd clientPollfd = {new_client_fd, POLLIN, 0};
                     fds_.push_back(clientPollfd);
                     std::cout << GREEN << "Accepted connection from client" << std::endl;
+                    displayClientInfo();
                     break;
                 }
             }
@@ -210,10 +211,10 @@ void Server::ProcessNewData(int fd, const std::string& data) {
     {
         Client& client = getClientByFd(fd);
         (this->*(it->second))(client, tokens);
-    } else {
+    } /* else {
         std::cerr << RED << "Unknown command received: " << command << std::endl;
         // sendCommand(fd, "ERROR: Unknown command");
-    }
+    } */
 }
 
 void    Server::closeClient(int clientSocket) {
@@ -598,4 +599,18 @@ void Server::handleNotice(Client& client, const std::vector<std::string>& params
     std::cout << "Welcome to notice" << std::endl;
     client.getNickName();
     params[0];
+}
+
+void Server::displayClientInfo() const {
+    std::cout << "Total clients connected: " << clients_.size() << std::endl;
+    
+    for (size_t i = 0; i < clients_.size(); ++i) {
+        const Client& client = clients_[i];
+        std::cout << "Client #: " << i + 1 << std::endl;
+        std::cout << "Registered: " << (client.getRegistered() ? "Yes" : "No") << std::endl;
+        std::cout << "Nickname: " << client.getNickName() << std::endl;
+        std::cout << "Username: " << client.getUserName() << std::endl;
+        std::cout << "Real name: " << client.getRealName() << std::endl;
+        std::cout << "---------------------------" << std::endl;
+    }
 }

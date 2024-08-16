@@ -136,6 +136,9 @@ private:
     void closeClient(int clientSocket);
     Client& getClientByFd(int fd);
 
+
+    void displayClientInfo() const;
+
     /*int socket_fd;*/
 };
 
