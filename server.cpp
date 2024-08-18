@@ -74,14 +74,8 @@ void Server::initSocket(int port)
 
 void Server::start()
 {
-    char hostname[2048];
-    //  int serverSocket, clientSocket;
-   clientAddrLen_ = sizeof(clientAddr_);
+    //  int serverSocket
     initSocket(port_);
-    if (serverSocket_ < 0) {
-        std::cerr << RED << "Failed to initialize socket" << std::endl;
-        return;
-    }
     std::cout << "Server is listening on port " << port_ << std::endl;
     // Receive message from client
     initCommandMap();
@@ -97,34 +91,18 @@ void Server::start()
         {
             if (fds_[i].revents == 0)
                 continue;
-            if ((fds_[i].revents && POLLIN ) == POLLIN)
+            if (fds_[i].revents && POLLIN)
             {
                 if(fds_[i].fd == serverSocket_)
                 {
-                    // Accept a client connection
-                    sockaddr_in s_address = {};
-                    socklen_t s_size = sizeof(s_address);
-                    int new_client_fd;
-                    new_client_fd = accept(serverSocket_, (sockaddr *) &s_address, &s_size);
-                    //new_client_fd = accept(serverSocket_, (struct sockaddr *)&clientAddr_, &clientAddrLen_);
-                    if(new_client_fd < 0)
-                        throw std::runtime_error("Error accepting client");
-                    if (getnameinfo((struct sockaddr *) &s_address, sizeof(s_address), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV) != 0)
-                        throw std::runtime_error("Error while getting hostname on new client.");
-                    clients_.push_back(Client(new_client_fd, hostname));
-                    struct pollfd clientPollfd = {new_client_fd, POLLIN, 0};
-                    fds_.push_back(clientPollfd);
-                    std::cout << GREEN << "Accepted connection from client" << std::endl;
-                    displayClientInfo();
-                    break;
+                    AcceptNewClient();
                 }
+                else
+                    ParseNewData(fds_[i].fd);
             }
-            ParseNewData(fds_[i].fd);
         }
     }
-    for (size_t i = 0; i < fds_.size(); i++)
-		close(fds_[i].fd);
-
+    CloseFds();
 }
 
 void Server::CloseFds()
@@ -133,6 +111,27 @@ void Server::CloseFds()
         std::cout << RED << "Close Client" << std::endl;
         close(fds_[i].fd);
     }
+}
+
+void    Server::AcceptNewClient()
+{
+    char hostname[2048];
+    clientAddrLen_ = sizeof(clientAddr_);
+    sockaddr_in s_address = {};
+    socklen_t s_size = sizeof(s_address);
+    int new_client_fd;
+    new_client_fd = accept(serverSocket_, (sockaddr *) &s_address, &s_size);
+    //new_client_fd = accept(serverSocket_, (struct sockaddr *)&clientAddr_, &clientAddrLen_);
+    if(new_client_fd < 0)
+        throw std::runtime_error("Error accepting client");
+    if (getnameinfo((struct sockaddr *) &s_address, sizeof(s_address), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV) != 0)
+        throw std::runtime_error("Error while getting hostname on new client.");
+    clients_.push_back(Client(new_client_fd, hostname));
+    struct pollfd clientPollfd = {new_client_fd, POLLIN, 0};
+    fds_.push_back(clientPollfd);
+    std::cout << GREEN << "Accepted connection from client" << std::endl;
+    displayClientInfo();
+    
 }
 
 void    Server::ParseNewData(int fd)

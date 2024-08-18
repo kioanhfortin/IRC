@@ -68,7 +68,8 @@ public:
     void            set_clientSocket(int new_clientSocket);
 
     void            start();
-    void             initSocket(int port);
+    void            initSocket(int port);
+    void            AcceptNewClient();
     void            ParseNewData(int fd);
     void            ProcessNewData(int fd, const std::string& data);
 
