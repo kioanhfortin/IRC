@@ -282,7 +282,6 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     //     return;
     // }
 
-
     // Add the client to the channel
     channel->addClient(client.get_Fd());
 
