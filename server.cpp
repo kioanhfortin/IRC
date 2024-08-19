@@ -94,9 +94,7 @@ void Server::start()
             if (fds_[i].revents && POLLIN)
             {
                 if(fds_[i].fd == serverSocket_)
-                {
                     AcceptNewClient();
-                }
                 else
                     ParseNewData(fds_[i].fd);
             }
@@ -131,7 +129,6 @@ void    Server::AcceptNewClient()
     fds_.push_back(clientPollfd);
     std::cout << GREEN << "Accepted connection from client" << std::endl;
     displayClientInfo();
-    
 }
 
 void    Server::ParseNewData(int fd)
@@ -140,18 +137,18 @@ void    Server::ParseNewData(int fd)
     {
         char buffer[BUFFER_SIZE];
         memset(buffer, 0, BUFFER_SIZE);
-        size_t byte_Receive = recv(fd, buffer, BUFFER_SIZE, 0);
 
+        
+        size_t byte_Receive = recv(fd, buffer, BUFFER_SIZE, 0);
         // Check if client is disconnected
         if (byte_Receive == 0)
         {
             std::cout << RED << "Client <" << fd <<"> is disconnected" << std::endl;
-            close(clientSocket_);
-            close(serverSocket_);
-            // return -1;
+            closeClient(fd);
         }
         else if (byte_Receive < 0){
             std::cerr << "recv failed" << std::endl;
+            closeClient(fd);
         }
         else
         {
@@ -217,6 +214,19 @@ void Server::ProcessNewData(int fd, const std::string& data) {
 }
 
 void    Server::closeClient(int clientSocket) {
+
+    for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it) {
+        if (it->get_Fd() == clientSocket) {
+            clients_.erase(it);
+            break;
+        }
+    }
+    for (std::vector<pollfd>::iterator it = fds_.begin(); it != fds_.end(); ++it) {
+        if (it->fd == clientSocket) {
+            fds_.erase(it);
+            break;
+        }
+    }
     close(clientSocket);
 }
 
