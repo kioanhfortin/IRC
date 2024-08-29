@@ -1,4 +1,6 @@
 #include "channel.hpp"
+#include "server.hpp"
+#include "client.hpp"
 
 Channel::Channel(const std::string& name) : name_(name), topic_(), fd_(0), password_("") {}
 
@@ -30,7 +32,7 @@ void Channel::setTopic(const std::string& topic) {
     topic_ = topic;
 }
 
-const std::vector<int>& Channel::getClients() const {
+ std::vector<Client>& Channel::getClients() {
     return clients_;
 }
 

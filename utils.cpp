@@ -9,3 +9,15 @@ std::string removeCarriageReturn(const std::string& str)
         return str;
     return str.substr(0, str.size() - 1);
 }
+
+bool isClientInChannel(Channel *chan, int fd)
+{
+    for (unsigned int i = 0; i < chan->getClients().size(); i++)
+    {
+       if ( chan->getClients()[i].get_Fd() == fd)
+        return true;
+        //if (chan->getClients()[i].get_Fd() == fd)
+            //return true;
+    }
+    return false;
+}
