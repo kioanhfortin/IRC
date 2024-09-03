@@ -30,7 +30,7 @@ const std::string ERR_ALREADYREGISTRED = "Already registered\n";
 const std::string ERR_USERNAMEINUSE = "Username already in use\n";
 const std::string ERR_NOTREGISTERED = "ERR_NOTREGISTERED : First register with the USER command\n";
 const std::string ERR_NOSUCHNICK = "ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
-
+const std::srting ERR_NOTONCHANNEL = "<channel> :You're not on that channel\n";
 
 
 #ifndef BUFFER_SIZE

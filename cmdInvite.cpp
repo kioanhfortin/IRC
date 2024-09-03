@@ -22,6 +22,10 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
 
     std::string targetNick = params[0];
     std::string channelName = params[1];
+    if (findChannel(channelName) == false) {
+         client.reply(ERR_NOTONCHANNEL);
+        return;
+    }
 
     Client * targetClient = nullptr;
     for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); it++)
