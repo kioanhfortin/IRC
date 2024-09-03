@@ -12,17 +12,14 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
 
     // Vérifier que le client est bien registered avant d'effectuer 
     if (client.getRegistered() == false)
-    {
-        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
-        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
+{
+        client.reply(ERR_NOTREGISTERED);
         return;
     }
     // Vérifier le nombre de paramètre
     if (params.empty()) {
-        std::string error = "ERR_NEEDMOREPARAMS : JOIN <channel>{,<channel>} [<key>{,<key>}]\n";
         std::cerr << RED << "ERR_NEEDMOREPARAMS : JOIN <channel>{,<channel>} [<key>{,<key>}]\n" << std::endl;
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
 

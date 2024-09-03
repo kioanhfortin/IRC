@@ -22,12 +22,15 @@
 # include "utils.hpp"
 
 // Error Messages
-const std::string ERR_NICKNAMEINUSE = "433 * :Nickname is already in use";
-const std::string ERR_NONICKNAMEGIVEN = "431 * :No nickname given";
-const std::string ERR_ERRONEUSNICKNAME = "432 * :Erroneous nickname";
-const std::string ERR_NEEDMOREPARAMS = "Need more parameters";
-const std::string ERR_ALREADYREGISTRED = "Already registered";
-const std::string ERR_USERNAMEINUSE = "Username already in use";
+const std::string ERR_NICKNAMEINUSE = "433 * :Nickname is already in use\n";
+const std::string ERR_NONICKNAMEGIVEN = "431 * :No nickname given\n";
+const std::string ERR_ERRONEUSNICKNAME = "432 * :Erroneous nickname\n";
+const std::string ERR_NEEDMOREPARAMS = "Need more parameters\n";
+const std::string ERR_ALREADYREGISTRED = "Already registered\n";
+const std::string ERR_USERNAMEINUSE = "Username already in use\n";
+const std::string ERR_NOTREGISTERED = "ERR_NOTREGISTERED : First register with the USER command\n";
+const std::string ERR_NOSUCHNICK = "ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
+
 
 
 #ifndef BUFFER_SIZE

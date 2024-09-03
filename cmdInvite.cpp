@@ -3,20 +3,22 @@
 void Server::handleInvite(Client& client, const std::vector<std::string>& params)
 {
     // Vérifier que le client est bien registered avant d'effectuer 
-    if (client.getRegistered() == false)
-    {
-        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
+    if (client.getRegistered() == false){
+        client.reply(ERR_NOTREGISTERED);
         return;
     }
-    if (params.size() < 2)
-    {
-        std::string error = "INVITE command received with not enough parameters\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "INVITE command received with not enough parameters\n" << std::endl;
+    if (params.size() != 2) {
+        std::cerr << RED << "ERR_NEEDMOREPARAMS : INVITE <nickname> <channel>\n" << std::endl;
+        client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
+    // if (params.size() < 2)
+    // {
+    //     std::string error = "INVITE command received with not enough parameters\n";
+    //     send(client.get_Fd(), error.c_str(), error.size(), 0);
+    //     std::cerr << RED << "INVITE command received with not enough parameters\n" << std::endl;
+    //     return;
+    // }
 
     std::string targetNick = params[0];
     std::string channelName = params[1];
@@ -32,9 +34,7 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
     }
     if (!targetClient)
     {
-        std::string error = "ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n" << std::endl;
+        client.reply(ERR_NOSUCHNICK);
         return;
     }
     // if (isClientInChannel(*TargetClient, channelName))
@@ -49,7 +49,5 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
 
     std::string response = ":" + client.getNickName() + " 341 "+ targetNick + " " + channelName + "\n";
     send(client.get_Fd(), response.c_str(), response.size(), 0);
-    // send(targetClient->get_Fd(), response.c_str(), response.size(), 0);
-
     std::cerr << GREEN << "User " << targetNick << " has been invited to channel " << channelName << " by " << client.getNickName() << std::endl;
 }
