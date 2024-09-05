@@ -3,10 +3,10 @@
 void Server::handleNick(Client& client, const std::vector<std::string>& params)
 {
     if (params.size() < 1) {
+         std::cerr << RED << "ERR_NEEDMOREPARAMS : NICK <nickname>\n" << std::endl;
         client.reply(ERR_NONICKNAMEGIVEN);
         return;
     }
-
 
     std::string newNickName = removeCarriageReturn(params[1]);
     ValidInput nickStruct = validNickname(newNickName);
@@ -17,7 +17,6 @@ void Server::handleNick(Client& client, const std::vector<std::string>& params)
     }
 
     //Nb check valid Nickname and already in use
-    
     if (findNickname(newNickName) == false)
     {
         client.reply(ERR_NICKNAMEINUSE);

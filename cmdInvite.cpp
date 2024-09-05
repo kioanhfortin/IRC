@@ -12,20 +12,20 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    // if (params.size() < 2)
-    // {
-    //     std::string error = "INVITE command received with not enough parameters\n";
-    //     send(client.get_Fd(), error.c_str(), error.size(), 0);
-    //     std::cerr << RED << "INVITE command received with not enough parameters\n" << std::endl;
-    //     return;
-    // }
 
     std::string targetNick = params[0];
     std::string channelName = params[1];
-    if (findChannel(channelName) == false) {
-         client.reply(ERR_NOTONCHANNEL);
+
+    if (findChannel(channelName) != nullptr) {
+        client.reply(ERR_USERONCHANNEL);
         return;
     }
+    // //Vérifier si le client fait partie du channel
+    // if (findClientinChannel(client, channelName) == false) {
+    //     client.reply(ERR_NOTONCHANNEL);
+    //     return;
+    // }
+
 
     Client * targetClient = nullptr;
     for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); it++)
@@ -55,3 +55,14 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
     send(client.get_Fd(), response.c_str(), response.size(), 0);
     std::cerr << GREEN << "User " << targetNick << " has been invited to channel " << channelName << " by " << client.getNickName() << std::endl;
 }
+
+// bool findClientinChannel(Client& client, std::string channelName) {
+//     std::vector<Channel>::iterator it = std::find_if(channels_.begin(), channels_.end(), ChannelNameEquals(channelName));
+//     if (it != channels_.end()) {
+//         std::vector<channels_.clients_>::iterator it2 = std::find_if(channels_.clients_.begin(), client.getUserName() );
+//         if (it2 != channels_.clients_.end())
+//             return false;
+//         return true;
+//     }
+//     return false; 
+// }

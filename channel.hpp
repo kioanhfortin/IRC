@@ -23,8 +23,9 @@ public:
     std::string getTopic() const;
     void setTopic(const std::string& topic);
 
+    // bool findClientinChannel(Client& client, std::string channelName);
     const std::vector<int>& getClients() const;
-        bool isEmpty() const;
+    bool isEmpty() const;
 
 private:
     std::string name_;

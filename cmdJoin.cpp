@@ -41,7 +41,7 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     //     std::cerr << RED << "ERR_BADCHANMASK : <channel> :Bad Channel Mask\n" << std::endl;
     //     return;
     // }
-    // //Vérifier si e cana est sur invitation seulement
+    // //Vérifier si le canal est sur invitation seulement
     // if (isChannelInviteOnly(Channel) && !isClientInvited(client, channelNme))
     // {
     //     std::string error = "ERR_INVITEONLYCHAN : <channel> :Cannot join channel (+i)\n";
