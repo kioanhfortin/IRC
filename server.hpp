@@ -32,6 +32,7 @@ const std::string ERR_NOTREGISTERED = "451 : ERR_NOTREGISTERED : First register 
 const std::string ERR_NOSUCHNICK = "401 ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
 const std::string ERR_NOTONCHANNEL = "442 ERR_NOTONCHANNEL : You're not on that channel\n";
 const std::string ERR_USERONCHANNEL = "443 ERR_USERONCHANNEL : User is already on channel\n";
+const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : <channel> :Cannot join channel (+i)\n";
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -89,7 +90,6 @@ public:
     Client*                 getClientBy(int fd);
     Channel*                findChannel(const std::string& channelName);
 
-    bool                    isClientInvited(const Client& client, const std::string& channelName);
     bool                    isChannelInviteOnly(const std::string& channelName);
 private:
     int             port_;
@@ -117,8 +117,8 @@ private:
     CommandMap commandMap_;
 
     //A utiliser pour enregistrer les invitations
-    std::map<std::string, bool> inviteOnlyChannels_;
-    std::map<std::string, std::set<int> > invitedClients_;
+    // std::map<std::string, bool> inviteOnlyChannels_;
+    //  std::vector<std::string> invitedClients_;
 
     void handleNick(Client& client, const std::vector<std::string>& params);
     void handleUser(Client& client, const std::vector<std::string>& params);

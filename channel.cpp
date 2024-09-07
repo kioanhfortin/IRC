@@ -36,8 +36,20 @@ const std::vector<int>& Channel::getClients() const {
 
 int Channel::getFd() const {return fd_;}
 
-void					Channel::setFd(int fd) {fd_ = fd;}
+void	Channel::setFd(int fd) {fd_ = fd;}
 
-bool Channel::isEmpty() const {
+bool    Channel::isEmpty() const {
     return clients_.empty();
+}
+
+bool     Channel::isInviteOnly() const {
+    return inviteOnlyFlag_;
+}
+
+bool                    Channel::isClientInvited(const Client& client) const {
+    return std::find(invitedClients.begin(), invitedClients.end(), client.getNickName()) != invitedClients.end();
+}
+
+void    Channel::inviteClient(const Client& client) {
+    this->invitedClients.push_back(client.getNickName());
 }

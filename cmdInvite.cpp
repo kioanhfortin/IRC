@@ -16,7 +16,8 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
     std::string targetNick = params[0];
     std::string channelName = params[1];
 
-    if (findChannel(channelName) != nullptr) {
+    Channel* channel = findChannel(channelName);
+    if (channel != nullptr) {
         client.reply(ERR_USERONCHANNEL);
         return;
     }
@@ -48,12 +49,18 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
     //     std::cerr << RED << "ERR_USERNOTINCHANNEL : INVITE command received for a user already in channel\n" << std::endl;
     //     return;
     // }
-    // Ajouter a la liste de client
-    invitedClients_[channelName].insert(targetClient->get_Fd());
 
-    std::string response = ":" + client.getNickName() + " 341 "+ targetNick + " " + channelName + "\n";
-    send(client.get_Fd(), response.c_str(), response.size(), 0);
-    std::cerr << GREEN << "User " << targetNick << " has been invited to channel " << channelName << " by " << client.getNickName() << std::endl;
+    // Ajouter a la liste de client si sur la liste des clients inviter
+    if (!channel->isClientInvited(*targetClient)){
+        channel->inviteClient(*targetClient);
+        std::string response = ":" + client.getNickName() + " 341 "+ targetNick + " " + channelName + "\n";
+        send(client.get_Fd(), response.c_str(), response.size(), 0);
+        std::cerr << GREEN << "User " << targetNick << " has been invited to channel " << channelName << " by " << client.getNickName() << std::endl;
+    }
+    else {
+        client.reply(ERR_INVITEONLYCHAN);
+        return;
+    }  
 }
 
 // bool findClientinChannel(Client& client, std::string channelName) {

@@ -18,7 +18,7 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     }
     // Vérifier le nombre de paramètre
     if (params.empty()) {
-        std::cerr << RED << "ERR_NEEDMOREPARAMS : JOIN <channel>{,<channel>} [<key>{,<key>}]\n" << std::endl;
+        std::cerr << RED << "ERR_NEEDMOREPARAMS : JOIN <channel> ( , <channel> ) [<key>{,<key>}]\n" << std::endl;
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
@@ -32,7 +32,6 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         channels_.push_back(Channel(channelName));
         channel = &channels_.back();
     }
-    std::cerr << RED << "test\n" << std::endl;
     // //Vérifier si le nom du channel est valide
     // if (channelName[0] != '#' && channelName[0] != '&')
     // {
@@ -41,14 +40,14 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     //     std::cerr << RED << "ERR_BADCHANMASK : <channel> :Bad Channel Mask\n" << std::endl;
     //     return;
     // }
-    // //Vérifier si le canal est sur invitation seulement
-    // if (isChannelInviteOnly(Channel) && !isClientInvited(client, channelNme))
-    // {
-    //     std::string error = "ERR_INVITEONLYCHAN : <channel> :Cannot join channel (+i)\n";
-    //     send(client.get_Fd(), error.c_str(), error.size(), 0);
-    //     std::cerr << RED << "ERR_INVITEONLYCHAN : <channel> :Cannot join channel (+i)\n" << std::endl;
-    //     return;
-    // }
+    //Vérifier si le canal est sur invitation seulement
+    if (this->isChannelInviteOnly(channelName) == true && channel->isClientInvited(client))
+    {
+        // std::string error = "ERR_INVITEONLYCHAN : <channel> :Cannot join channel (+i)\n";
+        client.reply(ERR_INVITEONLYCHAN);
+        return;
+        return;
+    }
 
 
     // Add the client to the channel
