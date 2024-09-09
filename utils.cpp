@@ -14,10 +14,9 @@ bool isClientInChannel(Channel *chan, int fd)
 {
     for (unsigned int i = 0; i < chan->getClients().size(); i++)
     {
-       if ( chan->getClients()[i].get_Fd() == fd)
-        return true;
-        //if (chan->getClients()[i].get_Fd() == fd)
-            //return true;
+        if (chan->getClients()[i] == fd)
+            return true;
     }
     return false;
 }
+

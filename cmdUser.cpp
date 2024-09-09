@@ -3,6 +3,7 @@
 void Server::handleUser(Client& client, const std::vector<std::string>& params) {
     // Vérifier que nous avons au moins 4 paramètres && que le realname comment par un :
     if (params.size() < 4 || params[3][0] != ':') {
+         std::cerr << RED << "ERR_NEEDMOREPARAMS : USER <user> <mode> <unused> <:realname>\n" << std::endl;
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
@@ -30,7 +31,7 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
     }
     client.setRealName(realname);
     // Envoyer une confirmation de réussite au client
-    std::string response = "USER command completed for " + client.getNickName() + "\n";
+    std::string response = "USER command completed\n";
     send(client.get_Fd(), response.c_str(), response.size(), 0);
     
     

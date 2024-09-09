@@ -10,19 +10,18 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     // Initial User Addition:
     // Password Protection:
 
+    std::cout << "Will be back soon!" << std::endl;
+/*
     // Vérifier que le client est bien registered avant d'effectuer 
     if (client.getRegistered() == false)
-    {
-        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
-        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
+{
+        client.reply(ERR_NOTREGISTERED);
         return;
     }
     // Vérifier le nombre de paramètre
     if (params.empty()) {
-        std::string error = "ERR_NEEDMOREPARAMS : JOIN <channel>{,<channel>} [<key>{,<key>}]\n";
         std::cerr << RED << "ERR_NEEDMOREPARAMS : JOIN <channel>{,<channel>} [<key>{,<key>}]\n" << std::endl;
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
+        client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
 
@@ -44,7 +43,7 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     //     std::cerr << RED << "ERR_BADCHANMASK : <channel> :Bad Channel Mask\n" << std::endl;
     //     return;
     // }
-    // //Vérifier si e cana est sur invitation seulement
+    // //Vérifier si le canal est sur invitation seulement
     // if (isChannelInviteOnly(Channel) && !isClientInvited(client, channelNme))
     // {
     //     std::string error = "ERR_INVITEONLYCHAN : <channel> :Cannot join channel (+i)\n";
@@ -91,4 +90,6 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     // End of names list
     std::string endOfNames = "366 " + client.getNickName() + " " + channelName + " :End of /NAMES list\n";
     send(client.get_Fd(), endOfNames.c_str(), endOfNames.size(), 0);
+
+    */
 }

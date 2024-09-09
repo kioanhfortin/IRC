@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 # include "server.hpp"
 
 Server::Server(int port, const std::string &password) : port_(port), password_(password) {
@@ -449,12 +447,12 @@ Channel* Server::findChannel(const std::string& channelName) {
     return nullptr; 
 }
 
-    void Server::deleteChannel(const std::string& name) {
-        std::vector<Channel>::iterator it = std::find_if(channels_.begin(), channels_.end(), ChannelNameEquals(name));
-        if (it != channels_.end()) {
-            channels_.erase(it);
-        }
+void Server::deleteChannel(const std::string& name) {
+    std::vector<Channel>::iterator it = std::find_if(channels_.begin(), channels_.end(), ChannelNameEquals(name));
+    if (it != channels_.end()) {
+        channels_.erase(it);
     }
+}
 
 std::string privMsg(Client client, std::string recipient, std::string message)
 {
@@ -624,4 +622,5 @@ void Server::displayClientInfo() const {
         std::cout << "---------------------------" << std::endl;
     }
 }
->>>>>>> origin/master
+=========
+>>>>>>>>> Temporary merge branch 2
