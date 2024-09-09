@@ -32,7 +32,7 @@ void Channel::setTopic(const std::string& topic) {
     topic_ = topic;
 }
 
- std::vector<Client>& Channel::getClients() {
+ const std::vector<int>& Channel::getClients() const{
     return clients_;
 }
 

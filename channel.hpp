@@ -24,7 +24,7 @@ public:
     void setTopic(const std::string& topic);
 
     // bool findClientinChannel(Client& client, std::string channelName);
-    const std::vector<int>& getClients() const;
+     const std::vector<int>& getClients() const;
     bool isEmpty() const;
 
 private:
@@ -32,6 +32,7 @@ private:
     std::string topic_;
     int fd_;
     std::vector<int> clients_;
+    std::vector<Client> clientss_;
    // size_t          limit_;
     std::string password_;
 };

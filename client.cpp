@@ -1,6 +1,6 @@
 #include "client.hpp"
 
-Client::Client(int fd, std::string hostname) : Fd_(fd), hostName_(hostname), Registered(false) {
+Client::Client(int fd, std::string hostname) : Fd_(fd), hostName_(hostname), Registered(false), Login_(false), Operator_(false) {
     std::cout << WHITE << "Constructor Client called" << std::endl;
 }
 
@@ -62,6 +62,22 @@ bool            Client::getRegistered() const {
 
 void            Client::registerClient() {
     Registered = true;
+}
+
+bool            Client::getLogin() const {
+    return Login_;
+}
+
+void            Client::setLogin() {
+    Login_ = true;
+}
+
+bool            Client::getOperator() const {
+    return Operator_;
+}
+
+void            Client::setOperator() {
+    Operator_ = true;
 }
 
 void Client::setPassword(const std::string& password) {

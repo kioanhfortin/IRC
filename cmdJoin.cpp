@@ -10,6 +10,8 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     // Initial User Addition:
     // Password Protection:
 
+    std::cout << "Will be back soon!" << std::endl;
+/*
     // Vérifier que le client est bien registered avant d'effectuer 
     if (client.getRegistered() == false)
 {
@@ -88,4 +90,6 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     // End of names list
     std::string endOfNames = "366 " + client.getNickName() + " " + channelName + " :End of /NAMES list\n";
     send(client.get_Fd(), endOfNames.c_str(), endOfNames.size(), 0);
+
+    */
 }
