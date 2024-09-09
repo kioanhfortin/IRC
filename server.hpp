@@ -89,6 +89,8 @@ public:
     Server::ValidInput      validNickname(const std::string nickname);
     Client*                 getClientBy(int fd);
     Channel*                findChannel(const std::string& channelName);
+    std::vector<Channel>::iterator findChannelIt(std::string name);
+
 
     bool                    isClientInvited(const Client& client, const std::string& channelName);
     bool                    isChannelInviteOnly(const std::string& channelName);

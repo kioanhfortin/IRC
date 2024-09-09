@@ -18,13 +18,18 @@ public:
     bool hasClient(int clientFd) const;
     int		getFd() const;
     void    setFd(int fd);
+    const std::vector<int>& getClients() const;
+    size_t     				getLimit() const;
+    void					setLimit(size_t limit);
+    std::string				getPassword() const;
+    void					setPassword(std::string password);
 
     std::string getName() const;
     std::string getTopic() const;
     void setTopic(const std::string& topic);
+ 
 
     // bool findClientinChannel(Client& client, std::string channelName);
-     const std::vector<int>& getClients() const;
     bool isEmpty() const;
 
 private:
@@ -33,8 +38,9 @@ private:
     int fd_;
     std::vector<int> clients_;
     std::vector<Client> clientss_;
-   // size_t          limit_;
+   size_t          limit_;
     std::string password_;
+    
 };
 
 #endif

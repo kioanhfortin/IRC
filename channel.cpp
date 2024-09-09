@@ -2,7 +2,7 @@
 #include "server.hpp"
 #include "client.hpp"
 
-Channel::Channel(const std::string& name) : name_(name), topic_(), fd_(0), password_("") {}
+Channel::Channel(const std::string& name) : name_(name), topic_(), fd_(0), limit_(0), password_("") {}
 
 void Channel::addClient(int clientFd) {
     clients_.push_back(clientFd);
@@ -43,3 +43,24 @@ void					Channel::setFd(int fd) {fd_ = fd;}
 bool Channel::isEmpty() const {
     return clients_.empty();
 }
+
+
+
+size_t     				Channel::getLimit() const {
+    return limit_;
+    }
+
+void					Channel::setLimit(size_t limit) {
+    limit = limit_;
+    }
+
+
+std::string					Channel::getPassword() const {
+    return password_;
+    }
+
+
+
+    void					Channel::setPassword(std::string password) {
+        password_ = password;
+        }
