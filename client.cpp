@@ -1,6 +1,6 @@
 #include "client.hpp"
 
-Client::Client(int fd, std::string hostname) : Fd_(fd), hostName_(hostname), Registered(false) {
+Client::Client(int fd, std::string hostname) : Fd_(fd), hostName_(hostname), Registered(false), Login_(false), Operator_(false) {
     std::cout << WHITE << "Constructor Client called" << std::endl;
 }
 
@@ -64,6 +64,22 @@ void            Client::registerClient() {
     Registered = true;
 }
 
+bool            Client::getLogin() const {
+    return Login_;
+}
+
+void            Client::setLogin() {
+    Login_ = true;
+}
+
+bool            Client::getOperator() const {
+    return Operator_;
+}
+
+void            Client::setOperator() {
+    Operator_ = true;
+}
+
 void Client::setPassword(const std::string& password) {
     password_ = password;
 }
@@ -79,3 +95,17 @@ void Client::reply(const std::string& message) {
     if (send(get_Fd(), message.c_str(), message.size(), 0) < 0)
         throw(std::out_of_range("Error, message not sent"));
 }
+
+std::string Client::getInfoClient() const
+{
+    std::string prefix = ":" + nickName_;  // Utilise le membre correct 'nickName_'
+    
+    if (!userName_.empty())  // Ajoute 'userName_' s'il est présent
+        prefix += "!" + userName_;
+    
+    if (!hostName_.empty())  // Ajoute 'hostName_' s'il est présent
+        prefix += "@" + hostName_;
+
+    return prefix;
+}
+

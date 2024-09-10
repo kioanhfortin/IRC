@@ -230,6 +230,20 @@ void    Server::closeClient(int clientSocket) {
     close(clientSocket);
 }
 
+
+// bool                    isClientInvited(const Client& client, const std::string& channelName)
+// {
+//     if (invitedCients_.find(channelName) != invitedClients_.end())
+//         return invitedClients_[channelName].count(client.get_Fd()) > 0;
+//     return false;
+// }
+// bool                    isChannelInviteOnly(const std::string& channelName)
+// {
+//     if (inviteOnyChannels_.find(channelName) != inviteOnllyChannels_.end())
+//         return inviteOnlyChannels_[channelName];
+//     return false;
+// }
+
 void Server::handlePart(Client& client, const std::vector<std::string>& params)
 {
     // Vérifier que le client est bien registered avant d'effectuer 
@@ -519,10 +533,51 @@ void Server::displayClientInfo() const {
     }
 }
 
-bool                    Server::isChannelInviteOnly(const std::string& channelName) {
-    Channel* channel = this->findChannel(channelName);
-    if (channel){
-        return channel->isInviteOnly();
+
+std::vector<Channel>::iterator Server::findChannelIt(std::string name) {
+    for (std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); ++it) {
+        if (it->getName() == name)
+            return it;
     }
-    return false;
+    return channels_.end();
 }
+
+
+
+void Server::join(Channel *chan, Client &client)
+{
+    if (chan == NULL)  // Vérifie que le channel existe
+    {
+        client.reply("Error: Channel not found.");
+        return;
+    }
+
+    std::string users;
+
+    // Parcourir les clients de la chaîne (chan)
+    const std::vector<int>& client_fds = chan->getClients();
+    for (unsigned int i = 0; i < client_fds.size(); i++)
+    {
+        Client& currentClient = getClientByFd(client_fds[i]);  // Utilise getClientByFd
+        
+        if (currentClient.get_Fd() == chan->getFd())  // Vérifie si c'est l'opérateur de la chaîne
+            users += "@" + currentClient.getNickName() + " ";  // Préfixe par @ si c'est l'opérateur
+        else
+            users += currentClient.getNickName() + " ";  // Sinon, ajoute juste le nom
+    }
+
+    // Diffuse à tous les membres que le client a rejoint
+    chan->sendToAll(client.getInfoClient() + " JOIN :" + chan->getName());
+
+    // Envoie le topic de la chaîne au client qui rejoint
+    client.reply(client.getNickName() + " " + chan->getName() + chan->getTopic());
+
+    // Envoie la liste des membres de la chaîne
+    client.reply(client.getNickName() + " = " + chan->getName() + " " + users);
+
+    // Envoie le message de fin de liste
+    client.reply(client.getNickName() + " " + chan->getName());
+}
+
+
+

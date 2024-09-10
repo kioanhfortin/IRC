@@ -1,5 +1,6 @@
 #ifndef SERVER_H
 # define SERVER_H
+
 # include "client.hpp"
 # include <cstring>
 # include <map>
@@ -89,6 +90,8 @@ public:
     Server::ValidInput      validNickname(const std::string nickname);
     Client*                 getClientBy(int fd);
     Channel*                findChannel(const std::string& channelName);
+    std::vector<Channel>::iterator findChannelIt(std::string name);
+
 
     bool                    isChannelInviteOnly(const std::string& channelName);
 private:
@@ -110,6 +113,7 @@ private:
     std::map<int, std::pair<std::string, std::string> > userInfo_;
 
     Client		&findClient(std::string name);
+    void join(Channel *chan, Client &cl);
 
     typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);
     // typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
@@ -141,6 +145,7 @@ private:
 
     void closeClient(int clientSocket);
     Client& getClientByFd(int fd);
+ 
 
 
     void displayClientInfo() const;

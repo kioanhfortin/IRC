@@ -1,5 +1,78 @@
 #include "server.hpp"
 
+
+
+
+void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
+    client.getRealName();
+    params.empty(); 
+    std::cout << "Will be back soon!" << std::endl;
+    std::cout << "param.size: " << params.size() << std::endl;
+
+    if (!client.getRegistered())
+    {
+        client.reply(ERR_NOTREGISTERED);
+        return;
+    }
+    if(params.empty())
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
+    std::string name = removeCarriageReturn(params[1]);
+    std::cout << "name = " << name << std::endl;
+
+    if(!name[0] || name[0] != '#')
+    {
+        client.reply("Channel must start with #");
+        return;
+    }
+    try
+    {
+        Channel * channelName = findChannel(name);
+        if (channelName->hasClient(client.get_Fd()))
+        {
+            std::cout << "is already in channel" << std::endl;
+            return;
+        }
+        if(channelName->getClients().size() >= channelName->getLimit() && channelName->getLimit() != 0)
+        {
+            client.reply(client.getNickName() + " " + name +  ":Cannot join Channel (full)");
+            return;
+        }
+        if(channelName->getPassword() != "" && params.size() == 2)
+        {
+            if(removeCarriageReturn(params.at(1)) != channelName->getPassword())
+            {
+                client.reply("Bad password");
+                return;
+            }
+        }
+        if(channelName->getPassword() != "" && params.size() < 2)
+        {
+            client.reply(client.getNickName() + " " + name + ": bad channel mask");
+            return;
+        }
+        channelName->addClient(client.get_Fd());
+        join(channelName, client);
+
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        std::cout << "New Channel : " << name << std::endl;
+        Channel channel(name);
+        channel.addClient(client.get_Fd());
+        channel.setFd(client.get_Fd());
+        channels_.push_back(channel);
+        join(&channel, client);
+    }
+    
+    return;
+}
+
+
+/*
 void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
 
     // Channel Name Validity:
@@ -9,6 +82,8 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     // Channel Mode Settings:
     // Initial User Addition:
     // Password Protection:
+
+    std::cout << "Will be back soon!" << std::endl;
 
     // Vérifier que le client est bien registered avant d'effectuer 
     if (client.getRegistered() == false)
@@ -86,5 +161,6 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
 
     // End of names list
     std::string endOfNames = "366 " + client.getNickName() + " " + channelName + " :End of /NAMES list\n";
-    send(client.get_Fd(), endOfNames.c_str(), endOfNames.size(), 0);
+    send(client.get_Fd(), endOfNames.c_str(), endOfNames.size(), 0); 
 }
+*/
