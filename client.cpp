@@ -95,3 +95,17 @@ void Client::reply(const std::string& message) {
     if (send(get_Fd(), message.c_str(), message.size(), 0) < 0)
         throw(std::out_of_range("Error, message not sent"));
 }
+
+std::string Client::getInfoClient() const
+{
+    std::string prefix = ":" + nickName_;  // Utilise le membre correct 'nickName_'
+    
+    if (!userName_.empty())  // Ajoute 'userName_' s'il est présent
+        prefix += "!" + userName_;
+    
+    if (!hostName_.empty())  // Ajoute 'hostName_' s'il est présent
+        prefix += "@" + hostName_;
+
+    return prefix;
+}
+

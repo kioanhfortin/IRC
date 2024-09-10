@@ -2,6 +2,7 @@
 
 
 
+
 void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
     client.getRealName();
     params.empty(); 
@@ -52,18 +53,23 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
             client.reply(client.getNickName() + " " + name + ": bad channel mask");
             return;
         }
+        channelName->addClient(client.get_Fd());
+        join(channelName, client);
 
-
-        }
+    }
     catch(const std::exception& e)
     {
         std::cerr << e.what() << '\n';
+        std::cout << "New Channel : " << name << std::endl;
+        Channel channel(name);
+        channel.addClient(client.get_Fd());
+        channel.setFd(client.get_Fd());
+        channels_.push_back(channel);
+        join(&channel, client);
     }
     
-
+    return;
 }
-
-
 
 
 /*
@@ -156,8 +162,6 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
 
     // End of names list
     std::string endOfNames = "366 " + client.getNickName() + " " + channelName + " :End of /NAMES list\n";
-    send(client.get_Fd(), endOfNames.c_str(), endOfNames.size(), 0);
-
- 
+    send(client.get_Fd(), endOfNames.c_str(), endOfNames.size(), 0); 
 }
-   */
+*/

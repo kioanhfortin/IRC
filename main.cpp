@@ -10,6 +10,8 @@ void	signalHandler(int const signal)
 	exit(signal);  
 }
 
+
+
 int main (int argc, char **argv)
 {
 

@@ -52,6 +52,7 @@ public :
     void            setLogin();
     void setPassword(const std::string& password);
     void reply(const std::string& message);
+    std::string getInfoClient() const;
 
 private:
     int Fd_;
