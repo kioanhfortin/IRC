@@ -183,7 +183,6 @@ void    Server::initCommandMap()
     
 }
 
-
 void Server::ProcessNewData(int fd, const std::string& data) {
     std::istringstream iss(data);
     std::vector<std::string> tokens;
@@ -229,20 +228,6 @@ void    Server::closeClient(int clientSocket) {
     }
     close(clientSocket);
 }
-
-
-// bool                    isClientInvited(const Client& client, const std::string& channelName)
-// {
-//     if (invitedCients_.find(channelName) != invitedClients_.end())
-//         return invitedClients_[channelName].count(client.get_Fd()) > 0;
-//     return false;
-// }
-// bool                    isChannelInviteOnly(const std::string& channelName)
-// {
-//     if (inviteOnyChannels_.find(channelName) != inviteOnllyChannels_.end())
-//         return inviteOnlyChannels_[channelName];
-//     return false;
-// }
 
 void Server::handlePart(Client& client, const std::vector<std::string>& params)
 {
@@ -310,32 +295,6 @@ void Server::handleTopic(Client& client, const std::vector<std::string>& params)
     (void)params;
     std::cout << YELLOW << "Kick Topic on" << std::endl;
 }
-
-void Server::handleMode(Client& client, const std::vector<std::string>& params)
-{
-    // Vérifier que le client est bien registered avant d'effectuer 
-    if (client.getRegistered() == false)
-    {
-        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
-        return;
-    }
-    (void)client;
-    (void)params;
-    std::cout << YELLOW << "Kick Mode on" << std::endl;
-}
-
-
-/*
-Client* Server::getClient(int fd) {
-    for (size_t i = 0; i < clients_.size(); ++i) {
-        if (clients_[i].get_Fd() == fd) {
-            return &clients_[i];
-        }
-    }
-    return nullptr; // Client not found
-} */
 
 // Predicate function object to find a channel by name
 struct ChannelNameEquals {
@@ -524,12 +483,12 @@ void Server::displayClientInfo() const {
     
     for (size_t i = 0; i < clients_.size(); ++i) {
         const Client& client = clients_[i];
-        std::cout << "Client #: " << i + 1 << std::endl;
-        std::cout << "Registered: " << (client.getRegistered() ? "Yes" : "No") << std::endl;
-        std::cout << "Nickname: " << client.getNickName() << std::endl;
-        std::cout << "Username: " << client.getUserName() << std::endl;
-        std::cout << "Real name: " << client.getRealName() << std::endl;
-        std::cout << "---------------------------" << std::endl;
+        std::cout << WHITE << "Client #: " << i + 1 << std::endl;
+        std::cout << WHITE << "Registered: " << (client.getRegistered() ? "Yes" : "No") << std::endl;
+        std::cout << WHITE << "Nickname: " << client.getNickName() << std::endl;
+        std::cout << WHITE << "Username: " << client.getUserName() << std::endl;
+        std::cout << WHITE << "Real name: " << client.getRealName() << std::endl;
+        std::cout << WHITE << "---------------------------" << std::endl;
     }
 }
 
@@ -567,16 +526,16 @@ void Server::join(Channel *chan, Client &client)
     }
 
     // Diffuse à tous les membres que le client a rejoint
-    chan->sendToAll(client.getInfoClient() + " JOIN :" + chan->getName());
+    chan->sendToAll(client.getInfoClient() + " JOIN :" + chan->getName() + "\n");
 
     // Envoie le topic de la chaîne au client qui rejoint
-    client.reply(client.getNickName() + " " + chan->getName() + chan->getTopic());
+    client.reply(client.getNickName() + " " + chan->getName() + chan->getTopic() + "\n");
 
     // Envoie la liste des membres de la chaîne
-    client.reply(client.getNickName() + " = " + chan->getName() + " " + users);
+    client.reply(client.getNickName() + " = " + chan->getName() + " " + users + "\n");
 
     // Envoie le message de fin de liste
-    client.reply(client.getNickName() + " " + chan->getName());
+    client.reply(client.getNickName() + " " + chan->getName() + "\n");
 }
 
 

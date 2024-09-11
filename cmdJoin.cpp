@@ -1,13 +1,10 @@
 #include "server.hpp"
 
-
-
-
 void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
-    client.getRealName();
-    params.empty(); 
-    std::cout << "Will be back soon!" << std::endl;
-    std::cout << "param.size: " << params.size() << std::endl;
+    // client.getRealName();
+    // params.empty(); 
+    // std::cout << "Will be back soon!" << std::endl;
+    // std::cout << "param.size: " << params.size() << std::endl;
 
     if (!client.getRegistered())
     {
@@ -21,15 +18,29 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     }
     std::string name = removeCarriageReturn(params[1]);
     std::cout << "name = " << name << std::endl;
-
-    if(!name[0] || name[0] != '#')
+    if(name.empty() || name[0] != '#')
     {
         client.reply("Channel must start with #");
         return;
     }
-    try
-    {
-        Channel * channelName = findChannel(name);
+    try {
+        Channel *channelName = findChannel(name);
+        if (channelName == nullptr)
+        {
+            std::cerr << "New Channel: " << name << std::endl;
+            Channel newChannel(name);
+            newChannel.addClient(client.get_Fd());
+            channels_.push_back(newChannel);
+            join(&channels_.back(), client);  // Join the new channel
+            return;
+        }
+        if (channelName->isInviteOnly())
+        {
+            if(channelName->isClientInvited(client) == false){
+                client.reply(ERR_INVITEONLYCHAN);
+                return;
+            }
+        }
         if (channelName->hasClient(client.get_Fd()))
         {
             std::cout << "is already in channel" << std::endl;
@@ -53,21 +64,14 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
             client.reply(client.getNickName() + " " + name + ": bad channel mask");
             return;
         }
+        std::cout << "Add Client to Channel " << name << std::endl;
         channelName->addClient(client.get_Fd());
         join(channelName, client);
 
     }
-    catch(const std::exception& e)
-    {
+    catch(const std::exception& e) {
         std::cerr << e.what() << '\n';
-        std::cout << "New Channel : " << name << std::endl;
-        Channel channel(name);
-        channel.addClient(client.get_Fd());
-        channel.setFd(client.get_Fd());
-        channels_.push_back(channel);
-        join(&channel, client);
     }
-    
     return;
 }
 

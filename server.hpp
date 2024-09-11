@@ -33,7 +33,8 @@ const std::string ERR_NOTREGISTERED = "451 : ERR_NOTREGISTERED : First register 
 const std::string ERR_NOSUCHNICK = "401 ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
 const std::string ERR_NOTONCHANNEL = "442 ERR_NOTONCHANNEL : You're not on that channel\n";
 const std::string ERR_USERONCHANNEL = "443 ERR_USERONCHANNEL : User is already on channel\n";
-const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : <channel> :Cannot join channel (+i)\n";
+const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : Cannot join channel (+i)\n";
+const std::string ERR_NOSUCHCHANNEL = "403 ERR_NOSUCHCHANNEL : No such channel\n";
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -113,17 +114,11 @@ private:
     std::map<int, std::pair<std::string, std::string> > userInfo_;
 
     Client		&findClient(std::string name);
-    void join(Channel *chan, Client &cl);
+    void        join(Channel *chan, Client &cl);
 
     typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);
-    // typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
     typedef std::map<std::string, CommandHandler> CommandMap;
     CommandMap commandMap_;
-
-    //A utiliser pour enregistrer les invitations
-    // std::map<std::string, bool> inviteOnlyChannels_;
-    //  std::vector<std::string> invitedClients_;
-
     void handleNick(Client& client, const std::vector<std::string>& params);
     void handleUser(Client& client, const std::vector<std::string>& params);
     void handleJoin(Client& client, const std::vector<std::string>& params);
@@ -141,7 +136,24 @@ private:
     void handleNotice(Client& client, const std::vector<std::string>& params);
 
     void initCommandMap();
-    // bool ClientFdsCheck(int fd);
+    
+    // typedef void (Server::*OptionHandler)(Client&, const std::vector<std::string>&);
+    // typedef std::map<std::string, OptionHandler> OptionMap;
+    // OptionMap optionMap_;
+
+    // void handleInviteON(Client& client, const std::vector<std::string>& params);
+    // void handleTopicON(Client& client, const std::vector<std::string>& params);
+    // void handleMdpON(Client& client, const std::vector<std::string>& params);
+    // void handleVPCanalON(Client& client, const std::vector<std::string>& params);
+    // void handlelimitON(Client& client, const std::vector<std::string>& params);
+    // void handleInviteOFF(Client& client, const std::vector<std::string>& params);
+    // void handleTopicOFF(Client& client, const std::vector<std::string>& params);
+    // void handleMdpOFF(Client& client, const std::vector<std::string>& params);
+    // void handleVPCanalOFF(Client& client, const std::vector<std::string>& params);
+    // void handlelimitOFF(Client& client, const std::vector<std::string>& params);
+
+    // void    initOptionMap();
+
 
     void closeClient(int clientSocket);
     Client& getClientByFd(int fd);

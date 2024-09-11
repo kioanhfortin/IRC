@@ -44,26 +44,21 @@ bool    Channel::isEmpty() const {
     return clients_.empty();
 }
 
-
-
 size_t     				Channel::getLimit() const {
     return limit_;
-    }
+}
 
 void					Channel::setLimit(size_t limit) {
     limit_ = limit;
-    }
-
+}
 
 std::string					Channel::getPassword() const {
     return password_;
-    }
+}
 
-
-
-    void					Channel::setPassword(std::string password) {
-        password_ = password;
-        }
+void					Channel::setPassword(std::string password) {
+    password_ = password;
+}
 
 
 void	Channel::sendToAll(std::string message)
@@ -76,4 +71,16 @@ void	Channel::sendToAll(std::string message)
 		if (send(clients_[i], message.c_str(), message.length(), 0) < 0)
 			throw std::out_of_range("error while broadcasting");
 	}
+}
+
+bool     Channel::isInviteOnly() const {
+    return inviteOnlyFlag_;
+}
+
+bool                    Channel::isClientInvited(const Client& client) const {
+    return std::find(invitedClients.begin(), invitedClients.end(), client.getNickName()) != invitedClients.end();
+}
+
+void    Channel::inviteClient(const Client& client) {
+    this->invitedClients.push_back(client.getNickName());
 }

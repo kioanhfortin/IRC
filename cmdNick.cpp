@@ -3,7 +3,7 @@
 void Server::handleNick(Client& client, const std::vector<std::string>& params)
 {
     if (params.size() < 1) {
-         std::cerr << RED << "ERR_NEEDMOREPARAMS : NICK <nickname>\n" << std::endl;
+        std::cerr << RED << "ERR_NEEDMOREPARAMS : NICK <nickname>\n" << std::endl;
         client.reply(ERR_NONICKNAMEGIVEN);
         return;
     }
