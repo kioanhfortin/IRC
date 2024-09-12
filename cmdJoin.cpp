@@ -20,7 +20,7 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     std::cout << "name = " << name << std::endl;
     if(name.empty() || name[0] != '#')
     {
-        client.reply("Channel must start with #");
+        client.reply("Channel must start with #\n");
         return;
     }
     try {
@@ -69,7 +69,7 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         join(channelName, client);
 
     }
-    catch(const std::exception& e) {
+    catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
     }
     return;

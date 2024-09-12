@@ -84,3 +84,7 @@ bool                    Channel::isClientInvited(const Client& client) const {
 void    Channel::inviteClient(const Client& client) {
     this->invitedClients.push_back(client.getNickName());
 }
+
+void                    Channel::setinviteOnlyFlag_(bool flag) {
+    this->inviteOnlyFlag_ = flag;
+}

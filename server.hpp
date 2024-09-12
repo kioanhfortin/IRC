@@ -44,6 +44,7 @@ const std::string ERR_NOSUCHCHANNEL = "403 ERR_NOSUCHCHANNEL : No such channel\n
 #define GREEN   "\033[32m"
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
+
 extern bool g_interrupt;
 
 class Channel;
@@ -80,7 +81,6 @@ public:
     void            ProcessNewData(int fd, const std::string& data);
 
 
-    void                    deleteChannel(const std::string& name);
 
     // void            addClient();
 
@@ -89,12 +89,11 @@ public:
     bool                    findNickname(std::string nickname);
     int                     findUsername(std::string username);
     Server::ValidInput      validNickname(const std::string nickname);
-    Client*                 getClientBy(int fd);
+    // Client*                 getClientBy(int fd);
     Channel*                findChannel(const std::string& channelName);
     std::vector<Channel>::iterator findChannelIt(std::string name);
+    void                    deleteChannel(const std::string& name);
 
-
-    bool                    isChannelInviteOnly(const std::string& channelName);
 private:
     int             port_;
     int             serverSocket_;
@@ -137,22 +136,22 @@ private:
 
     void initCommandMap();
     
-    // typedef void (Server::*OptionHandler)(Client&, const std::vector<std::string>&);
-    // typedef std::map<std::string, OptionHandler> OptionMap;
-    // OptionMap optionMap_;
+    typedef void (Server::*OptionHandler)(Client&, Channel *);
+    typedef std::map<std::string, OptionHandler> OptionMap;
+    OptionMap optionMap_;
 
-    // void handleInviteON(Client& client, const std::vector<std::string>& params);
-    // void handleTopicON(Client& client, const std::vector<std::string>& params);
-    // void handleMdpON(Client& client, const std::vector<std::string>& params);
-    // void handleVPCanalON(Client& client, const std::vector<std::string>& params);
-    // void handlelimitON(Client& client, const std::vector<std::string>& params);
-    // void handleInviteOFF(Client& client, const std::vector<std::string>& params);
-    // void handleTopicOFF(Client& client, const std::vector<std::string>& params);
-    // void handleMdpOFF(Client& client, const std::vector<std::string>& params);
-    // void handleVPCanalOFF(Client& client, const std::vector<std::string>& params);
-    // void handlelimitOFF(Client& client, const std::vector<std::string>& params);
+    void handleInviteON(Client& client, Channel *channelName);
+    void handleTopicON(Client& client, Channel *channelName);
+    void handleMdpON(Client& client, Channel *channelName);
+    void handleVPCanalON(Client& client, Channel *channelName);
+    void handlelimitON(Client& client, Channel *channelName);
+    void handleInviteOFF(Client& client, Channel *channelName);
+    void handleTopicOFF(Client& client, Channel *channelName);
+    void handleMdpOFF(Client& client, Channel *channelName);
+    void handleVPCanalOFF(Client& client, Channel *channelName);
+    void handlelimitOFF(Client& client, Channel *channelName);
 
-    // void    initOptionMap();
+    void    initOptionMap();
 
 
     void closeClient(int clientSocket);

@@ -5,7 +5,6 @@
 
 # include <string>
 # include <vector>
-# include <string>
 
 class Client;
 class Server;
@@ -33,9 +32,10 @@ public:
     void                    inviteClient(const Client& client);
     bool                    isInviteOnly() const;
     bool                    isClientInvited(const Client& client) const;
+    void                    setinviteOnlyFlag_(bool flag);
     // bool findClientinChannel(Client& client, std::string channelName);
     bool isEmpty() const;
-
+    
 private:
     std::string                 name_;
     std::string                 topic_;

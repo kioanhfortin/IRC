@@ -56,8 +56,6 @@ void Server::initSocket(int port)
     if (fcntl(serverSocket_, F_SETFL, O_NONBLOCK) == -1) 
         throw std::runtime_error("Error while setting socket to NON-BLOCKING.");
 
-    
-
     // Bind socket to an IP/Port...... severAddr: This structure holds the address information for the server
     memset(&serverAddr_, 0, sizeof(serverAddr_));
     serverAddr_.sin_family = AF_INET;
@@ -153,7 +151,7 @@ void    Server::ParseNewData(int fd)
         else
         {
             std::string data(buffer, byte_Receive);
-            std::cout << GREEN << "Client received input" << std::endl;
+            std::cout << WHITE << "Client received input\n" << std::endl;
             ProcessNewData(fd, data); //code fonction that receive command, trigger command, and write the message receive
         }
     }
@@ -165,22 +163,23 @@ void    Server::ParseNewData(int fd)
 
 void    Server::initCommandMap()
 {
-    commandMap_["NICK"] = &Server::handleNick; 
-    commandMap_["USER"] = &Server::handleUser;
-    commandMap_["JOIN"] = &Server::handleJoin;
-    commandMap_["PART"] = &Server::handlePart;
-    commandMap_["KICK"] = &Server::handleKick;
-    commandMap_["INVITE"] = &Server::handleInvite;
-    commandMap_["TOPIC"] = &Server::handleTopic;
-    commandMap_["MODE"] = &Server::handleMode;
-    commandMap_["PRIVATE MESSAGE"] = &Server::handlePrivMsg;
-    commandMap_["PASSWORD"] = &Server::handlePass;
-    commandMap_["OPERATOR"] = &Server::handleOper;
-    commandMap_["PING"] = &Server::handlePing;
-    commandMap_["LIST"] = &Server::handleList;
-    commandMap_["NAMES"] = &Server::handleName;
-    commandMap_["NOTICE"] = &Server::handleNotice;
-    
+    if (commandMap_.empty()) {
+        commandMap_["NICK"] = &Server::handleNick; 
+        commandMap_["USER"] = &Server::handleUser;
+        commandMap_["JOIN"] = &Server::handleJoin;
+        commandMap_["PART"] = &Server::handlePart;
+        commandMap_["KICK"] = &Server::handleKick;
+        commandMap_["INVITE"] = &Server::handleInvite;
+        commandMap_["TOPIC"] = &Server::handleTopic;
+        commandMap_["MODE"] = &Server::handleMode;
+        commandMap_["PRIVATE MESSAGE"] = &Server::handlePrivMsg;
+        commandMap_["PASSWORD"] = &Server::handlePass;
+        commandMap_["OPERATOR"] = &Server::handleOper;
+        commandMap_["PING"] = &Server::handlePing;
+        commandMap_["LIST"] = &Server::handleList;
+        commandMap_["NAMES"] = &Server::handleName;
+        commandMap_["NOTICE"] = &Server::handleNotice;
+    }
 }
 
 void Server::ProcessNewData(int fd, const std::string& data) {
@@ -206,10 +205,7 @@ void Server::ProcessNewData(int fd, const std::string& data) {
     {
         Client& client = getClientByFd(fd);
         (this->*(it->second))(client, tokens);
-    } /* else {
-        std::cerr << RED << "Unknown command received: " << command << std::endl;
-        // sendCommand(fd, "ERROR: Unknown command");
-    } */
+    }
 }
 
 void    Server::closeClient(int clientSocket) {
@@ -240,18 +236,18 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
         return;
     }
     if (params.size() < 2) {
-        std::cout << " :Not enough parameters" << std::endl;
+        std::cout << ERR_NEEDMOREPARAMS << std::endl;
             return;
-        }
+    }
     try
     {
         std::string channelName = params[1];
         Channel* chan = findChannel(channelName);
 
         if (chan == NULL) {
-            std::cout << " :No such channel" << std::endl;
+            std::cout << ERR_NOSUCHCHANNEL << std::endl;
             return;
-            }
+        }
         chan->removeClient(client.get_Fd());
         if (chan->getFd() == client.get_Fd())
             chan->setFd(0);

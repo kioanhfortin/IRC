@@ -35,8 +35,8 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
     send(client.get_Fd(), response.c_str(), response.size(), 0);
     
     
-    std::cout << "USER command processed: client <" << client.get_Fd() << "> set username to <" 
-    << client.getUserName() << "> and real name to <" << client.getRealName() << ">" << std::endl;
+    std::cout << GREEN << "USER command processed: client <" << client.get_Fd() << "> set username to <" 
+    << client.getUserName() << "> and real name to <" << client.getRealName() << ">\n" << std::endl;
 }
 
 int     Server::findUsername(std::string username)
