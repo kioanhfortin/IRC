@@ -44,11 +44,11 @@ bool    Channel::isEmpty() const {
     return clients_.empty();
 }
 
-size_t     				Channel::getLimit() const {
+int     				Channel::getLimit() const {
     return limit_;
 }
 
-void					Channel::setLimit(size_t limit) {
+void					Channel::setLimit(int limit) {
     limit_ = limit;
 }
 
@@ -87,4 +87,18 @@ void    Channel::inviteClient(const Client& client) {
 
 void                    Channel::setinviteOnlyFlag_(bool flag) {
     this->inviteOnlyFlag_ = flag;
+}
+
+void                    Channel::setpassworfFlag_(bool flag) {
+    this->passwordFlag_ = flag;
+}
+bool                    Channel::getpassworfFlag_() const {
+    return (passwordFlag_);
+}
+
+void                    Channel::setlimitFlag_(bool flag) {
+    this->limitFlag_ = flag;
+}
+bool                    Channel::getlimitFlag_() const {
+    return (limitFlag_);
 }

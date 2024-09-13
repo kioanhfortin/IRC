@@ -46,24 +46,31 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
             std::cout << "is already in channel" << std::endl;
             return;
         }
-        if(channelName->getClients().size() >= channelName->getLimit() && channelName->getLimit() != 0)
+        if(channelName->getClients().size() >= (size_t)channelName->getLimit() && channelName->getLimit() != 0)
         {
             client.reply(ERR_CHANNELISFULL);
             return;
         }
-        //# channel with no password, & channel avec un password
-        if(channelName->getPassword() != "" && params.size() == 2)
+        if (channelName->getpassworfFlag_() == true)
         {
-            if(removeCarriageReturn(params.at(1)) != channelName->getPassword())
-            {
-                client.reply("Bad password");
+            //# channel with no password, & channel avec un password
+            if (params.size() == 1) {
+                client.reply(ERR_BADCHANNELKEY);
                 return;
             }
-        }
-        if(channelName->getPassword() != "" && params.size() < 2)
-        {
-            client.reply(client.getNickName() + " " + name + ": bad channel mask");
-            return;
+            if(channelName->getPassword() != "" && params.size() == 2)
+            {
+                if(removeCarriageReturn(params.at(1)) != channelName->getPassword())
+                {
+                    client.reply("Bad password");
+                    return;
+                }
+            }
+            if(channelName->getPassword() != "" && params.size() < 2)
+            {
+                client.reply(client.getNickName() + " " + name + ": bad channel mask");
+                return;
+            }
         }
         //fonction count if more than 4 # 407 ERR_TOOMANYTARGETS
         std::cout << "Add Client to Channel " << name << std::endl;

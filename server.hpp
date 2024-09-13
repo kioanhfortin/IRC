@@ -33,11 +33,11 @@ const std::string ERR_NOTREGISTERED = "451 : ERR_NOTREGISTERED : First register 
 const std::string ERR_NOSUCHNICK = "401 ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
 const std::string ERR_NOTONCHANNEL = "442 ERR_NOTONCHANNEL : You're not on that channel\n";
 const std::string ERR_USERONCHANNEL = "443 ERR_USERONCHANNEL : User is already on channel\n";
-const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : Cannot join channel (+i)\n";
-const std::string ERR_NOSUCHCHANNEL = "403 ERR_NOSUCHCHANNEL : No such channel\n";
 const std::string ERR_CHANNELISFULL = "471 ERR_CHANNELISFULL : Cannot join channel (+l)\n";
+const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : Cannot join channel (+i)\n";
+const std::string ERR_BADCHANNELKEY = "475 ERR_BADCHANNELKEY : Cannot join channel (+k)\n";
+const std::string ERR_NOSUCHCHANNEL = "403 ERR_NOSUCHCHANNEL : No such channel\n";
 const std::string ERR_BADCHANMASK = "476 ERR_BADCHANMASK : Bad Channel Mask\n";
-
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -139,20 +139,20 @@ private:
 
     void initCommandMap();
     
-    typedef void (Server::*OptionHandler)(Client&, Channel *);
+    typedef void (Server::*OptionHandler)(Client&, Channel *, const std::vector<std::string>&);
     typedef std::map<std::string, OptionHandler> OptionMap;
     OptionMap optionMap_;
 
-    void handleInviteON(Client& client, Channel *channelName);
-    void handleTopicON(Client& client, Channel *channelName);
-    void handleMdpON(Client& client, Channel *channelName);
-    void handleVPCanalON(Client& client, Channel *channelName);
-    void handlelimitON(Client& client, Channel *channelName);
-    void handleInviteOFF(Client& client, Channel *channelName);
-    void handleTopicOFF(Client& client, Channel *channelName);
-    void handleMdpOFF(Client& client, Channel *channelName);
-    void handleVPCanalOFF(Client& client, Channel *channelName);
-    void handlelimitOFF(Client& client, Channel *channelName);
+    void handleInviteON(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void handleTopicON(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void handleMdpON(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void handleVPCanalON(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void handlelimitON(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void handleInviteOFF(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void handleTopicOFF(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void handleMdpOFF(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void handleVPCanalOFF(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void handlelimitOFF(Client& client, Channel *channelName, const std::vector<std::string>& params);
 
     void    initOptionMap();
 

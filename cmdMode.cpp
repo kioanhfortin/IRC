@@ -3,7 +3,7 @@
 void Server::handleMode(Client& client, const std::vector<std::string>& params)
 {
     // Vérifier les arguments
-    if (params.size() != 2) {
+    if (params.size() < 2 || params.size() > 3) {
         std::cerr << RED << "ERR_NEEDMOREPARAMS : MODE <#channel> <( - / + ) (i, t, k, o, l)>\n" << std::endl;
         client.reply(ERR_NONICKNAMEGIVEN);
         return;
@@ -21,7 +21,7 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
         client.reply("Channel must start with #\n");
         return;
     }
-    Channel *channelName = this->findChannel(name);
+    Channel *channelName = findChannel(name);
     if (channelName == nullptr){
         client.reply(ERR_NOSUCHCHANNEL);
         return;
@@ -31,7 +31,7 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
     OptionMap::iterator it = optionMap_.find(option);
     if (it != optionMap_.end())
     {
-        (this->*(it->second))(client, channelName);
+        (this->*(it->second))(client, channelName, params);
     }
 }
 
@@ -51,63 +51,74 @@ void    Server::initOptionMap()
     }
 }
 
-void Server::handleInviteON(Client& client, Channel *channelName) {
+void Server::handleInviteON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
-    // (void)channelName;
+    (void)params;
     channelName->setinviteOnlyFlag_(true);
     std::cout << YELLOW << "Invite ON" << std::endl;
 }
 
-void Server::handleTopicON(Client& client, Channel *channelName) {
+void Server::handleTopicON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
     (void)channelName;
+    (void)params;
     std::cout << YELLOW << "Topic ON" << std::endl;
 }
 
-void Server::handleMdpON(Client& client, Channel *channelName) {
+void Server::handleMdpON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
-    (void)channelName;
-    std::cout << YELLOW << "Mpd ON" << std::endl;
+    channelName->setPassword(params[3]);
+    channelName->setpassworfFlag_(true);
+    std::cout << YELLOW << "Mpd ON : " << channelName->getPassword() << std::endl;
 }
 
-void Server::handleVPCanalON(Client& client, Channel *channelName) {
+void Server::handleVPCanalON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
     (void)channelName;
+    (void)params;
     std::cout << YELLOW << "VPCanal ON" << std::endl;
 }
 
-void Server::handlelimitON(Client& client, Channel *channelName) {
+void Server::handlelimitON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
-    (void)channelName;
+    channelName->setLimit(stoi(params[3], 0, 10));
+    channelName->setinviteOnlyFlag_(true);
     std::cout << YELLOW << "limit ON" << std::endl;
 }
 
-void Server::handleInviteOFF(Client& client, Channel *channelName) {
+void Server::handleInviteOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
-    (void)channelName;
+    (void)params;
+    channelName->setinviteOnlyFlag_(false);
     std::cout << YELLOW << "Invite OFF" << std::endl;
 }
 
-void Server::handleTopicOFF(Client& client, Channel *channelName) {
+void Server::handleTopicOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
     (void)channelName;
+    (void)params;
     std::cout << YELLOW << "Topic OFF" << std::endl;
 }
 
-void Server::handleMdpOFF(Client& client, Channel *channelName) {
+void Server::handleMdpOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
-    (void)channelName;
+    (void)params;
+    channelName->setPassword("");
+    channelName->setpassworfFlag_(false);
     std::cout << YELLOW << "Mdp OFF" << std::endl;
 }
 
-void Server::handleVPCanalOFF(Client& client, Channel *channelName) {
+void Server::handleVPCanalOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
     (void)channelName;
+    (void)params;
     std::cout << YELLOW << "VPCanal OFF" << std::endl;
 }
 
-void Server::handlelimitOFF(Client& client, Channel *channelName) {
+void Server::handlelimitOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
     (void)client;
-    (void)channelName;
+    (void)params;
+    channelName->setLimit(0);
+    channelName->setinviteOnlyFlag_(false);
     std::cout << YELLOW << "Limit OFF" << std::endl;
 }

@@ -19,8 +19,8 @@ public:
     int		                getFd() const;
     void                    setFd(int fd);
     const std::vector<int>& getClients() const;
-    size_t     				getLimit() const;
-    void					setLimit(size_t limit);
+    int     				getLimit() const;
+    void					setLimit(int limit);
     std::string				getPassword() const;
     void					setPassword(std::string password);
     void	                sendToAll(std::string message);
@@ -33,6 +33,10 @@ public:
     bool                    isInviteOnly() const;
     bool                    isClientInvited(const Client& client) const;
     void                    setinviteOnlyFlag_(bool flag);
+    void                    setpassworfFlag_(bool flag);
+    bool                    getpassworfFlag_() const;
+    void                    setlimitFlag_(bool flag);
+    bool                    getlimitFlag_() const;
     // bool findClientinChannel(Client& client, std::string channelName);
     bool isEmpty() const;
     
@@ -43,9 +47,11 @@ private:
     std::vector<int>            clients_;
     std::vector<Client>         clientss_;
     std::vector<std::string>    invitedClients;
-    size_t                      limit_;
-    std::string                 password_;
     bool                        inviteOnlyFlag_;
+    int                         limit_;
+    bool                        limitFlag_;
+    std::string                 password_;
+    bool                        passwordFlag_;
 };
 
 #endif

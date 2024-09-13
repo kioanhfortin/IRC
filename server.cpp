@@ -117,7 +117,6 @@ void    Server::AcceptNewClient()
     socklen_t s_size = sizeof(s_address);
     int new_client_fd;
     new_client_fd = accept(serverSocket_, (sockaddr *) &s_address, &s_size);
-    //new_client_fd = accept(serverSocket_, (struct sockaddr *)&clientAddr_, &clientAddrLen_);
     if(new_client_fd < 0)
         throw std::runtime_error("Error accepting client");
     if (getnameinfo((struct sockaddr *) &s_address, sizeof(s_address), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV) != 0)
@@ -223,76 +222,6 @@ void    Server::closeClient(int clientSocket) {
         }
     }
     close(clientSocket);
-}
-
-void Server::handlePart(Client& client, const std::vector<std::string>& params)
-{
-    // Vérifier que le client est bien registered avant d'effectuer 
-   if (!client.getRegistered())
-    {
-        client.reply(ERR_NOTREGISTERED);
-        return;
-    }
-    if (params.size() < 2) {
-        std::cout << ERR_NEEDMOREPARAMS << std::endl;
-        return;
-    }
-    try
-    {
-        std::string channelName = params[1];
-        Channel* chan = findChannel(channelName);
-
-        if (chan == NULL) {
-            std::cout << ERR_NOSUCHCHANNEL << std::endl;
-            return;
-        }
-        if (!chan->hasClient(client.get_Fd())) {
-            client.reply(ERR_USERONCHANNEL);
-            return;
-        }
-
-        chan->removeClient(client.get_Fd());
-        if (chan->getFd() == client.get_Fd())
-            chan->setFd(0);
-        if (chan->isEmpty()) {
-            deleteChannel(channelName);
-        }
-    }
-    catch(const std::exception& e)
-    {
-        std::cout << " :An error occurred" << std::endl;
-    }
-
-}
-
-void Server::handleKick(Client& client, const std::vector<std::string>& params)
-{
-    // Vérifier que le client est bien registered avant d'effectuer 
-    if (client.getRegistered() == false)
-    {
-        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
-        return;
-    }
-    (void)client;
-    (void)params;
-    std::cout << YELLOW << "Kick Handler on" << std::endl;
-}
-
-void Server::handleTopic(Client& client, const std::vector<std::string>& params)
-{
-    // Vérifier que le client est bien registered avant d'effectuer 
-    if (client.getRegistered() == false)
-    {
-        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
-        return;
-    }
-    (void)client;
-    (void)params;
-    std::cout << YELLOW << "Kick Topic on" << std::endl;
 }
 
 // Predicate function object to find a channel by name
