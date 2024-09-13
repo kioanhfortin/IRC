@@ -228,16 +228,14 @@ void    Server::closeClient(int clientSocket) {
 void Server::handlePart(Client& client, const std::vector<std::string>& params)
 {
     // Vérifier que le client est bien registered avant d'effectuer 
-    if (client.getRegistered() == false)
+   if (!client.getRegistered())
     {
-        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
+        client.reply(ERR_NOTREGISTERED);
         return;
     }
     if (params.size() < 2) {
         std::cout << ERR_NEEDMOREPARAMS << std::endl;
-            return;
+        return;
     }
     try
     {
@@ -248,6 +246,11 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
             std::cout << ERR_NOSUCHCHANNEL << std::endl;
             return;
         }
+        if (!chan->hasClient(client.get_Fd())) {
+            client.reply(ERR_USERONCHANNEL);
+            return;
+        }
+
         chan->removeClient(client.get_Fd());
         if (chan->getFd() == client.get_Fd())
             chan->setFd(0);

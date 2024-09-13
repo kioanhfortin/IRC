@@ -23,11 +23,11 @@
 # include "utils.hpp"
 
 // Error Messages
-const std::string ERR_NICKNAMEINUSE = "433 : Nickname is already in use\n";
-const std::string ERR_NONICKNAMEGIVEN = "431 : No nickname given\n";
-const std::string ERR_ERRONEUSNICKNAME = "432 : Erroneous nickname\n";
-const std::string ERR_NEEDMOREPARAMS = "461 : Need more parameters\n";
-const std::string ERR_ALREADYREGISTRED = "462 : Already registered\n";
+const std::string ERR_NICKNAMEINUSE = "433 ERR_NICKNAMEINUSE : Nickname is already in use\n";
+const std::string ERR_NONICKNAMEGIVEN = "431 ERR_NONICKNAMEGIVEN : No nickname given\n";
+const std::string ERR_ERRONEUSNICKNAME = "432 ERR_ERRONEUSNICKNAME : Erroneous nickname\n";
+const std::string ERR_NEEDMOREPARAMS = "461 ERR_NEEDMOREPARAMS : Need more parameters\n";
+const std::string ERR_ALREADYREGISTRED = "462 ERR_ALREADYREGISTRED : Already registered\n";
 const std::string ERR_USERNAMEINUSE = "Username already in use\n";
 const std::string ERR_NOTREGISTERED = "451 : ERR_NOTREGISTERED : First register with the USER command\n";
 const std::string ERR_NOSUCHNICK = "401 ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
@@ -35,6 +35,9 @@ const std::string ERR_NOTONCHANNEL = "442 ERR_NOTONCHANNEL : You're not on that 
 const std::string ERR_USERONCHANNEL = "443 ERR_USERONCHANNEL : User is already on channel\n";
 const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : Cannot join channel (+i)\n";
 const std::string ERR_NOSUCHCHANNEL = "403 ERR_NOSUCHCHANNEL : No such channel\n";
+const std::string ERR_CHANNELISFULL = "471 ERR_CHANNELISFULL : Cannot join channel (+l)\n";
+const std::string ERR_BADCHANMASK = "476 ERR_BADCHANMASK : Bad Channel Mask\n";
+
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024

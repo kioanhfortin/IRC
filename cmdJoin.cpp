@@ -48,9 +48,10 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         }
         if(channelName->getClients().size() >= channelName->getLimit() && channelName->getLimit() != 0)
         {
-            client.reply(client.getNickName() + " " + name +  ":Cannot join Channel (full)");
+            client.reply(ERR_CHANNELISFULL);
             return;
         }
+        //# channel with no password, & channel avec un password
         if(channelName->getPassword() != "" && params.size() == 2)
         {
             if(removeCarriageReturn(params.at(1)) != channelName->getPassword())
@@ -64,10 +65,10 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
             client.reply(client.getNickName() + " " + name + ": bad channel mask");
             return;
         }
+        //fonction count if more than 4 # 407 ERR_TOOMANYTARGETS
         std::cout << "Add Client to Channel " << name << std::endl;
         channelName->addClient(client.get_Fd());
         join(channelName, client);
-
     }
     catch (const std::exception& e) {
         std::cerr << e.what() << '\n';

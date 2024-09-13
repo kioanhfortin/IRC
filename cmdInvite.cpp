@@ -17,16 +17,15 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
     std::string channelName = params[1];
 
     Channel* channel = findChannel(channelName);
-    if (channel != nullptr) {
+    if (channel == nullptr) {
+        client.reply(ERR_NOTONCHANNEL);
+        return;
+    }
+    //Vérifier si le client fait partie du channel
+    if (!channel->hasClient(client.get_Fd())) {
         client.reply(ERR_USERONCHANNEL);
         return;
     }
-    // //Vérifier si le client fait partie du channel
-    // if (findClientinChannel(client, channelName) == false) {
-    //     client.reply(ERR_NOTONCHANNEL);
-    //     return;
-    // }
-
 
     Client * targetClient = nullptr;
     for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); it++)
@@ -44,9 +43,9 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
     }
     // if (isClientInChannel(*TargetClient, channelName))
     // {
-    //     std::string error = "ERR_USERNOTINCHANNEL : INVITE command received for a user already in channel\n";
+        // std::string error = "ERR_USERNOTINCHANNEL : INVITE command received for a user already in channel\n";
     //     send(client.get_Fd(), error.c_str(), error.size(), 0);
-    //     std::cerr << RED << "ERR_USERNOTINCHANNEL : INVITE command received for a user already in channel\n" << std::endl;
+        // std::cerr << RED << "ERR_USERNOTINCHANNEL : INVITE command received for a user already in channel\n" << std::endl;
     //     return;
     // }
 
