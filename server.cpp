@@ -420,6 +420,7 @@ void Server::handlePass(Client& client, const std::vector<std::string>& params) 
         client.reply(ERR_PASSWDMISMATCH);
         return ;
     }
+    std::cout << "Good Password!" << std::endl;
     client.welcomeMessage();
 }
 
