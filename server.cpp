@@ -1,4 +1,5 @@
 # include "server.hpp"
+# include "utils.hpp"
 
 Server::Server(int port, const std::string &password) : port_(port), password_(password) {
     std::cout << WHITE << "Constructor Server called" << std::endl;
@@ -407,22 +408,19 @@ Client		&Server::findClient(std::string name)
 }
 
 void Server::handlePass(Client& client, const std::vector<std::string>& params) {
-    if (params.size() < 2) {
-        std::cerr << "ERROR: No password given : " << std::endl;
+    if (params.size() < 1) {
+        client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
 
-    std::string password = params[1];
-    client.setPassword(password);
+    std::string passwordEntered = removeCarriageReturn(params[1]);
+    client.setPassword(passwordEntered);
 
-    if (password != password_) {
-        std::cerr << "ERROR: Incorrect password" << std::endl;
-
-        return;
+    if (passwordEntered != password_) {
+        client.reply(ERR_PASSWDMISMATCH);
+        return ;
     }
-
-    std::cout << "Password accepted" << std::endl;
-
+    client.welcomeMessage();
 }
 
 void Server::handleOper(Client& client, const std::vector<std::string>& params)

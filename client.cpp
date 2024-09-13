@@ -95,3 +95,15 @@ void Client::reply(const std::string& message) {
     if (send(get_Fd(), message.c_str(), message.size(), 0) < 0)
         throw(std::out_of_range("Error, message not sent"));
 }
+
+ void Client::welcomeMessage()
+ {
+    if( nickName_.empty() || userName_.empty())
+    {
+        std::cout << "Please register first!" << std::endl;
+        return ; 
+    }
+    registerClient();
+    reply("Welcome " + nickName_ +  " into the network");
+    std::cout << nickName_ << " is registered" << std::endl;
+ }

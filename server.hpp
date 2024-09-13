@@ -33,6 +33,7 @@ const std::string ERR_NOTREGISTERED = "451 : ERR_NOTREGISTERED : First register 
 const std::string ERR_NOSUCHNICK = "401 ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
 const std::string ERR_NOTONCHANNEL = "442 ERR_NOTONCHANNEL : You're not on that channel\n";
 const std::string ERR_USERONCHANNEL = "443 ERR_USERONCHANNEL : User is already on channel\n";
+const std::string ERR_PASSWDMISMATCH = "  464    ERR_PASSWDMISMATCH :Password incorrect\n";
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
