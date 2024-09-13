@@ -412,6 +412,11 @@ void Server::handlePass(Client& client, const std::vector<std::string>& params) 
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
+    if(client.getRegistered())
+    {
+        client.reply(ERR_ALREADYREGISTRED);
+        return ;
+    }
 
     std::string passwordEntered = removeCarriageReturn(params[1]);
     client.setPassword(passwordEntered);
