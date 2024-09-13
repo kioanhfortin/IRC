@@ -114,6 +114,7 @@ private:
     std::map<int, std::pair<std::string, std::string> > userInfo_;
 
     Client		&findClient(std::string name);
+    void join(Channel *chan, Client &cl);
 
     typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);
     // typedef void (Server::*CommandHandler)(int, const std::string&, const std::string&);
@@ -145,6 +146,7 @@ private:
 
     void closeClient(int clientSocket);
     Client& getClientByFd(int fd);
+ 
 
 
     void displayClientInfo() const;

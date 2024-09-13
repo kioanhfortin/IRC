@@ -51,7 +51,7 @@ size_t     				Channel::getLimit() const {
     }
 
 void					Channel::setLimit(size_t limit) {
-    limit = limit_;
+    limit_ = limit;
     }
 
 
@@ -64,3 +64,16 @@ std::string					Channel::getPassword() const {
     void					Channel::setPassword(std::string password) {
         password_ = password;
         }
+
+
+void	Channel::sendToAll(std::string message)
+{
+    message.append("\r\n");
+
+	std::cout << "----> " << message << std::endl;
+	for (unsigned int i = 0; i < clients_.size(); i++)
+	{
+		if (send(clients_[i], message.c_str(), message.length(), 0) < 0)
+			throw std::out_of_range("error while broadcasting");
+	}
+}

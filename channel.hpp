@@ -27,6 +27,7 @@ public:
     std::string getName() const;
     std::string getTopic() const;
     void setTopic(const std::string& topic);
+    void	sendToAll(std::string message);
  
 
     // bool findClientinChannel(Client& client, std::string channelName);
