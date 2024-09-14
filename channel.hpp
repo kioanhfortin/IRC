@@ -29,6 +29,8 @@ public:
     std::string             getName() const;
     std::string             getTopic() const;
     void                    setTopic(const std::string& topic);
+    bool                    getTopicOpFlag_() const;
+    void                    setTopicOpFlag_(bool flag);
     void                    inviteClient(const Client& client);
     bool                    isInviteOnly() const;
     bool                    isClientInvited(const Client& client) const;
@@ -37,12 +39,12 @@ public:
     bool                    getpassworfFlag_() const;
     void                    setlimitFlag_(bool flag);
     bool                    getlimitFlag_() const;
-    // bool findClientinChannel(Client& client, std::string channelName);
-    bool isEmpty() const;
+    bool                    isEmpty() const;
     
 private:
     std::string                 name_;
     std::string                 topic_;
+    bool                        topicOpFlag_;
     int                         fd_;
     std::vector<int>            clients_;
     std::vector<Client>         clientss_;
@@ -52,6 +54,7 @@ private:
     bool                        limitFlag_;
     std::string                 password_;
     bool                        passwordFlag_;
+    std::vector<std::string> channelOperators_;
 };
 
 #endif

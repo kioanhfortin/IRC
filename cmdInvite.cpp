@@ -21,6 +21,7 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
         client.reply(ERR_NOTONCHANNEL);
         return;
     }
+    
     //Vérifier si le client fait partie du channel
     if (!channel->hasClient(client.get_Fd())) {
         client.reply(ERR_USERONCHANNEL);
@@ -41,13 +42,6 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
         client.reply(ERR_NOSUCHNICK);
         return;
     }
-    // if (isClientInChannel(*TargetClient, channelName))
-    // {
-        // std::string error = "ERR_USERNOTINCHANNEL : INVITE command received for a user already in channel\n";
-    //     send(client.get_Fd(), error.c_str(), error.size(), 0);
-        // std::cerr << RED << "ERR_USERNOTINCHANNEL : INVITE command received for a user already in channel\n" << std::endl;
-    //     return;
-    // }
 
     // Ajouter a la liste de client si sur la liste des clients inviter
     if (!channel->isClientInvited(*targetClient)){
@@ -61,14 +55,3 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
         return;
     }  
 }
-
-// bool findClientinChannel(Client& client, std::string channelName) {
-//     std::vector<Channel>::iterator it = std::find_if(channels_.begin(), channels_.end(), ChannelNameEquals(channelName));
-//     if (it != channels_.end()) {
-//         std::vector<channels_.clients_>::iterator it2 = std::find_if(channels_.clients_.begin(), client.getUserName() );
-//         if (it2 != channels_.clients_.end())
-//             return false;
-//         return true;
-//     }
-//     return false; 
-// }
