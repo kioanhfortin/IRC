@@ -37,12 +37,15 @@ public:
     bool                    getpassworfFlag_() const;
     void                    setlimitFlag_(bool flag);
     bool                    getlimitFlag_() const;
+    void                    setTopicOpFlag_(bool flag);
+    bool                    getTopicOpFlag_() const;
     // bool findClientinChannel(Client& client, std::string channelName);
     bool isEmpty() const;
     
 private:
     std::string                 name_;
     std::string                 topic_;
+    bool                        topicOpFlag_;
     int                         fd_;
     std::vector<int>            clients_;
     std::vector<Client>         clientss_;
@@ -52,6 +55,7 @@ private:
     bool                        limitFlag_;
     std::string                 password_;
     bool                        passwordFlag_;
+    std::vector<std::string>    channelOperators_;
 };
 
 #endif
