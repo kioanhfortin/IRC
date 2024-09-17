@@ -3,12 +3,12 @@
 void Server::handleUser(Client& client, const std::vector<std::string>& params) {
     // Vérifier que nous avons au moins 4 paramètres && que le realname comment par un :
     if (params.size() < 4 || params[3][0] != ':') {
-         std::cerr << RED << "ERR_NEEDMOREPARAMS : USER <user> <mode> <unused> <:realname>\n" << std::endl;
+         std::cerr << RED << "ERR_NEEDMOREPARAMS : USER <user> <mode> <unused> <:realname>\n" << std::endl; // params[3][0] != ':' MERITE UNE AUTE MSG
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
     // Vérifier que le client n'est pas déjà registered
-    if (client.getRegistered() == true)
+    if (client.getRegistered())
     {
         client.reply(ERR_ALREADYREGISTRED);
         return;
@@ -19,9 +19,11 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
        client.reply(ERR_USERNAMEINUSE);
         return;
     }
-    // Mettre à jour les informations du client
+    // Mettre à jour les informations du client //  guest 0 * :Ronnie Reagan
     client.setUserName(params[0]);
     client.setHostname(params[1]);
+    if(!client.getNickName().empty() && client.getLogin())
+        client.registerClient();
     client.registerClient();
     std::string realname;
     for (size_t i = 3; i < params.size(); i++){
@@ -37,6 +39,8 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
     
     std::cout << "USER command processed: client <" << client.get_Fd() << "> set username to <" 
     << client.getUserName() << "> and real name to <" << client.getRealName() << ">" << std::endl;
+    client.welcomeMessage();
+    return ;
 }
 
 int     Server::findUsername(std::string username)

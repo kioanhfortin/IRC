@@ -425,6 +425,7 @@ void Server::handlePass(Client& client, const std::vector<std::string>& params) 
         client.reply(ERR_PASSWDMISMATCH);
         return ;
     }
+    client.setLogin();
     std::cout << "Good Password!" << std::endl;
     client.welcomeMessage();
 }
@@ -582,6 +583,3 @@ void Server::join(Channel *chan, Client &client)
     // Envoie le message de fin de liste
     client.reply(client.getNickName() + " " + chan->getName());
 }
-
-
-

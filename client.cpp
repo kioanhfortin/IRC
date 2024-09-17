@@ -110,7 +110,7 @@ std::string Client::getInfoClient() const
 }
 
 void Client::welcomeMessage() {
-    if(nickName_.empty() || userName_.empty())
+    if(nickName_.empty() || userName_.empty() || !getLogin())
     {
         std::cout << "Error : " << nickName_ <<  " need to registe!r" << std::endl;
         return ;
