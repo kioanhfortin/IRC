@@ -29,6 +29,8 @@ public:
     std::string             getName() const;
     std::string             getTopic() const;
     void                    setTopic(const std::string& topic);
+    bool                    getTopicOpFlag_() const;
+    void                    setTopicOpFlag_(bool flag);
     void                    inviteClient(const Client& client);
     bool                    isInviteOnly() const;
     bool                    isClientInvited(const Client& client) const;

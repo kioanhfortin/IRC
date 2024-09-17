@@ -3,6 +3,7 @@
 
 # include "client.hpp"
 # include <cstring>
+# include <string>
 # include <map>
 # include <set>
 # include <vector>
@@ -16,7 +17,7 @@
 # include <cctype>
 # include <fcntl.h>
 # include <csignal>
-#include <netdb.h>  // For NI_MAXHOST and NI_NUMERICSERV
+# include <netdb.h>  // For NI_MAXHOST and NI_NUMERICSERV
 
 # include "client.hpp"
 # include "channel.hpp"
@@ -112,7 +113,6 @@ private:
 
     std::map<std::string, std::set<int> > channel_s;
     std::map<std::string, std::string> topics_;
-    std::map<std::string, std::set<int> > channelOperators_;
     std::map<int, std::pair<std::string, std::string> > userInfo_;
 
     Client		&findClient(std::string name);
