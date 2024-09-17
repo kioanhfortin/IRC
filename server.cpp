@@ -365,37 +365,7 @@ void Server::deleteChannel(const std::string& name) {
     }
 }
 
-std::string privMsg(Client client, std::string recipient, std::string message)
-{
-    return (":" + client.getNickName() + " Private Message " + recipient + " :" + message);
-}
 
-void Server::handlePrivMsg(Client& client, const std::vector<std::string>& params)
-{
-        std::cout << "Enter In Private Message" << std::endl;
-        //check client state
-
-
-    if (params.size() < 3)
-	{
-        std::cout << "Private Message  :Not enough parameters" << std::endl;
-		return;
-	}
-    try
-    {
-        Client  recipient = findClient(params[1]);      
-        std::string  msg = params[2]; // we hav to check msg
-        std::cout << "message = " << "[" << msg << "]" << std::endl;
-        std::string paquet = privMsg(client, recipient.getNickName(), msg);
-        std::cout << paquet << recipient.get_Fd() << std::endl;
-        if (send(recipient.get_Fd(), paquet.c_str(), paquet.length(), 0) < 0)
-            throw std::out_of_range("error while sendig in private message");
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-}
 
 Client		&Server::findClient(std::string name)
 {
@@ -456,18 +426,6 @@ void Server::handleOper(Client& client, const std::vector<std::string>& params)
     }
 
     return ;
-}
-
-void Server::handlePing(Client& client, const std::vector<std::string>& params)
-{
-    client.getNickName(); // just to use the parameters client
-    if (params.size() < 2)
-	{
-		std::cout << "Error: Ping" << std::endl;
-		return;
-	}
-    std::cout << "Pong " + params[1] << std::endl;
-    return; 
 }
 
 
