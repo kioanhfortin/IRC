@@ -39,8 +39,11 @@ public:
     bool                    getpassworfFlag_() const;
     void                    setlimitFlag_(bool flag);
     bool                    getlimitFlag_() const;
-    bool isEmpty() const;
-    
+    bool                    isEmpty() const;
+    bool    isClientOperator(Channel *channel, Client *client);
+    void    addChannelOperator(std::string newOp);
+    void    delChannelOperator(std::string delOp);
+
 private:
     std::string                 name_;
     std::string                 topic_;

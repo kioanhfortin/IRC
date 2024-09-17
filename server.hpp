@@ -30,6 +30,7 @@ const std::string ERR_ERRONEUSNICKNAME = "432 ERR_ERRONEUSNICKNAME : Erroneous n
 const std::string ERR_NEEDMOREPARAMS = "461 ERR_NEEDMOREPARAMS : Need more parameters\n";
 const std::string ERR_ALREADYREGISTRED = "462 ERR_ALREADYREGISTRED : Already registered\n";
 const std::string ERR_USERNAMEINUSE = "Username already in use\n";
+const std::string ERR_OPERATORALEREADYREGISTRED = "OPERATORALEREADYREGISTRED : This operator is already registered\n";
 const std::string ERR_NOTREGISTERED = "451 : ERR_NOTREGISTERED : First register with the USER command\n";
 const std::string ERR_NOSUCHNICK = "401 ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
 const std::string ERR_NOTONCHANNEL = "442 ERR_NOTONCHANNEL : You're not on that channel\n";
@@ -39,6 +40,9 @@ const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : Cannot join cha
 const std::string ERR_BADCHANNELKEY = "475 ERR_BADCHANNELKEY : Cannot join channel (+k)\n";
 const std::string ERR_NOSUCHCHANNEL = "403 ERR_NOSUCHCHANNEL : No such channel\n";
 const std::string ERR_BADCHANMASK = "476 ERR_BADCHANMASK : Bad Channel Mask\n";
+const std::string ERR_UMODEUNKNOWNFLAG = "501 : Unknown MODE flag\n";
+const std::string ERR_USERSDONTMATCH = "502 : Cannot change mode for other users\n";
+
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -84,28 +88,23 @@ public:
     void            ParseNewData(int fd);
     void            ProcessNewData(int fd, const std::string& data);
 
-
-
-    // void            addClient();
-
     void                    CloseFds();
 
-    bool                    findNickname(std::string nickname);
-    int                     findUsername(std::string username);
-    Server::ValidInput      validNickname(const std::string nickname);
-    // Client*                 getClientBy(int fd);
-    Channel*                findChannel(const std::string& channelName);
-    std::vector<Channel>::iterator findChannelIt(std::string name);
-    void                    deleteChannel(const std::string& name);
+    bool                            findNickname(std::string nickname);
+    int                             findUsername(std::string username);
+    Server::ValidInput              validNickname(const std::string nickname);
+    Channel*                        findChannel(const std::string& channelName);
+    std::vector<Channel>::iterator  findChannelIt(std::string name);
+    void                            deleteChannel(const std::string& name);
 
 private:
-    int             port_;
-    int             serverSocket_;
-    std::string     password_;
-    int             clientSocket_;
+    int                                 port_;
+    int                                 serverSocket_;
+    std::string                         password_;
+    int                                 clientSocket_;
 
     std::vector<Client>					clients_;
-    std::vector<Channel>                 channels_;
+    std::vector<Channel>                channels_;
     std::vector<pollfd> fds_;
 
     struct sockaddr_in serverAddr_, clientAddr_;
