@@ -109,3 +109,19 @@ bool                    Channel::getTopicOpFlag_() const {
 void                    Channel::setTopicOpFlag_(bool flag) {
     this->topicOpFlag_ = flag;
 }
+
+bool    Channel::isClientOperator(Channel *channel, Client *client) {
+
+    return std::find(channel->channelOperators_.begin(), channel->channelOperators_.end(), client->getUserName()) != channel->channelOperators_.end();
+}
+
+void    Channel::addChannelOperator(std::string newOp) {
+    channelOperators_.push_back(newOp);
+}
+
+void    Channel::delChannelOperator(std::string delOp) {
+    std::vector<std::string>::iterator it = std::find(channelOperators_.begin(), channelOperators_.end(), delOp);
+    if (it != channelOperators_.end()) {
+        channelOperators_.erase(it);
+    }
+}

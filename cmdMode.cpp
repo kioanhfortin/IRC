@@ -14,9 +14,7 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_NOTREGISTERED);
         return;
     }
-
     std::string name = removeCarriageReturn(params[0]);
-    std::cout << "name = " << name << std::endl;
     if(name.empty() || name[0] != '#') {
         client.reply("Channel must start with #\n");
         return;
@@ -33,6 +31,11 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
     {
         (this->*(it->second))(client, channelName, params);
     }
+    else {
+        client.reply(ERR_UMODEUNKNOWNFLAG);
+        return;
+    }
+
 }
 
 void    Server::initOptionMap()
@@ -52,83 +55,118 @@ void    Server::initOptionMap()
 }
 
 void Server::handleInviteON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
-    (void)params;
+    if (params.size() != 2)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
     channelName->setinviteOnlyFlag_(true);
     std::cout << YELLOW << "Invite ON" << std::endl;
 }
 
 void Server::handleTopicON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
-    (void)params;
+    if (params.size() != 2)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
     channelName->setTopicOpFlag_(true);
     std::cout << YELLOW << "Topic ON" << std::endl;
 }
 
 void Server::handleMdpON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
+    if (params.size() != 3)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
     channelName->setPassword(params[3]);
     channelName->setpassworfFlag_(true);
     std::cout << YELLOW << "Mpd ON : " << channelName->getPassword() << std::endl;
 }
 
 void Server::handleVPCanalON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
-    (void)channelName;
-    (void)params;
-    // for (std::vetor<std::string>::iterator it = channelName.channelOperators_.begin(); it != channelName.channelOperators_.end(); it++)
-    // {
-    //     if (it->channelName.channelOperators_ != params[3])
-    //     {
-    //         channelName.channelOperators_.push_back(params[3]);
-    //     }
-    //     else
-    //         // User already a operator
-    // }
-    // channelName->channelOperators_
-    std::cout << YELLOW << "VPCanal ON" << std::endl;
+    if (params.size() != 3)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
+    if (params[3] != client.getUserName())
+    {
+        client.reply(ERR_USERSDONTMATCH);
+        return;
+    }
+    if (channelName->isClientOperator(channelName, &client))
+    {
+        client.reply(ERR_OPERATORALEREADYREGISTRED);
+        return;
+    }
+    else
+    {
+        channelName->addChannelOperator(params[3]);
+        std::cout << YELLOW << "VPCanal ON : " << params[3] << " is now an operator!\n" << std::endl;
+    }
 }
 
 void Server::handlelimitON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
+    if (params.size() != 3)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
     channelName->setLimit(stoi(params[3], 0, 10));
     channelName->setinviteOnlyFlag_(true);
-    std::cout << YELLOW << "limit ON" << std::endl;
+    std::cout << YELLOW << "limit ON : " << params[3] << "\n" << std::endl;
 }
 
 void Server::handleInviteOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
-    (void)params;
+    if (params.size() != 2)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
     channelName->setinviteOnlyFlag_(false);
-    std::cout << YELLOW << "Invite OFF" << std::endl;
+    std::cout << YELLOW << "Invite OFF\n" << std::endl;
 }
 
 void Server::handleTopicOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
-    (void)params;
+    if (params.size() != 2)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
     channelName->setTopicOpFlag_(false);
-    std::cout << YELLOW << "Topic OFF" << std::endl;
+    std::cout << YELLOW << "Topic OFF\n" << std::endl;
 }
 
 void Server::handleMdpOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
-    (void)params;
+    if (params.size() != 2)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
     channelName->setPassword("");
     channelName->setpassworfFlag_(false);
-    std::cout << YELLOW << "Mdp OFF" << std::endl;
+    std::cout << YELLOW << "Mdp OFF\n" << std::endl;
 }
 
 void Server::handleVPCanalOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
-    (void)channelName;
-    (void)params;
-    std::cout << YELLOW << "VPCanal OFF" << std::endl;
+    if (params.size() != 3)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
+    channelName->delChannelOperator(params[3]);
+    std::cout << YELLOW << "VPCanal OFF : " << params[3] << "is now deleted !\n"<< std::endl;
 }
 
 void Server::handlelimitOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
-    (void)client;
-    (void)params;
+    if (params.size() != 2)
+    {
+        client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
     channelName->setLimit(0);
     channelName->setinviteOnlyFlag_(false);
-    std::cout << YELLOW << "Limit OFF" << std::endl;
+    std::cout << YELLOW << "Limit OFF \n" << std::endl;
 }
