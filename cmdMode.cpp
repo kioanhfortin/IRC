@@ -76,16 +76,16 @@ void Server::handleVPCanalON(Client& client, Channel *channelName, const std::ve
     (void)client;
     (void)channelName;
     (void)params;
-    for (std::vetor<std::string>::iterator it = channelName.channelOperators_.begin(); it != channelName.channelOperators_.end(); it++)
-    {
-        if (it->channelName.channelOperators_ != params[3])
-        {
-            channelName.channelOperators_.push_back(params[3]);
-        }
-        else
-            // User already a operator
-    }
-    channelName->channelOperators_
+    // for (std::vetor<std::string>::iterator it = channelName.channelOperators_.begin(); it != channelName.channelOperators_.end(); it++)
+    // {
+    //     if (it->channelName.channelOperators_ != params[3])
+    //     {
+    //         channelName.channelOperators_.push_back(params[3]);
+    //     }
+    //     else
+    //         // User already a operator
+    // }
+    // channelName->channelOperators_
     std::cout << YELLOW << "VPCanal ON" << std::endl;
 }
 

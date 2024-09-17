@@ -1,4 +1,5 @@
 # include "server.hpp"
+# include "utils.hpp"
 
 Server::Server(int port, const std::string &password) : port_(port), password_(password) {
     std::cout << WHITE << "Constructor Server called" << std::endl;
@@ -251,37 +252,7 @@ void Server::deleteChannel(const std::string& name) {
     }
 }
 
-std::string privMsg(Client client, std::string recipient, std::string message)
-{
-    return (":" + client.getNickName() + " Private Message " + recipient + " :" + message);
-}
 
-void Server::handlePrivMsg(Client& client, const std::vector<std::string>& params)
-{
-        std::cout << "Enter In Private Message" << std::endl;
-        //check client state
-
-
-    if (params.size() < 3)
-	{
-        std::cout << "Private Message  :Not enough parameters" << std::endl;
-		return;
-	}
-    try
-    {
-        Client  recipient = findClient(params[1]);      
-        std::string  msg = params[2]; // we hav to check msg
-        std::cout << "message = " << "[" << msg << "]" << std::endl;
-        std::string paquet = privMsg(client, recipient.getNickName(), msg);
-        std::cout << paquet << recipient.get_Fd() << std::endl;
-        if (send(recipient.get_Fd(), paquet.c_str(), paquet.length(), 0) < 0)
-            throw std::out_of_range("error while sendig in private message");
-    }
-    catch(const std::exception& e)
-    {
-        std::cerr << e.what() << '\n';
-    }
-}
 
 Client		&Server::findClient(std::string name)
 {
@@ -294,22 +265,26 @@ Client		&Server::findClient(std::string name)
 }
 
 void Server::handlePass(Client& client, const std::vector<std::string>& params) {
-    if (params.size() < 2) {
-        std::cerr << "ERROR: No password given : " << std::endl;
+    if (params.size() < 1) {
+        client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-
-    std::string password = params[1];
-    client.setPassword(password);
-
-    if (password != password_) {
-        std::cerr << "ERROR: Incorrect password" << std::endl;
-
-        return;
+    if(client.getRegistered())
+    {
+        client.reply(ERR_ALREADYREGISTRED);
+        return ;
     }
 
-    std::cout << "Password accepted" << std::endl;
+    std::string passwordEntered = removeCarriageReturn(params[1]);
+    client.setPassword(passwordEntered);
 
+    if (passwordEntered != password_) {
+        client.reply(ERR_PASSWDMISMATCH);
+        return ;
+    }
+    client.setLogin();
+    std::cout << "Good Password!" << std::endl;
+    client.welcomeMessage();
 }
 
 void Server::handleOper(Client& client, const std::vector<std::string>& params)
@@ -338,18 +313,6 @@ void Server::handleOper(Client& client, const std::vector<std::string>& params)
     }
 
     return ;
-}
-
-void Server::handlePing(Client& client, const std::vector<std::string>& params)
-{
-    client.getNickName(); // just to use the parameters client
-    if (params.size() < 2)
-	{
-		std::cout << "Error: Ping" << std::endl;
-		return;
-	}
-    std::cout << "Pong " + params[1] << std::endl;
-    return; 
 }
 
 

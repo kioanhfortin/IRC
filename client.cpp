@@ -109,3 +109,13 @@ std::string Client::getInfoClient() const
     return prefix;
 }
 
+void Client::welcomeMessage() {
+    if(nickName_.empty() || userName_.empty() || !getLogin())
+    {
+        std::cout << "Error : " << nickName_ <<  " need to registe!r" << std::endl;
+        return ;
+    }
+    registerClient();
+    reply("Welcome : " + nickName_ + " into the network");
+    std::cout << nickName_ << " is registered" << std::endl;
+}

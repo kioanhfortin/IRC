@@ -39,6 +39,7 @@ const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : Cannot join cha
 const std::string ERR_BADCHANNELKEY = "475 ERR_BADCHANNELKEY : Cannot join channel (+k)\n";
 const std::string ERR_NOSUCHCHANNEL = "403 ERR_NOSUCHCHANNEL : No such channel\n";
 const std::string ERR_BADCHANMASK = "476 ERR_BADCHANMASK : Bad Channel Mask\n";
+const std::string ERR_PASSWDMISMATCH = "  464    ERR_PASSWDMISMATCH :Password incorrect\n";
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024

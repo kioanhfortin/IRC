@@ -19,4 +19,3 @@ bool isClientInChannel(Channel *chan, int fd)
     }
     return false;
 }
-

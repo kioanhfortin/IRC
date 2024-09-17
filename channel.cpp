@@ -103,9 +103,9 @@ bool                    Channel::getlimitFlag_() const {
     return (limitFlag_);
 }
 
-bool                    getTopicOpFlag_() const {
+bool                    Channel::getTopicOpFlag_() const {
     return (topicOpFlag_);
 }
-void                    setTopicOpFlag_(bool flag) {
+void                    Channel::setTopicOpFlag_(bool flag) {
     this->topicOpFlag_ = flag;
 }
