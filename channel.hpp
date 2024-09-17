@@ -39,9 +39,6 @@ public:
     bool                    getpassworfFlag_() const;
     void                    setlimitFlag_(bool flag);
     bool                    getlimitFlag_() const;
-    void                    setTopicOpFlag_(bool flag);
-    bool                    getTopicOpFlag_() const;
-    // bool findClientinChannel(Client& client, std::string channelName);
     bool isEmpty() const;
     
 private:

@@ -10,10 +10,10 @@ void Server::handleTopic(Client& client, const std::vector<std::string>& params)
         std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
         return;
     }
-    if (channelName->setTopicOpFlag_() == true)
-    {
+    // if (channelName->setTopicOpFlag_() == true)
+    // {
         // look if client is an operator channelOperators_
-    }
+    // }
     (void)client;
     (void)params;
     std::cout << YELLOW << "Kick Topic on" << std::endl;
