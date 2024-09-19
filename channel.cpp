@@ -2,7 +2,7 @@
 #include "server.hpp"
 #include "client.hpp"
 
-Channel::Channel(const std::string& name) : name_(name), topic_(), fd_(0), limit_(0), password_("") {}
+Channel::Channel(const std::string& name) : name_(name), topic_(), fd_(0), limit_(0), password_(""), topicOpFlag_(false), inviteOnlyFlag_(false), limitFlag_(false), passwordFlag_(false) {}
 
 void Channel::addClient(int clientFd) {
     clients_.push_back(clientFd);

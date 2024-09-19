@@ -40,9 +40,9 @@ const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : Cannot join cha
 const std::string ERR_BADCHANNELKEY = "475 ERR_BADCHANNELKEY : Cannot join channel (+k)\n";
 const std::string ERR_NOSUCHCHANNEL = "403 ERR_NOSUCHCHANNEL : No such channel\n";
 const std::string ERR_BADCHANMASK = "476 ERR_BADCHANMASK : Bad Channel Mask\n";
-const std::string ERR_UMODEUNKNOWNFLAG = "501 : Unknown MODE flag\n";
-const std::string ERR_USERSDONTMATCH = "502 : Cannot change mode for other users\n";
-
+const std::string ERR_UMODEUNKNOWNFLAG = "501 ERR_UMODEUNKNOWNFLAG : Unknown MODE flag\n";
+const std::string ERR_USERSDONTMATCH = "502 ERR_USERSDONTMATCH : Cannot change mode for other users\n";
+const std::string ERR_CHANOPRIVSNEEDED = "482 ERR_CHANOPRIVSNEEDED : You're not channel operator\n";
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -107,12 +107,12 @@ private:
     std::vector<Channel>                channels_;
     std::vector<pollfd> fds_;
 
-    struct sockaddr_in serverAddr_, clientAddr_;
-    socklen_t clientAddrLen_;
+    struct sockaddr_in                  serverAddr_, clientAddr_;
+    socklen_t                           clientAddrLen_;
 
-    std::map<std::string, std::set<int> > channel_s;
-    std::map<std::string, std::string> topics_;
-    std::map<int, std::pair<std::string, std::string> > userInfo_;
+    std::map<std::string, std::set<int> >                   channel_s;
+    std::map<std::string, std::string>                      topics_;
+    std::map<int, std::pair<std::string, std::string> >     userInfo_;
 
     Client		&findClient(std::string name);
     void        join(Channel *chan, Client &cl);
@@ -135,7 +135,6 @@ private:
     void handleList(Client& client, const std::vector<std::string>& params);
     void handleName(Client& client, const std::vector<std::string>& params);
     void handleNotice(Client& client, const std::vector<std::string>& params);
-
     void initCommandMap();
     
     typedef void (Server::*OptionHandler)(Client&, Channel *, const std::vector<std::string>&);
@@ -152,18 +151,13 @@ private:
     void handleMdpOFF(Client& client, Channel *channelName, const std::vector<std::string>& params);
     void handleVPCanalOFF(Client& client, Channel *channelName, const std::vector<std::string>& params);
     void handlelimitOFF(Client& client, Channel *channelName, const std::vector<std::string>& params);
+    void initOptionMap();
 
-    void    initOptionMap();
 
-
-    void closeClient(int clientSocket);
+    void    closeClient(int clientSocket);
     Client& getClientByFd(int fd);
- 
+    void    displayClientInfo() const;
 
-
-    void displayClientInfo() const;
-
-    /*int socket_fd;*/
 };
 
 int             parsing(std::string arg1, std::string arg2);

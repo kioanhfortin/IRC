@@ -40,24 +40,24 @@ public:
     void                    setlimitFlag_(bool flag);
     bool                    getlimitFlag_() const;
     bool                    isEmpty() const;
-    bool    isClientOperator(Channel *channel, Client *client);
-    void    addChannelOperator(std::string newOp);
-    void    delChannelOperator(std::string delOp);
+    bool                    isClientOperator(Channel *channel, Client *client);
+    void                    addChannelOperator(std::string newOp);
+    void                    delChannelOperator(std::string delOp);
 
 private:
     std::string                 name_;
     std::string                 topic_;
-    bool                        topicOpFlag_;
     int                         fd_;
     std::vector<int>            clients_;
     std::vector<Client>         clientss_;
     std::vector<std::string>    invitedClients;
-    bool                        inviteOnlyFlag_;
     int                         limit_;
-    bool                        limitFlag_;
     std::string                 password_;
-    bool                        passwordFlag_;
     std::vector<std::string>    channelOperators_;
+    bool                        topicOpFlag_;
+    bool                        inviteOnlyFlag_;
+    bool                        limitFlag_;
+    bool                        passwordFlag_;
 };
 
 #endif
