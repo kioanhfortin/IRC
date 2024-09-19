@@ -21,7 +21,7 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
         client.reply(ERR_NOTONCHANNEL);
         return;
     }
-    
+
     //Vérifier si le client fait partie du channel
     if (!channel->hasClient(client.get_Fd())) {
         client.reply(ERR_USERONCHANNEL);

@@ -1,11 +1,6 @@
 #include "server.hpp"
 
 void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
-    // client.getRealName();
-    // params.empty(); 
-    // std::cout << "Will be back soon!" << std::endl;
-    // std::cout << "param.size: " << params.size() << std::endl;
-
     if (!client.getRegistered())
     {
         client.reply(ERR_NOTREGISTERED);
