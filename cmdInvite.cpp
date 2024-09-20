@@ -42,9 +42,12 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
         client.reply(ERR_NOSUCHNICK);
         return;
     }
-
     // Ajouter a la liste de client si sur la liste des clients inviter
     if (!channel->isClientInvited(*targetClient)){
+        if (channel->isClientOperator(channel, &client) == false) {
+            client.reply(ERR_CHANOPRIVSNEEDED);
+            return;
+        }
         channel->inviteClient(*targetClient);
         std::string response = ":" + client.getNickName() + " 341 "+ targetNick + " " + channelName + "\n";
         send(client.get_Fd(), response.c_str(), response.size(), 0);

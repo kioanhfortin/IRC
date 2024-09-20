@@ -63,9 +63,6 @@ bool     Server::findNickname(std::string nickname)
     return true;
 }
 
-
-
-
 Server::ValidInput Server::validNickname(const std::string nickname)
 {
     ValidInput nickStruct;
@@ -100,7 +97,6 @@ Server::ValidInput Server::validNickname(const std::string nickname)
         }
     }
 
- 
     nickStruct.isValid = true;
     nickStruct.errorMessage = "All is ok";
     return nickStruct;

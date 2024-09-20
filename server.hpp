@@ -44,6 +44,7 @@ const std::string ERR_PASSWDMISMATCH = "  464 ERR_PASSWDMISMATCH :Password incor
 const std::string ERR_UMODEUNKNOWNFLAG = "501 ERR_UMODEUNKNOWNFLAG : Unknown MODE flag\n";
 const std::string ERR_USERSDONTMATCH = "502 ERR_USERSDONTMATCH : Cannot change mode for other users\n";
 const std::string ERR_CHANOPRIVSNEEDED = "482 ERR_CHANOPRIVSNEEDED : You're not channel operator\n";
+const std::string ERR_TOOMANYTARGETS = "407 ERR_TOOMANYTARGETS : Less than 4 target\n";
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024

@@ -18,6 +18,10 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
             count++;
         }
     }
+    if (count > 4) {
+        client.reply(ERR_TOOMANYTARGETS);
+        return;
+    }
     int k = 0;
     for (int j = 1; j <= params.size(); j++) {
         if (params[j][0] == '#') {
