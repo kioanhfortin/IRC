@@ -2,15 +2,31 @@
 
 void Server::handleKick(Client& client, const std::vector<std::string>& params)
 {
-    // Vérifier que le client est bien registered avant d'effectuer 
-    if (client.getRegistered() == false)
+    if(params.size() < 2)
     {
-        std::string error = "ERR_NOTREGISTERED : First register with the USER command\n";
-        send(client.get_Fd(), error.c_str(), error.size(), 0);
-        std::cerr << RED << "ERR_NOTREGISTERED : First register with the USER command\n" << std::endl;
+        client.reply(ERR_NEEDMOREPARAMS);
+        return ;
+    }
+
+    Channel *channelName = findChannel(params[0]);    
+    if(channelName == nullptr)
+    {
+        client.reply(ERR_NOSUCHCHANNEL);
         return;
     }
-    (void)client;
-    (void)params;
-    std::cout << YELLOW << "Kick Handler on" << std::endl;
+    if(channelName->hasClient(client.get_Fd()))
+    {
+        client.reply(ERR_USERNOTINCHANNEL);
+        return;
+    }
+    if(channelName->getFd() != client.get_Fd())
+    {
+        client.reply(ERR_CHANOPRIVSNEEDED);
+        return;
+    }
+
+     std::vector<std::string> args;
+     args.push_back(args.at(0));
+     handlePart(findClient(params.at(1)), args);
+
 }
