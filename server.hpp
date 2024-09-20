@@ -116,6 +116,7 @@ private:
     std::map<int, std::pair<std::string, std::string> >     userInfo_;
 
     Client		&findClient(std::string name);
+    void        joinChannel(Client& client, const std::vector<std::string>& params, int j);
     void        join(Channel *chan, Client &cl);
 
     typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);
