@@ -11,19 +11,19 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    for (int i = 0; i < params.size(); i++)
+    size_t c = 0;
+    for (size_t i = 0; i < params.size(); i++)
     {
-        int count = 0;
         if (params[i][0] == '#' || params[i][0] == '&') {
-            count++;
+            c++;
         }
     }
-    if (count > 4) {
+    if (c > 4) {
         client.reply(ERR_TOOMANYTARGETS);
         return;
     }
-    int k = 0;
-    for (int j = 1; j <= params.size(); j++) {
+    size_t k = 0;
+    for (size_t j = 0; j <= params.size(); j++) {
         if (params[j][0] == '#') {
             joinChannel(client, params, j);
             k++;
@@ -33,37 +33,54 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
             k++;
             j++;
         }
-        if (k == count)
+        if (k == c)
             break;
     }
 }
 
-void    Server::joinChannel(Client& client, const std::vector<std::string>& params, int j) {
+void    Server::joinChannel(Client& client, const std::vector<std::string>& params, size_t j) {
     std::string name = removeCarriageReturn(params[j]);
+    std::string name2;
+    if (name[name.size() - 1] == ','){
+        name = name.substr(0, name.size() - 1);
+    }
     std::cout << "name = " << name << std::endl;
-    if(name.empty() || name[0] != '#' || name[0] != '&' || name[0] != '0')
+    if(name.empty() || (name[0] != '#' && name[0] != '&' && name[0] != '0'))
     {
-        client.reply("Channel must start with #\n");
+        client.reply("Channel must start with #, & or 0\n");
         return;
     }
     try {
-        Channel *channelName = findChannel(name);
+        Channel *channelName;
+        if (name[0] == '&'){
+            name2 = "#" + name.substr(1, name.size());
+            channelName = findChannel(name2);
+        }
+        else
+            channelName = findChannel(name);
         if (channelName == nullptr)
         {
-            if (name[0] == '&') {
-                channelName->password = params[j + 1];
-            }
             std::cerr << "New Channel: " << name << std::endl;
-            Channel newChannel(name);
+            if (name[0] == '&'){
+                name2 = "#" + name.substr(1, name.size());
+            }
+            Channel newChannel(name2);
             newChannel.addClient(client.get_Fd());
             channels_.push_back(newChannel);
             join(&channels_.back(), client);  // Join the new channel
+            if (name[0] == '&') {
+                newChannel.getPassword() = params[j + 1];
+                std::cout << "Password set : " << params[j + 1] << std::endl;
+            }
             return;
         }
-        if (name[0] == '0') {
+            printf("---ok---\n");
+        if (name[0] == '0' || name2[0] == '0') {
             for (std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); ++it) {
-                    channelName->removeClient(client->getFd());
+                channelName->removeClient(client.get_Fd());
             }
+            std::cout << "Client has left all channels\n" << std::endl;
+            return;
         }
         if (channelName->isInviteOnly())
         {
