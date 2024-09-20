@@ -8,34 +8,33 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_NOTREGISTERED);
         return;
     }
-    if (params.size() < 2) {
-        std::cout << ERR_NEEDMOREPARAMS << std::endl;
+    if (params.size() < 1) {
+        client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
     try
     {
-        std::string channelName = params[1];
+        std::string channelName = params[0];
         Channel* chan = findChannel(channelName);
-
-        if (chan == NULL) {
-            std::cout << ERR_NOSUCHCHANNEL << std::endl;
+        /*if (chan == NULL) {
+            client.reply(ERR_NOSUCHCHANNEL);
             return;
-        }
+        }*/
         if (!chan->hasClient(client.get_Fd())) {
             client.reply(ERR_USERONCHANNEL);
             return;
         }
 
-        chan->removeClient(client.get_Fd());
         if (chan->getFd() == client.get_Fd())
             chan->setFd(0);
+        chan->removeClient(client.get_Fd());
         if (chan->isEmpty()) {
             deleteChannel(channelName);
         }
     }
     catch(const std::exception& e)
     {
-        std::cout << " :An error occurred" << std::endl;
+        client.reply(ERR_NOSUCHCHANNEL);
     }
 
 }

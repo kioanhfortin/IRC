@@ -287,36 +287,6 @@ void Server::handlePass(Client& client, const std::vector<std::string>& params) 
     client.welcomeMessage();
 }
 
-void Server::handleOper(Client& client, const std::vector<std::string>& params)
-{
-
-    // Print out the parameters for debugging
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params.at(i) << std::endl;
-
-    // Check if there are enough parameters
-    if (params.size() < 3)
-    {
-        std::cout <<  client.getNickName()  <<  " OPER :Not enough parameters" << std::endl;
-        return;
-    }
-
-    std::string pswd = params.at(2);
-    if (pswd != password_)
-    {
-        std::cout <<  client.getNickName()  <<  "OPER :Password incorrect" << std::endl;
-        return ;
-    }
-    else
-    {
-        std::cout <<  client.getNickName()  <<  "OPER ::You are now an IRC operator" << std::endl;
-    }
-
-    return ;
-}
-
-
-
 void Server::handleList(Client& client, const std::vector<std::string>& params)
 {
     if (params.size() == 1 ||params.size() == 2)
