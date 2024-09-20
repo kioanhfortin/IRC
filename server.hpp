@@ -97,6 +97,7 @@ public:
     Channel*                        findChannel(const std::string& channelName);
     std::vector<Channel>::iterator  findChannelIt(std::string name);
     void                            deleteChannel(const std::string& name);
+    void messagetoChannel(Client& client, const std::vector<std::string>& params);
 
 private:
     int                                 port_;
