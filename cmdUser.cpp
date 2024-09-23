@@ -32,12 +32,12 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
     }
     client.setRealName(realname);
     // Envoyer une confirmation de réussite au client
-    std::string response = "USER command completed\n";
-    send(client.get_Fd(), response.c_str(), response.size(), 0);
+    //std::string response = "USER command completed\n";
+   // send(client.get_Fd(), response.c_str(), response.size(), 0);
     
     
-    std::cout << "USER command processed: client <" << client.get_Fd() << "> set username to <" 
-    << client.getUserName() << "> and real name to <" << client.getRealName() << ">" << std::endl;
+    //std::cout << "USER command processed: client <" << client.get_Fd() << "> set username to <" 
+    //<< client.getUserName() << "> and real name to <" << client.getRealName() << ">" << std::endl;
     client.welcomeMessage();
     return ;
 }

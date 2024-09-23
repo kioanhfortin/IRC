@@ -24,6 +24,7 @@
 # include "utils.hpp"
 
 // Error Messages
+const std::string RPL_WELCOME = "Welcome to the Internet Relay Network\n";
 const std::string ERR_NICKNAMEINUSE = "433 ERR_NICKNAMEINUSE : Nickname is already in use\n";
 const std::string ERR_NONICKNAMEGIVEN = "431 ERR_NONICKNAMEGIVEN : No nickname given\n";
 const std::string ERR_ERRONEUSNICKNAME = "432 ERR_ERRONEUSNICKNAME : Erroneous nickname\n";
@@ -56,6 +57,7 @@ const std::string ERR_USERNOTINCHANNEL = "441 <nick> <channel> :They aren't on t
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
 #define BLACK    "\033[0m"
+#define LIME   "\033[38;5;154m"     // Lime
 
 extern bool g_interrupt;
 
