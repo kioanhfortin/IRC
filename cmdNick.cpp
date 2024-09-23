@@ -2,13 +2,14 @@
 
 void Server::handleNick(Client& client, const std::vector<std::string>& params)
 {
+    // DOT-ON PERMETTRE PLUSIEUR PARAMETRES POUR NCKNAME?
     if (params.size() < 1) {
         std::cerr << RED << "ERR_NEEDMOREPARAMS : NICK <nickname>\n" << std::endl;
         client.reply(ERR_NONICKNAMEGIVEN);
         return;
     }
 
-    std::string newNickName = removeCarriageReturn(params[1]);
+    std::string newNickName = removeCarriageReturn(params[0]);
     ValidInput nickStruct = validNickname(newNickName);
     if (!nickStruct.isValid)
     {

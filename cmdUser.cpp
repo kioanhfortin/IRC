@@ -22,9 +22,8 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
     // Mettre à jour les informations du client //  guest 0 * :Ronnie Reagan
     client.setUserName(params[0]);
     client.setHostname(params[1]);
-    if(!client.getNickName().empty() && client.getLogin())
+    if(!client.getNickName().empty())
         client.registerClient();
-    client.registerClient();
     std::string realname;
     for (size_t i = 3; i < params.size(); i++){
         if (i != 3)
