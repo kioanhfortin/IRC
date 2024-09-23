@@ -122,11 +122,13 @@ void    Server::AcceptNewClient()
         throw std::runtime_error("Error accepting client");
     if (getnameinfo((struct sockaddr *) &s_address, sizeof(s_address), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV) != 0)
         throw std::runtime_error("Error while getting hostname on new client.");
+    std::cout << COLOR_PINK<< "New client hostname: " << hostname << BLACK << std::endl;
     clients_.push_back(Client(new_client_fd, hostname));
     struct pollfd clientPollfd = {new_client_fd, POLLIN, 0};
     fds_.push_back(clientPollfd);
     std::cout << GREEN << "Accepted connection from client" << std::endl;
     displayClientInfo();
+
 }
 
 void    Server::ParseNewData(int fd)
@@ -349,6 +351,7 @@ void Server::displayClientInfo() const {
         std::cout << YELLOW  << "Nickname: " << client.getNickName() << std::endl;
         std::cout << YELLOW << "Username: " << client.getUserName() << std::endl;
         std::cout << YELLOW  << "Real name: " << client.getRealName() << std::endl;
+        std::cout << YELLOW  << "hostName: " << client.getHostname() << std::endl;
         std::cout << YELLOW  << "---------------------------" << BLACK << std::endl;
     }
 }

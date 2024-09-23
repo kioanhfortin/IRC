@@ -119,5 +119,6 @@ void Client::welcomeMessage() {
         registerClient();
         std::cout << LIME << nickName_ << " is now registered" << BLACK << std::endl;
     }
-    reply(RPL_WELCOME + getNickName() + "! " + getUserName() + " @" + getHostname());
+    reply(RPL_WELCOME + getNickName() + "! " + getUserName() + " @" + hostName_);
+     std::cout << COLOR_PINK  << "Real name: "  + getRealName() +  " "+ this->getHostname() << std::endl;
 }
