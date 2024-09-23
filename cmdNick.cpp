@@ -23,17 +23,17 @@ void Server::handleNick(Client& client, const std::vector<std::string>& params)
         return;
     }
 
-    
     client.setNickName(newNickName);
     std::cerr << GREEN << "Client NICKNAME set to: " << client.getNickName() << std::endl;
     client.reply("NickName set!\n");
-    
     client.welcomeMessage();
 }
+
 
 /*
 Server::ValidInput    Server::validNickname(const std::string nickname)
 {
+    **: "Juin";
     ValidInput nickStruct;
     if (nickname.size() > 9 || nickname.empty())
     {
@@ -53,6 +53,7 @@ Server::ValidInput    Server::validNickname(const std::string nickname)
 }
 */
 
+
 bool     Server::findNickname(std::string nickname)
 {
     for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
@@ -63,21 +64,17 @@ bool     Server::findNickname(std::string nickname)
     return true;
 }
 
-
-
-
 Server::ValidInput Server::validNickname(const std::string nickname)
 {
     ValidInput nickStruct;
     
-  
     if (nickname.size() > 9 || nickname.empty())
     {
         nickStruct.errorMessage = "ERR_ERRONEUSNICKNAME : Nickname length must be between 1 and 9 characters.\n";
         nickStruct.isValid = false;
         return nickStruct;
     }
-
+ 
     // Check the first character
     if (!isalpha(nickname[0]) && nickname[0] != '[' && nickname[0] != ']' &&
         nickname[0] != '\\' && nickname[0] != '^' && nickname[0] != '}' &&
@@ -100,9 +97,7 @@ Server::ValidInput Server::validNickname(const std::string nickname)
         }
     }
 
- 
     nickStruct.isValid = true;
     nickStruct.errorMessage = "All is ok";
     return nickStruct;
 }
-

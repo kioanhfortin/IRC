@@ -88,7 +88,6 @@ const std::string& Client::getPassword() const {
     return password_;
 }
 
-
 void Client::reply(const std::string& message) {
     // Implementation for sending a message to the client
     std::cout << RED << "Reply to client: " << message << std::endl;
@@ -117,5 +116,5 @@ void Client::welcomeMessage() {
     }
     registerClient();
     reply("Welcome : " + nickName_ + " into the network");
-    std::cout << nickName_ << " is registered" << std::endl;
+    std::cout << nickName_ << " is now registered" << std::endl;
 }
