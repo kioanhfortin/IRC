@@ -3,7 +3,7 @@
 void Server::handleNick(Client& client, const std::vector<std::string>& params)
 {
     // DOT-ON PERMETTRE PLUSIEUR PARAMETRES POUR NCKNAME?
-    if (params.size() < 1) {
+    if (params.size() != 1) {
         std::cerr << RED << "ERR_NEEDMOREPARAMS : NICK <nickname>\n" << std::endl;
         client.reply(ERR_NONICKNAMEGIVEN);
         return;
@@ -28,6 +28,7 @@ void Server::handleNick(Client& client, const std::vector<std::string>& params)
     std::cerr << GREEN << "Client NICKNAME set to: " << client.getNickName() << std::endl;
     client.reply("NickName set!\n");
     client.welcomeMessage();
+    displayClientInfo();
 }
 
 
@@ -69,9 +70,9 @@ Server::ValidInput Server::validNickname(const std::string nickname)
 {
     ValidInput nickStruct;
     
-    if (nickname.size() > 9 || nickname.empty())
+    if (nickname.size() <= 1 || nickname.size() > 9 )
     {
-        nickStruct.errorMessage = "ERR_ERRONEUSNICKNAME : Nickname length must be between 1 and 9 characters.\n";
+        nickStruct.errorMessage = "ERR_ERRONEUSNICKNAME : Nickname length must be between 2 and 9 characters.\n";
         nickStruct.isValid = false;
         return nickStruct;
     }

@@ -55,6 +55,7 @@ const std::string ERR_USERNOTINCHANNEL = "441 <nick> <channel> :They aren't on t
 #define GREEN   "\033[32m"
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
+#define BLACK    "\033[0m"
 
 extern bool g_interrupt;
 

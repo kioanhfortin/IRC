@@ -340,16 +340,16 @@ void Server::handleNotice(Client& client, const std::vector<std::string>& params
 }
 
 void Server::displayClientInfo() const {
-    std::cout << "Total clients connected: " << clients_.size() << std::endl;
+    std::cout << YELLOW <<  "Total clients connected: " << clients_.size() << std::endl;
     
     for (size_t i = 0; i < clients_.size(); ++i) {
         const Client& client = clients_[i];
-        std::cout << WHITE << "Client #: " << i + 1 << std::endl;
-        std::cout << WHITE << "Registered: " << (client.getRegistered() ? "Yes" : "No") << std::endl;
-        std::cout << WHITE << "Nickname: " << client.getNickName() << std::endl;
-        std::cout << WHITE << "Username: " << client.getUserName() << std::endl;
-        std::cout << WHITE << "Real name: " << client.getRealName() << std::endl;
-        std::cout << WHITE << "---------------------------" << std::endl;
+        std::cout << YELLOW  << "Client #: " << i + 1 << std::endl;
+        std::cout << YELLOW  << "Registered: " << (client.getRegistered() ? "Yes" : "No") << std::endl;
+        std::cout << YELLOW  << "Nickname: " << client.getNickName() << std::endl;
+        std::cout << YELLOW << "Username: " << client.getUserName() << std::endl;
+        std::cout << YELLOW  << "Real name: " << client.getRealName() << std::endl;
+        std::cout << YELLOW  << "---------------------------" << BLACK << std::endl;
     }
 }
 
