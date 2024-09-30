@@ -88,7 +88,6 @@ const std::string& Client::getPassword() const {
     return password_;
 }
 
-
 void Client::reply(const std::string& message) {
     // Implementation for sending a message to the client
     std::cout << RED << "Reply to client: " << message << std::endl;
@@ -110,12 +109,16 @@ std::string Client::getInfoClient() const
 }
 
 void Client::welcomeMessage() {
-    if(nickName_.empty() || userName_.empty() || !getLogin())
+    if(nickName_.empty() || userName_.empty())
     {
         std::cout << "Error : " << nickName_ <<  " need to registe!r" << std::endl;
         return ;
     }
-    registerClient();
-    reply("Welcome : " + nickName_ + " into the network");
-    std::cout << nickName_ << " is registered" << std::endl;
+    if(!getRegistered())
+    {
+        registerClient();
+        std::cout << LIME << nickName_ << " is now registered" << BLACK << std::endl;
+    }
+    reply(RPL_WELCOME + getNickName() + "! " + getUserName() + " @" + hostName_ + "\n");
+     std::cout << COLOR_PINK  << "Real name: "  + getRealName() +  " "+ this->getHostname() <<  "\n" << std::endl;
 }

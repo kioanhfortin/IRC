@@ -122,11 +122,13 @@ void    Server::AcceptNewClient()
         throw std::runtime_error("Error accepting client");
     if (getnameinfo((struct sockaddr *) &s_address, sizeof(s_address), hostname, NI_MAXHOST, NULL, 0, NI_NUMERICSERV) != 0)
         throw std::runtime_error("Error while getting hostname on new client.");
+    std::cout << COLOR_PINK<< "New client hostname: " << hostname << BLACK << std::endl;
     clients_.push_back(Client(new_client_fd, hostname));
     struct pollfd clientPollfd = {new_client_fd, POLLIN, 0};
     fds_.push_back(clientPollfd);
     std::cout << GREEN << "Accepted connection from client" << std::endl;
     displayClientInfo();
+
 }
 
 void    Server::ParseNewData(int fd)
@@ -141,7 +143,7 @@ void    Server::ParseNewData(int fd)
         // Check if client is disconnected
         if (byte_Receive == 0)
         {
-            std::cout << RED << "Client <" << fd <<"> is disconnected" << std::endl;
+            std::cout << RED << "Client fd : <" << fd << "> is disconnected" << std::endl;
             closeClient(fd);
         }
         else if (byte_Receive < 0){
@@ -287,36 +289,6 @@ void Server::handlePass(Client& client, const std::vector<std::string>& params) 
     client.welcomeMessage();
 }
 
-void Server::handleOper(Client& client, const std::vector<std::string>& params)
-{
-
-    // Print out the parameters for debugging
-	for (size_t i = 0; i < params.size(); i++)
-		std::cout << params.at(i) << std::endl;
-
-    // Check if there are enough parameters
-    if (params.size() < 3)
-    {
-        std::cout <<  client.getNickName()  <<  " OPER :Not enough parameters" << std::endl;
-        return;
-    }
-
-    std::string pswd = params.at(2);
-    if (pswd != password_)
-    {
-        std::cout <<  client.getNickName()  <<  "OPER :Password incorrect" << std::endl;
-        return ;
-    }
-    else
-    {
-        std::cout <<  client.getNickName()  <<  "OPER ::You are now an IRC operator" << std::endl;
-    }
-
-    return ;
-}
-
-
-
 void Server::handleList(Client& client, const std::vector<std::string>& params)
 {
     if (params.size() == 1 ||params.size() == 2)
@@ -370,16 +342,17 @@ void Server::handleNotice(Client& client, const std::vector<std::string>& params
 }
 
 void Server::displayClientInfo() const {
-    std::cout << "Total clients connected: " << clients_.size() << std::endl;
+    std::cout << YELLOW <<  "Total clients connected: " << clients_.size() << std::endl;
     
     for (size_t i = 0; i < clients_.size(); ++i) {
         const Client& client = clients_[i];
-        std::cout << WHITE << "Client #: " << i + 1 << std::endl;
-        std::cout << WHITE << "Registered: " << (client.getRegistered() ? "Yes" : "No") << std::endl;
-        std::cout << WHITE << "Nickname: " << client.getNickName() << std::endl;
-        std::cout << WHITE << "Username: " << client.getUserName() << std::endl;
-        std::cout << WHITE << "Real name: " << client.getRealName() << std::endl;
-        std::cout << WHITE << "---------------------------" << std::endl;
+        std::cout << YELLOW  << "Client #: " << i + 1 << std::endl;
+        std::cout << YELLOW  << "Registered: " << (client.getRegistered() ? "Yes" : "No") << std::endl;
+        std::cout << YELLOW  << "Nickname: " << client.getNickName() << std::endl;
+        std::cout << YELLOW << "Username: " << client.getUserName() << std::endl;
+        std::cout << YELLOW  << "Real name: " << client.getRealName() << std::endl;
+        std::cout << YELLOW  << "hostName: " << client.getHostname() << std::endl;
+        std::cout << YELLOW  << "---------------------------" << BLACK << std::endl;
     }
 }
 

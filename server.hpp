@@ -24,9 +24,10 @@
 # include "utils.hpp"
 
 // Error Messages
-const std::string ERR_NICKNAMEINUSE = "433 ERR_NICKNAMEINUSE : Nickname is already in use\n";
+const std::string RPL_WELCOME = "Welcome to the Internet Relay Network\n";
+const std::string ERR_NICKNAMEINUSE = "ERR_NICKNAMEINUSE : Nickname is already in use\n";
 const std::string ERR_NONICKNAMEGIVEN = "431 ERR_NONICKNAMEGIVEN : No nickname given\n";
-const std::string ERR_ERRONEUSNICKNAME = "432 ERR_ERRONEUSNICKNAME : Erroneous nickname\n";
+const std::string ERR_ERRONEUSNICKNAME = "ERR_ERRONEUSNICKNAME : Erroneous nickname\n";
 const std::string ERR_NEEDMOREPARAMS = "461 ERR_NEEDMOREPARAMS : Need more parameters\n";
 const std::string ERR_ALREADYREGISTRED = "462 ERR_ALREADYREGISTRED : Already registered\n";
 const std::string ERR_USERNAMEINUSE = "Username already in use\n";
@@ -44,7 +45,11 @@ const std::string ERR_PASSWDMISMATCH = "  464 ERR_PASSWDMISMATCH :Password incor
 const std::string ERR_UMODEUNKNOWNFLAG = "501 ERR_UMODEUNKNOWNFLAG : Unknown MODE flag\n";
 const std::string ERR_USERSDONTMATCH = "502 ERR_USERSDONTMATCH : Cannot change mode for other users\n";
 const std::string ERR_CHANOPRIVSNEEDED = "482 ERR_CHANOPRIVSNEEDED : You're not channel operator\n";
+const std::string ERR_USERNOTINCHANNEL = "441 <nick> <channel> :They aren't on that channel\n";
 const std::string ERR_TOOMANYTARGETS = "407 ERR_TOOMANYTARGETS : Less than 4 target\n";
+const std::string ERR_INVALIDPARAMS = " ERR_INVALIDPARAMS : too much parameters\n";
+const std::string ERR_ERRONEUSREALNAME = "ERR_ERRONEUSREALNAME : too much character for realname\n";
+
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -54,6 +59,9 @@ const std::string ERR_TOOMANYTARGETS = "407 ERR_TOOMANYTARGETS : Less than 4 tar
 #define GREEN   "\033[32m"
 #define YELLOW  "\033[33m"
 #define WHITE   "\033[37m"
+#define BLACK    "\033[0m"
+#define LIME   "\033[38;5;154m"     // Lime
+#define COLOR_PINK  "\033[38;5;198m"     // Pink
 
 extern bool g_interrupt;
 
@@ -98,6 +106,7 @@ public:
     Channel*                        findChannel(const std::string& channelName);
     std::vector<Channel>::iterator  findChannelIt(std::string name);
     void                            deleteChannel(const std::string& name);
+    void messagetoChannel(Client& client, const std::vector<std::string>& params);
 
 private:
     int                                 port_;
@@ -112,9 +121,9 @@ private:
     struct sockaddr_in                  serverAddr_, clientAddr_;
     socklen_t                           clientAddrLen_;
 
-    std::map<std::string, std::set<int> >                   channel_s;
-    std::map<std::string, std::string>                      topics_;
-    std::map<int, std::pair<std::string, std::string> >     userInfo_;
+    // std::map<std::string, std::set<int> >                   channel_s;
+    // std::map<std::string, std::string>                      topics_;
+    // std::map<int, std::pair<std::string, std::string> >     userInfo_;
 
     Client		&findClient(std::string name);
     void        joinChannel(Client& client, const std::vector<std::string>& params, size_t j);

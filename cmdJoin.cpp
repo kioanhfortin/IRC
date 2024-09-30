@@ -11,14 +11,21 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    size_t c = 0;
+    if (params[1][0] == '0' && params[1].size() == 1) {
+        for (std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); it++) {
+            it->removeClient(client.get_Fd());
+        }
+        std::cout << "Client has left all channels\n" << std::endl;
+        return;
+    }
+    size_t count = 0;
     for (size_t i = 0; i < params.size(); i++)
     {
         if (params[i][0] == '#' || params[i][0] == '&') {
-            c++;
+            count++;
         }
     }
-    if (c > 4) {
+    if (count > 4) {
         client.reply(ERR_TOOMANYTARGETS);
         return;
     }
@@ -33,7 +40,7 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
             k++;
             j++;
         }
-        if (k == c)
+        if (k == count)
             break;
     }
 }
@@ -51,7 +58,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         return;
     }
     try {
-        Channel *channelName;
+        Channel *channelName = nullptr;
         if (name[0] == '&'){
             name2 = "#" + name.substr(1, name.size());
             channelName = findChannel(name2);
@@ -59,12 +66,12 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         else
             channelName = findChannel(name);
         if (channelName == nullptr)
-        {
+        { 
             std::cerr << "New Channel: " << name << std::endl;
-            if (name[0] == '&'){
-                name2 = "#" + name.substr(1, name.size());
+            Channel newChannel(name);
+            if (name[0] == '&') {
+                newChannel.setPassword(params[j + 1]);
             }
-            Channel newChannel(name2);
             newChannel.addClient(client.get_Fd());
             channels_.push_back(newChannel);
             join(&channels_.back(), client);  // Join the new channel
@@ -74,12 +81,10 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             }
             return;
         }
-            printf("---ok---\n");
-        if (name[0] == '0' || name2[0] == '0') {
-            for (std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); ++it) {
-                channelName->removeClient(client.get_Fd());
-            }
-            std::cout << "Client has left all channels\n" << std::endl;
+        if (channelName->hasClient(client.get_Fd()))
+        {
+            std::cout << "Client is already in channel\n" << std::endl;
+            client.reply(ERR_USERONCHANNEL);
             return;
         }
         if (channelName->isInviteOnly())
@@ -88,11 +93,6 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
                 client.reply(ERR_INVITEONLYCHAN);
                 return;
             }
-        }
-        if (channelName->hasClient(client.get_Fd()))
-        {
-            std::cout << "Client is already in channel\n" << std::endl;
-            return;
         }
         if(channelName->getClients().size() >= (size_t)channelName->getLimit() && channelName->getLimit() != 0)
         {
