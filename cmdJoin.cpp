@@ -29,17 +29,17 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
             join(&channels_.back(), client);  // Join the new channel
             return;
         }
+        if (channelName->hasClient(client.get_Fd()))
+        {
+            std::cout << "is already in channel" << std::endl;
+            return;
+        }
         if (channelName->isInviteOnly())
         {
             if(channelName->isClientInvited(client) == false){
                 client.reply(ERR_INVITEONLYCHAN);
                 return;
             }
-        }
-        if (channelName->hasClient(client.get_Fd()))
-        {
-            std::cout << "is already in channel" << std::endl;
-            return;
         }
         if(channelName->getClients().size() >= (size_t)channelName->getLimit() && channelName->getLimit() != 0)
         {

@@ -47,6 +47,9 @@ const std::string ERR_USERSDONTMATCH = "502 ERR_USERSDONTMATCH : Cannot change m
 const std::string ERR_CHANOPRIVSNEEDED = "482 ERR_CHANOPRIVSNEEDED : You're not channel operator\n";
 const std::string ERR_USERNOTINCHANNEL = "441 <nick> <channel> :They aren't on that channel\n";
 
+const std::string ERR_INVALIDPARAMS = " ERR_INVALIDPARAMS : too much parameters\n";
+const std::string ERR_ERRONEUSREALNAME = "ERR_ERRONEUSREALNAME : too much character for realname\n";
+
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024

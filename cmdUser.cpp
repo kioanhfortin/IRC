@@ -1,10 +1,21 @@
 #include "server.hpp"
 
 void Server::handleUser(Client& client, const std::vector<std::string>& params) {
+   
     // Vérifier que nous avons au moins 4 paramètres && que le realname comment par un :
-    if (params.size() < 4 || params[3][0] != ':') {
-         std::cerr << RED << "ERR_NEEDMOREPARAMS : USER <user> <mode> <unused> <:realname>\n" << std::endl; // params[3][0] != ':' MERITE UNE AUTE MSG
+    if (params.size() < 4 ) {
+        // std::cerr << RED << "ERR_NEEDMOREPARAMS : USER <user> <mode> <unused> <:realname>\n" << std::endl; // params[3][0] != ':' MERITE UNE AUTE MSG
         client.reply(ERR_NEEDMOREPARAMS);
+        return;
+    }
+    if (params[3].at(0) != ':' || params[3].size() <= 1) {
+         //std::cerr << RED << "USAGE : USER <user> <mode> <unused> <:realname>\n" << std::endl; // params[3][0] != ':' MERITE UNE AUTE MSG
+        client.reply("USAGE : USER <user> <mode> <unused> <:realname>\n");
+        return;
+    }
+    if(params[3].size() > 20)
+    {
+        client.reply(ERR_ERRONEUSREALNAME);
         return;
     }
     // Vérifier que le client n'est pas déjà registered
@@ -14,14 +25,15 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
         return;
     }
     // Vérifier que le username n'existe pas déjà
-    if (findUsername(params[0]) == 1)
+    if (findUsername(params.at(0)) == 1)
     {
        client.reply(ERR_USERNAMEINUSE);
         return;
     }
     // Mettre à jour les informations du client //  guest 0 * :Ronnie Reagan
     client.setUserName(params[0]);
-    client.setHostname(params[1]);
+    //client.setHostname(params[1]);
+ 
     if(!client.getNickName().empty())
         client.registerClient();
     std::string realname;
@@ -30,6 +42,9 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
             realname += ' ';
         realname += params[i];
     }
+    realname.erase(0, 1);
+    std::cerr << realname << std::endl;
+
     client.setRealName(realname);
     // Envoyer une confirmation de réussite au client
     //std::string response = "USER command completed\n";

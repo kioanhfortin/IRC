@@ -3,7 +3,12 @@
 void Server::handleNick(Client& client, const std::vector<std::string>& params)
 {
     // DOT-ON PERMETTRE PLUSIEUR PARAMETRES POUR NCKNAME?
-    if (params.size() != 1) {
+     if (params.size() > 1) {
+        std::cerr << RED << "TOO MUCH PARAMETERS : NICK <nickname>\n" << std::endl;
+        client.reply (ERR_INVALIDPARAMS);
+        return;
+    }
+    if (params.empty()) {
         std::cerr << RED << "ERR_NEEDMOREPARAMS : NICK <nickname>\n" << std::endl;
         client.reply (ERR_NEEDMOREPARAMS);
         return;

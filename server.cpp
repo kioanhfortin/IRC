@@ -143,7 +143,7 @@ void    Server::ParseNewData(int fd)
         // Check if client is disconnected
         if (byte_Receive == 0)
         {
-            std::cout << RED << "Client <" << fd <<"> is disconnected" << std::endl;
+            std::cout << RED << "Client fd : <" << fd << "> is disconnected" << std::endl;
             closeClient(fd);
         }
         else if (byte_Receive < 0){
