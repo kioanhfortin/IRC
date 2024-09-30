@@ -109,7 +109,11 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         }
         if (channelName->hasClient(client.get_Fd()))
         {
+<<<<<<< HEAD
             client.reply("443 " + client.getNickName() + " " + channelName->getName() + ERR_USERONCHANNEL);
+=======
+            client.reply(ERR_USERONCHANNEL);
+>>>>>>> join
             return;
         }
         if (name[0] == '0') {
