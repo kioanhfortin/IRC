@@ -31,7 +31,6 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         }
         if (channelName->hasClient(client.get_Fd()))
         {
-            std::cout << "is already in channel" << std::endl;
             client.reply(ERR_USERONCHANNEL);
             return;
         }
