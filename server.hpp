@@ -46,7 +46,7 @@ const std::string ERR_UMODEUNKNOWNFLAG = "501 ERR_UMODEUNKNOWNFLAG : Unknown MOD
 const std::string ERR_USERSDONTMATCH = "502 ERR_USERSDONTMATCH : Cannot change mode for other users\n";
 const std::string ERR_CHANOPRIVSNEEDED = "482 ERR_CHANOPRIVSNEEDED : You're not channel operator\n";
 const std::string ERR_USERNOTINCHANNEL = "441 <nick> <channel> :They aren't on that channel\n";
-
+const std::string ERR_TOOMANYTARGETS = "407 ERR_TOOMANYTARGETS : Less than 4 target\n";
 const std::string ERR_INVALIDPARAMS = " ERR_INVALIDPARAMS : too much parameters\n";
 const std::string ERR_ERRONEUSREALNAME = "ERR_ERRONEUSREALNAME : too much character for realname\n";
 
@@ -126,6 +126,7 @@ private:
     std::map<int, std::pair<std::string, std::string> >     userInfo_;
 
     Client		&findClient(std::string name);
+    void        joinChannel(Client& client, const std::vector<std::string>& params, size_t j);
     void        join(Channel *chan, Client &cl);
 
     typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);

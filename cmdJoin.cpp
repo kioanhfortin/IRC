@@ -11,19 +11,60 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    std::string name = removeCarriageReturn(params[1]);
+    size_t count = 0;
+    for (size_t i = 0; i < params.size(); i++)
+    {
+        if (params[i][0] == '#' || params[i][0] == '&') {
+            count++;
+        }
+    }
+    if (count > 4) {
+        client.reply(ERR_TOOMANYTARGETS);
+        return;
+    }
+    size_t k = 0;
+    for (size_t j = 0; j <= params.size(); j++) {
+        if (params[j][0] == '#') {
+            joinChannel(client, params, j);
+            k++;
+        }
+        else if (params[j][0] == '&') {
+            joinChannel(client, params, j);
+            k++;
+            j++;
+        }
+        if (k == count)
+            break;
+    }
+}
+
+void    Server::joinChannel(Client& client, const std::vector<std::string>& params, size_t j) {
+    std::string name = removeCarriageReturn(params[j]);
+    std::string name2;
+    if (name[name.size() - 1] == ','){
+        name = name.substr(0, name.size() - 1);
+    }
     std::cout << "name = " << name << std::endl;
-    if(name.empty() || name[0] != '#')
+    if(name.empty() || (name[0] != '#' && name[0] != '&' && name[0] != '0'))
     {
         client.reply("Channel must start with #\n");
         return;
     }
     try {
-        Channel *channelName = findChannel(name);
+        Channel *channelName = nullptr;
+        if (name[0] == '&'){
+            name2 = "#" + name.substr(1, name.size());
+            channelName = findChannel(name2);
+        }
+        else
+            channelName = findChannel(name);
         if (channelName == nullptr)
-        {
+        { 
             std::cerr << "New Channel: " << name << std::endl;
             Channel newChannel(name);
+            if (name[0] == '&') {
+                newChannel.setPassword(params[j + 1]);
+            }
             newChannel.addClient(client.get_Fd());
             channels_.push_back(newChannel);
             join(&channels_.back(), client);  // Join the new channel
@@ -34,6 +75,11 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
             std::cout << "is already in channel" << std::endl;
             client.reply(ERR_USERONCHANNEL);
             return;
+        }
+        if (name[0] == '0') {
+            for (std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); ++it) {
+                    channelName->removeClient(client.get_Fd());
+            }
         }
         if (channelName->isInviteOnly())
         {
@@ -50,7 +96,7 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         if (channelName->getpassworfFlag_() == true)
         {
             //# channel with no password, & channel avec un password
-            if (params.size() == 1) {
+            if (params.size() % 2 != 0) {
                 client.reply(ERR_BADCHANNELKEY);
                 return;
             }
@@ -76,10 +122,7 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     catch (const std::exception& e) {
         std::cerr << e.what() << '\n';
     }
-    return;
 }
-
-
 /*
 void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
 
