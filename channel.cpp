@@ -2,7 +2,7 @@
 #include "server.hpp"
 #include "client.hpp"
 
-Channel::Channel(const std::string& name) : name_(name), topic_(), fd_(0), limit_(0), password_(""), topicOpFlag_(false), inviteOnlyFlag_(false), limitFlag_(false), passwordFlag_(false) {}
+Channel::Channel(const std::string& name) : name_(name), topic_(), fd_(0), limit_(0), password_(""), topicOpFlag_(false), inviteOnlyFlag_(false), limitFlag_(false), limitMax_(0), passwordFlag_(false) {}
 
 void Channel::addClient(int clientFd) {
     clients_.push_back(clientFd);
@@ -52,6 +52,14 @@ void					Channel::setLimit(int limit) {
     limit_ = limit;
 }
 
+int     				Channel::getLimitMax_() const {
+    return limitMax_;
+}
+
+void					Channel::setLimitMax_(int newlimit) {
+    limitMax_ = newlimit;
+}
+
 std::string					Channel::getPassword() const {
     return password_;
 }
@@ -92,6 +100,7 @@ void                    Channel::setinviteOnlyFlag_(bool flag) {
 void                    Channel::setpassworfFlag_(bool flag) {
     this->passwordFlag_ = flag;
 }
+
 bool                    Channel::getpassworfFlag_() const {
     return (passwordFlag_);
 }
@@ -99,6 +108,7 @@ bool                    Channel::getpassworfFlag_() const {
 void                    Channel::setlimitFlag_(bool flag) {
     this->limitFlag_ = flag;
 }
+
 bool                    Channel::getlimitFlag_() const {
     return (limitFlag_);
 }

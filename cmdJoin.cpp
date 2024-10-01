@@ -52,33 +52,30 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         name = name.substr(0, name.size() - 1);
     }
     std::cout << "name = " << name << std::endl;
-    if(name.empty() || (name[0] != '#' && name[0] != '&' && name[0] != '0'))
-    {
-        client.reply("Channel must start with #, & or 0\n");
-        return;
-    }
     try {
         Channel *channelName = nullptr;
         if (name[0] == '&'){
             name2 = "#" + name.substr(1, name.size());
-            channelName = findChannel(name2);
+            name = name2;
         }
-        else
-            channelName = findChannel(name);
+        if(name.empty() || (name[0] != '#' && name[0] != '&') || (!(name[0] != '#' && name[0] != '&') && name.size() <= 1))
+        {
+            client.reply(ERR_ERRORCHANNELNAME);
+            return;
+        }
+        channelName = findChannel(name);
         if (channelName == nullptr)
         { 
             std::cerr << "New Channel: " << name << std::endl;
             Channel newChannel(name);
             if (name[0] == '&') {
-                newChannel.setPassword(params[j + 1]);
+                newChannel.getPassword() = params[j + 1];
+                std::cout << "Password set : " <<  newChannel.getPassword() << std::endl;
             }
+            newChannel.setLimit(1);
             newChannel.addClient(client.get_Fd());
             channels_.push_back(newChannel);
             join(&channels_.back(), client);  // Join the new channel
-            if (name[0] == '&') {
-                newChannel.getPassword() = params[j + 1];
-                std::cout << "Password set : " << params[j + 1] << std::endl;
-            }
             return;
         }
         if (channelName->hasClient(client.get_Fd()))
@@ -87,20 +84,18 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             client.reply(ERR_USERONCHANNEL);
             return;
         }
-        if (channelName->isInviteOnly())
+        if (channelName->isInviteOnly() == true)
         {
             if(channelName->isClientInvited(client) == false){
                 client.reply(ERR_INVITEONLYCHAN);
                 return;
             }
         }
-        if(channelName->getClients().size() >= (size_t)channelName->getLimit() && channelName->getLimit() != 0)
-        {
+        if (channelName->getlimitFlag_() == true && channelName->getLimit() >= channelName->getLimitMax_()) {
             client.reply(ERR_CHANNELISFULL);
             return;
         }
-        if (channelName->getpassworfFlag_() == true)
-        {
+        if (channelName->getpassworfFlag_() == true){
             //# channel with no password, & channel avec un password
             if (params.size() % 2 != 0) {
                 client.reply(ERR_BADCHANNELKEY);
@@ -110,7 +105,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             {
                 if(removeCarriageReturn(params.at(1)) != channelName->getPassword())
                 {
-                    client.reply("Bad password");
+                    client.reply("Bad password\n");
                     return;
                 }
             }
@@ -120,8 +115,8 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
                 return;
             }
         }
-        //fonction count if more than 4 # 407 ERR_TOOMANYTARGETS
         std::cout << "Add Client to Channel " << name << std::endl;
+        channelName->setLimit(channelName->getLimit() + 1);
         channelName->addClient(client.get_Fd());
         join(channelName, client);
     }

@@ -16,10 +16,10 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
     {
         std::string channelName = params[0];
         Channel* chan = findChannel(channelName);
-        /*if (chan == NULL) {
+        if (chan == nullptr) {
             client.reply(ERR_NOSUCHCHANNEL);
             return;
-        }*/
+        }
         if (!chan->hasClient(client.get_Fd())) {
             client.reply(ERR_USERONCHANNEL);
             return;

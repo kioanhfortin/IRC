@@ -46,6 +46,7 @@ void    Server::initOptionMap()
         optionMap_["+k"] = &Server::handleMdpON;
         optionMap_["+o"] = &Server::handleVPCanalON; 
         optionMap_["+l"] = &Server::handlelimitON;
+
         optionMap_["-i"] = &Server::handleInviteOFF;
         optionMap_["-t"] = &Server::handleTopicOFF; 
         optionMap_["-k"] = &Server::handleMdpOFF;
@@ -114,9 +115,14 @@ void Server::handlelimitON(Client& client, Channel *channelName, const std::vect
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    channelName->setLimit(stoi(params[3], 0, 10));
-    channelName->setinviteOnlyFlag_(true);
-    std::cout << YELLOW << "limit ON : " << params[3] << "\n" << std::endl;
+    int i = stoi(params[3], 0, 10);
+    if ((channelName->getLimit() > i) || stoi(params[3], 0, 10) <= 0) {
+        client.reply(ERR_LIMITTOSMALL);
+        return;
+    }
+    channelName->setLimitMax_(i);
+    channelName->setlimitFlag_(true);
+    std::cout << YELLOW << "limit ON : " << channelName->getLimitMax_() << "\n" << std::endl;
 }
 
 void Server::handleInviteOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
@@ -166,7 +172,7 @@ void Server::handlelimitOFF(Client& client, Channel *channelName, const std::vec
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    channelName->setLimit(0);
+    channelName->setLimitMax_(0);
     channelName->setinviteOnlyFlag_(false);
     std::cout << YELLOW << "Limit OFF \n" << std::endl;
 }

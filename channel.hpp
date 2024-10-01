@@ -39,6 +39,8 @@ public:
     bool                    getpassworfFlag_() const;
     void                    setlimitFlag_(bool flag);
     bool                    getlimitFlag_() const;
+    void                    setLimitMax_(int newlimit);
+    int                     getLimitMax_() const;
     bool                    isEmpty() const;
     bool                    isClientOperator(Channel *channel, Client *client);
     void                    addChannelOperator(std::string newOp);
@@ -57,6 +59,7 @@ private:
     bool                        topicOpFlag_;
     bool                        inviteOnlyFlag_;
     bool                        limitFlag_;
+    int                         limitMax_;
     bool                        passwordFlag_;
 };
 

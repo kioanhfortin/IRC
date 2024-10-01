@@ -45,11 +45,12 @@ const std::string ERR_PASSWDMISMATCH = "  464 ERR_PASSWDMISMATCH :Password incor
 const std::string ERR_UMODEUNKNOWNFLAG = "501 ERR_UMODEUNKNOWNFLAG : Unknown MODE flag\n";
 const std::string ERR_USERSDONTMATCH = "502 ERR_USERSDONTMATCH : Cannot change mode for other users\n";
 const std::string ERR_CHANOPRIVSNEEDED = "482 ERR_CHANOPRIVSNEEDED : You're not channel operator\n";
-const std::string ERR_USERNOTINCHANNEL = "441 <nick> <channel> :They aren't on that channel\n";
+const std::string ERR_USERNOTINCHANNEL = "441 <nick> <channel> : They aren't on that channel\n";
 const std::string ERR_TOOMANYTARGETS = "407 ERR_TOOMANYTARGETS : Less than 4 target\n";
-const std::string ERR_INVALIDPARAMS = " ERR_INVALIDPARAMS : too much parameters\n";
-const std::string ERR_ERRONEUSREALNAME = "ERR_ERRONEUSREALNAME : too much character for realname\n";
-
+const std::string ERR_INVALIDPARAMS = " ERR_INVALIDPARAMS : Too much parameters\n";
+const std::string ERR_ERRONEUSREALNAME = "ERR_ERRONEUSREALNAME : Too much character for realname\n";
+const std::string ERR_ERRORCHANNELNAME = "ERR_ERRORCHANNELNAME : Channel must start with # or & fellowed by a password\n";
+const std::string ERR_LIMITTOSMALL = "ERR_LIMITTOSMALL : Limit must be greater than the number of user already added\n";
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
