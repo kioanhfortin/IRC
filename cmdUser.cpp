@@ -3,12 +3,12 @@
 void Server::handleUser(Client& client, const std::vector<std::string>& params) {
    
     // Vérifier que nous avons au moins 4 paramètres && que le realname comment par un :
-    if (params.size() < 4 ) {
+    if (params.size() < 4 || ( params[3].at(0) == ':' &&  params[3].size() <= 1)) {
         // std::cerr << RED << "ERR_NEEDMOREPARAMS : USER <user> <mode> <unused> <:realname>\n" << std::endl; // params[3][0] != ':' MERITE UNE AUTE MSG
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    if (params[3].at(0) != ':' || params[3].size() <= 1) {
+    if (params[3].at(0) != ':' && params[3].size() <= 1) {
          //std::cerr << RED << "USAGE : USER <user> <mode> <unused> <:realname>\n" << std::endl; // params[3][0] != ':' MERITE UNE AUTE MSG
         client.reply("USAGE : USER <user> <mode> <unused> <:realname>\n");
         return;
