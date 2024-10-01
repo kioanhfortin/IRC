@@ -56,8 +56,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             name2 = "#" + name.substr(1, name.size());
             channelName = findChannel(name2);
         }
-        else
-            channelName = findChannel(name);
+        channelName = findChannel(name); // TAKE OUT THE ELSE BECAUSE WHEN TOU DO "JOIN &FOO FUBAR" TWICE IT DOEST NOT WORK
         if (channelName == nullptr)
         { 
             std::cerr << "New Channel: " << name << std::endl;
@@ -72,7 +71,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         }
         if (channelName->hasClient(client.get_Fd()))
         {
-            client.reply(ERR_USERONCHANNEL);
+            client.reply("443 " + client.getNickName() + " " + channelName->getName() + ERR_USERONCHANNEL);
             return;
         }
         if (name[0] == '0') {

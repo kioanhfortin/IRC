@@ -18,14 +18,14 @@ void Server::handleNick(Client& client, const std::vector<std::string>& params)
     ValidInput nickStruct = validNickname(newNickName);
     if (!nickStruct.isValid)
     {
-        client.reply("432" + client.getNickName() + " " + nickStruct.errorMessage);
+        client.reply("432 " + client.getNickName() + " " + nickStruct.errorMessage);
         return;
     }
 
     //Nb check valid Nickname and already in use
     if (!findNickname(newNickName))
     {
-        client.reply ("433"+ client.getNickName() + " " + client.getNickName() + " " +  ERR_NICKNAMEINUSE);
+        client.reply ("433 "+ client.getNickName() + " " + client.getNickName() + " " +  ERR_NICKNAMEINUSE);
         return;
     }
 
