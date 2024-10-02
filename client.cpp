@@ -76,8 +76,8 @@ bool            Client::getOperator() const {
     return Operator_;
 }
 
-void            Client::setOperator() {
-    Operator_ = true;
+void            Client::setOperator(bool op) {
+    Operator_ = op;
 }
 
 void Client::setPassword(const std::string& password) {

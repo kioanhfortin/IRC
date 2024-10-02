@@ -24,10 +24,10 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
             client.reply(ERR_USERONCHANNEL);
             return;
         }
-
         if (chan->getFd() == client.get_Fd())
             chan->setFd(0);
         chan->removeClient(client.get_Fd());
+        chan->setLimit(chan->getLimit() - 1);
         if (chan->isEmpty()) {
             deleteChannel(channelName);
         }

@@ -14,8 +14,9 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     if (params[1][0] == '0' && params[1].size() == 1) {
         for (std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); it++) {
             it->removeClient(client.get_Fd());
+            it->setLimit(it->getLimit() - 1);
         }
-        std::cout << "Client has left all channels\n" << std::endl;
+        std::cout << "Client " << client.getUserName() << " has left all channels\n" << std::endl;
         return;
     }
     size_t count = 0;
@@ -24,6 +25,10 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         if (params[i][0] == '#' || params[i][0] == '&') {
             count++;
         }
+    }
+    if (count == 0) {
+        client.reply(ERR_ERRORCHANNELNAME);
+        return;
     }
     if (count > 4) {
         client.reply(ERR_TOOMANYTARGETS);
@@ -58,8 +63,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             name2 = "#" + name.substr(1, name.size());
             name = name2;
         }
-        if(name.empty() || (name[0] != '#' && name[0] != '&') || (!(name[0] != '#' && name[0] != '&') && name.size() <= 1))
-        {
+        if(name.empty() || (name[0] != '#' && name[0] != '&') || (!(name[0] != '#' && name[0] != '&') && name.size() <= 1)) {
             client.reply(ERR_ERRORCHANNELNAME);
             return;
         }
@@ -105,7 +109,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             {
                 if(removeCarriageReturn(params.at(1)) != channelName->getPassword())
                 {
-                    client.reply("Bad password\n");
+                    client.reply(ERR_BADCHANNELKEY);
                     return;
                 }
             }

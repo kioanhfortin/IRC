@@ -41,7 +41,7 @@ public :
     bool            getOperator()const;
     const std::string& getPassword() const;
 
-    void            setOperator();
+    void            setOperator(bool op);
     void            set_IpAdd(std::string new_IpAdd);
     void            set_Fd(int new_fd);
 	void            setNickName(std::string newName);

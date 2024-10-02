@@ -5,7 +5,7 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
     // Vérifier les arguments
     if (params.size() < 2 || params.size() > 3) {
         std::cerr << RED << "ERR_NEEDMOREPARAMS : MODE <#channel> <( - / + ) (i, t, k, o, l)>\n" << std::endl;
-        client.reply(ERR_NONICKNAMEGIVEN);
+        client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
     // Vérifier que le client est bien registered avant d'effectuer 
@@ -102,6 +102,10 @@ void Server::handleVPCanalON(Client& client, Channel *channelName, const std::ve
         client.reply(ERR_OPERATORALEREADYREGISTRED);
         return;
     }
+    if (client.getOperator() == false) {
+        client.reply(ERR_USERSDONTMATCH);
+        return;
+    }
     else
     {
         channelName->addChannelOperator(params[3]);
@@ -173,6 +177,6 @@ void Server::handlelimitOFF(Client& client, Channel *channelName, const std::vec
         return;
     }
     channelName->setLimitMax_(0);
-    channelName->setinviteOnlyFlag_(false);
+    channelName->setlimitFlag_(false);
     std::cout << YELLOW << "Limit OFF \n" << std::endl;
 }

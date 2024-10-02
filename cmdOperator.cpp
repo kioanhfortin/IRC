@@ -15,19 +15,34 @@ void Server::handleOper(Client& client, const std::vector<std::string>& params)
         return;
     }
 
-    std::string pswd = params.at(1);
+    std::string pswd = params[2];
     if (pswd != password_)
     {
         client.reply(ERR_PASSWDMISMATCH);
         return ;
     }
-    else
+    if (client.getOperator() == false)
     {
-        client.setOperator();
-        client.reply(client.getNickName() + ": you are an IRC operator now");
+        try {
+            Channel *channelName = nullptr;
+            channelName = findChannel(params[1]);
+            if (channelName == nullptr) {
+                client.reply(ERR_NOSUCHCHANNEL);
+                return;
+            }
+            client.setOperator(1);
+            channelName->addChannelOperator(client.getNickName());
+            client.reply(client.getNickName() + ": you are an IRC operator now");
+        }
+        catch(const std::exception& e)
+        {
+            client.reply(ERR_NOSUCHCHANNEL);
+        }
     }
-
-    return ;
+    else {
+        client.reply(ERR_OPERATORALEREADYREGISTRED);
+        return ;
+    }
 }
 
 
