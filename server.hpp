@@ -110,8 +110,13 @@ public:
     Channel*                        findChannel(const std::string& channelName);
     std::vector<Channel>::iterator  findChannelIt(std::string name);
     void                            deleteChannel(const std::string& name);
+<<<<<<< HEAD
     void                            messagetoChannel(Client& client, const std::vector<std::string>& params);
     void                            deleteClient(int clientFd);
+=======
+    void messagetoChannel(Client& client, const std::vector<std::string>& params);
+    void    deleteClient(int clientFd);
+>>>>>>> client disconnection, and format
 
 private:
     int                                 port_;
