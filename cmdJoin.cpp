@@ -59,6 +59,44 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     }
 }
 
+
+
+void Server::join(Channel *chan, Client &client)
+{
+    if (chan == NULL)  // Vérifie que le channel existe
+    {
+        client.reply("Error: Channel not found.");
+        return;
+    }
+
+    std::string users;
+
+    // Parcourir les clients de la chaîne (chan)
+    const std::vector<int>& client_fds = chan->getClients();
+    for (unsigned int i = 0; i < client_fds.size(); i++)
+    {
+        Client& currentClient = getClientByFd(client_fds[i]);  // Utilise getClientByFd
+        
+        if (currentClient.get_Fd() == chan->getFd())  // Vérifie si c'est l'opérateur de la chaîne
+            users += "@op" + currentClient.getNickName() + " ";  // Préfixe par @ si c'est l'opérateur
+        else
+            users += currentClient.getNickName() + " ";  // Sinon, ajoute juste le nom
+    }
+
+    // Diffuse à tous les membres que le client a rejoint
+    chan->sendToAll(client.getInfoClient() + " JOIN :" + chan->getName() + "\n");
+
+    // Envoie le topic de la chaîne au client qui rejoint
+    client.reply(client.getNickName() + " " + chan->getName() + " :" + chan->getTopic() + "\n");
+
+    // Envoie la liste des membres de la chaîne
+    client.reply(client.getNickName() + " = " + chan->getName() + " " + users + "\n");
+
+    // Envoie le message de fin de liste
+    client.reply(client.getNickName() + " " + chan->getName() + "\n");
+}
+
+
 void    Server::joinChannel(Client& client, const std::vector<std::string>& params, size_t j) {
     std::string name = removeCarriageReturn(params[j]);
     std::string name2;

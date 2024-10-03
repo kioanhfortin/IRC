@@ -71,6 +71,16 @@ bool     Server::findNickname(std::string nickname)
     return true;
 }
 
+std::string     Server::findNickname(int clientFd)
+{
+    for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it)
+    {
+        if (it->get_Fd() == clientFd)
+            return it->getNickName();
+    }
+    return "";
+}
+
 Server::ValidInput Server::validNickname(const std::string nickname)
 {
     ValidInput nickStruct;
