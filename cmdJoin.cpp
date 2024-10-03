@@ -11,27 +11,6 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    if (params[1][0] == '0' && params[1].size() == 1) {
-        for (std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); it++) {
-            it->removeClient(client.get_Fd());
-            it->setLimit(it->getLimit() - 1);
-        }
-        std::cout << "Client " << client.getUserName() << " has left all channels\n" << std::endl;
-        return;
-    }
-    size_t count = 0;
-    for (size_t i = 0; i < params.size(); i++)
-    {
-        if (params[i][0] == '#' || params[i][0] == '&') {
-            count++;
-        }
-    }
-    if (count == 0) {
-        client.reply(ERR_ERRORCHANNELNAME);
-        return;
-    }
-    if (count > 4) {
-        client.reply(ERR_TOOMANYTARGETS);
     size_t count = 0;
     for (size_t i = 0; i < params.size(); i++)
     {
@@ -109,47 +88,17 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         client.reply("Channel must start with #\n");
         return;
     }
-    size_t k = 0;
-    for (size_t j = 0; j <= params.size(); j++) {
-        if (params[j][0] == '#') {
-            joinChannel(client, params, j);
-            k++;
-        }
-        else if (params[j][0] == '&') {
-            joinChannel(client, params, j);
-            k++;
-            j++;
-        }
-        if (k == count)
-            break;
-    }
-}
-
-void    Server::joinChannel(Client& client, const std::vector<std::string>& params, size_t j) {
-    std::string name = removeCarriageReturn(params[j]);
-    std::string name2;
-    if (name[name.size() - 1] == ','){
-        name = name.substr(0, name.size() - 1);
-    }
-    std::cout << "name = " << name << std::endl;
     try {
         Channel *channelName = nullptr;
         if (name[0] == '&'){
             name2 = "#" + name.substr(1, name.size());
             channelName = findChannel(name2);
         }
-        else
-            channelName = findChannel(name);
+        channelName = findChannel(name); // TAKE OUT THE ELSE BECAUSE WHEN TOU DO "JOIN &FOO FUBAR" TWICE IT DOEST NOT WORK
         if (channelName == nullptr)
-        { 
         { 
             std::cerr << "New Channel: " << name << std::endl;
             Channel newChannel(name);
-            if (name[0] == '&') {
-                newChannel.getPassword() = params[j + 1];
-                std::cout << "Password set : " <<  newChannel.getPassword() << std::endl;
-            }
-            newChannel.setLimit(1);
             if (name[0] == '&') {
                 newChannel.setPassword(params[j + 1]);
             }
@@ -160,11 +109,9 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         }
         if (channelName->hasClient(client.get_Fd()))
         {
-            client.reply(ERR_USERONCHANNEL);
->>>>>>> join
+            client.reply("443 " + client.getNickName() + " " + channelName->getName() + ERR_USERONCHANNEL);
             return;
         }
-        if (channelName->isInviteOnly() == true)
         if (name[0] == '0') {
             for (std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); ++it) {
                     channelName->removeClient(client.get_Fd());
@@ -177,13 +124,14 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
                 return;
             }
         }
-        if (channelName->getlimitFlag_() == true && channelName->getLimit() >= channelName->getLimitMax_()) {
+        if(channelName->getClients().size() >= (size_t)channelName->getLimit() && channelName->getLimit() != 0)
+        {
             client.reply(ERR_CHANNELISFULL);
             return;
         }
-        if (channelName->getpassworfFlag_() == true){
+        if (channelName->getpassworfFlag_() == true)
+        {
             //# channel with no password, & channel avec un password
-            if (params.size() % 2 != 0) {
             if (params.size() % 2 != 0) {
                 client.reply(ERR_BADCHANNELKEY);
                 return;
@@ -192,7 +140,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             {
                 if(removeCarriageReturn(params.at(1)) != channelName->getPassword())
                 {
-                    client.reply(ERR_BADCHANNELKEY);
+                    client.reply("Bad password");
                     return;
                 }
             }
@@ -202,8 +150,8 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
                 return;
             }
         }
+        //fonction count if more than 4 # 407 ERR_TOOMANYTARGETS
         std::cout << "Add Client to Channel " << name << std::endl;
-        channelName->setLimit(channelName->getLimit() + 1);
         channelName->addClient(client.get_Fd());
         join(channelName, client);
     }
