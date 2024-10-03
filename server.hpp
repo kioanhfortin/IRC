@@ -101,12 +101,14 @@ public:
     void                    CloseFds();
 
     bool                            findNickname(std::string nickname);
+    std::string                     findNickname(int clientFd);
     int                             findUsername(std::string username);
     Server::ValidInput              validNickname(const std::string nickname);
     Channel*                        findChannel(const std::string& channelName);
     std::vector<Channel>::iterator  findChannelIt(std::string name);
     void                            deleteChannel(const std::string& name);
     void messagetoChannel(Client& client, const std::vector<std::string>& params);
+    void    deleteClient(int clientFd);
 
 private:
     int                                 port_;

@@ -8,7 +8,7 @@ void Server::handleTopic(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_NOTREGISTERED);
         return;
     }
-    if (params.size() > 2) {
+    if (params.size() < 2) {
         std::cerr << RED << "ERR_NEEDMOREPARAMS : TOPIC <channel> <:topic>\n" << std::endl;
         client.reply(ERR_NEEDMOREPARAMS);
         return;
@@ -22,9 +22,14 @@ void Server::handleTopic(Client& client, const std::vector<std::string>& params)
     }
     if ((channel->getTopicOpFlag_() == true && channel->isClientOperator(channel, &client) == true) || channel->getTopicOpFlag_() == false)
     {
-        if (params.size() == 2)
+        if (params.size() >= 2)
         {
-            std::string topic = params[2];
+            std::string topic;
+            for (size_t i = 1; i < params.size(); i++){
+                if (i != 1)
+                    topic += ' ';
+                topic += params[i];
+            }
             if (topic[0] != ':') {
                 client.reply("Need a ':' before topic\n");
                 return;

@@ -124,6 +124,7 @@ void    Server::AcceptNewClient()
         throw std::runtime_error("Error while getting hostname on new client.");
     std::cout << COLOR_PINK<< "New client hostname: " << hostname << BLACK << std::endl;
     clients_.push_back(Client(new_client_fd, hostname));
+   
     struct pollfd clientPollfd = {new_client_fd, POLLIN, 0};
     fds_.push_back(clientPollfd);
     std::cout << GREEN << "Accepted connection from client" << std::endl;
@@ -143,7 +144,7 @@ void    Server::ParseNewData(int fd)
         // Check if client is disconnected
         if (byte_Receive == 0)
         {
-            std::cout << RED << "Client fd : <" << fd << "> is disconnected" << std::endl;
+            std::cout << RED << "Client : <" << findNickname(fd) << "> is disconnected" << std::endl;
             closeClient(fd);
         }
         else if (byte_Receive < 0){
@@ -210,8 +211,24 @@ void Server::ProcessNewData(int fd, const std::string& data) {
     }
 }
 
-void    Server::closeClient(int clientSocket) {
+void    Server::deleteClient(int clientFd)
+{
+	for (unsigned int i = 0; i < channels_.size(); i++)
+	{
+		channels_[i].removeClient(clientFd);
+	}
+	std::vector<Channel>::iterator   it = channels_.begin();
+	while (it != channels_.end())
+	{
+		if (it->getClients().empty())
+			it = channels_.erase(it);
+		else
+			it++;
+	}
+}
 
+void    Server::closeClient(int clientSocket) {
+    deleteClient(clientSocket);
     for (std::vector<Client>::iterator it = clients_.begin(); it != clients_.end(); ++it) {
         if (it->get_Fd() == clientSocket) {
             clients_.erase(it);
@@ -367,40 +384,6 @@ std::vector<Channel>::iterator Server::findChannelIt(std::string name) {
 
 
 
-void Server::join(Channel *chan, Client &client)
-{
-    if (chan == NULL)  // Vérifie que le channel existe
-    {
-        client.reply("Error: Channel not found.");
-        return;
-    }
-
-    std::string users;
-
-    // Parcourir les clients de la chaîne (chan)
-    const std::vector<int>& client_fds = chan->getClients();
-    for (unsigned int i = 0; i < client_fds.size(); i++)
-    {
-        Client& currentClient = getClientByFd(client_fds[i]);  // Utilise getClientByFd
-        
-        if (currentClient.get_Fd() == chan->getFd())  // Vérifie si c'est l'opérateur de la chaîne
-            users += "@" + currentClient.getNickName() + " ";  // Préfixe par @ si c'est l'opérateur
-        else
-            users += currentClient.getNickName() + " ";  // Sinon, ajoute juste le nom
-    }
-
-    // Diffuse à tous les membres que le client a rejoint
-    chan->sendToAll(client.getInfoClient() + " JOIN :" + chan->getName() + "\n");
-
-    // Envoie le topic de la chaîne au client qui rejoint
-    client.reply(client.getNickName() + " " + chan->getName() + chan->getTopic() + "\n");
-
-    // Envoie la liste des membres de la chaîne
-    client.reply(client.getNickName() + " = " + chan->getName() + " " + users + "\n");
-
-    // Envoie le message de fin de liste
-    client.reply(client.getNickName() + " " + chan->getName() + "\n");
-}
 
 
 
