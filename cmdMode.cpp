@@ -92,12 +92,6 @@ void Server::handleVPCanalON(Client& client, Channel *channelName, const std::ve
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    // if (params[3] != client.getUserName())
-    // {
-    //     client.reply(ERR_USERSDONTMATCH);
-    //     return;
-    // }
-
     if (channelName->isClientOperator(channelName, params[3]))
     {
         client.reply(ERR_OPERATORALEREADYREGISTRED);

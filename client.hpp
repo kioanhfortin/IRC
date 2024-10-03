@@ -30,16 +30,16 @@ public :
     ~Client();
 
 
-    std::string     get_IpAdd() const;
-    int             get_Fd() const;
-	std::string     getNickName() const;
-	std::string     getUserName() const;
-    std::string     getRealName() const;
-    std::string     getHostname() const;
-    bool            getRegistered() const;
-    bool            getLogin() const;
-    bool            getOperator()const;
-    const std::string& getPassword() const;
+    std::string         get_IpAdd() const;
+    int                 get_Fd() const;
+	std::string         getNickName() const;
+	std::string         getUserName() const;
+    std::string         getRealName() const;
+    std::string         getHostname() const;
+    bool                getRegistered() const;
+    bool                getLogin() const;
+    bool                getOperator()const;
+    const std::string&  getPassword() const;
 
     void            setOperator(bool op);
     void            set_IpAdd(std::string new_IpAdd);

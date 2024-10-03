@@ -17,6 +17,10 @@ void Server::handleTopic(Client& client, const std::vector<std::string>& params)
 
     Channel* channel = findChannel(channelName);
     if (channel == nullptr) {
+        client.reply(ERR_NOSUCHCHANNEL);
+        return;
+    }
+    if (channel->hasClient(client.get_Fd()) == false) {
         client.reply(ERR_NOTONCHANNEL);
         return;
     }

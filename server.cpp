@@ -271,8 +271,6 @@ void Server::deleteChannel(const std::string& name) {
     }
 }
 
-
-
 Client		&Server::findClient(std::string name)
 {
 	for (unsigned int i = 0; i < clients_.size(); i++)

@@ -19,7 +19,7 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
         return;
     }
     // Vérifier que le client n'est pas déjà registered
-    if (client.getRegistered())
+    if (client.getRegistered() == true)
     {
         client.reply(ERR_ALREADYREGISTRED);
         return;
@@ -27,13 +27,13 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
     // Vérifier que le username n'existe pas déjà
     if (findUsername(params.at(0)) == 1)
     {
-       client.reply(ERR_USERNAMEINUSE);
+        client.reply(ERR_USERNAMEINUSE);
         return;
     }
     // Mettre à jour les informations du client //  guest 0 * :Ronnie Reagan
     client.setUserName(params[0]);
     //client.setHostname(params[1]);
- 
+    
     if(!client.getNickName().empty())
         client.registerClient();
     std::string realname;

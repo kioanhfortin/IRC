@@ -33,9 +33,9 @@ const std::string ERR_ALREADYREGISTRED = "462 ERR_ALREADYREGISTRED : Already reg
 const std::string ERR_USERNAMEINUSE = "Username already in use\n";
 const std::string ERR_OPERATORALEREADYREGISTRED = "OPERATORALEREADYREGISTRED : This operator is already registered\n";
 const std::string ERR_NOTREGISTERED = "451 : ERR_NOTREGISTERED : First register with the USER command\n";
-const std::string ERR_NOSUCHNICK = "401 ERR_NOSUCHNICK : INVITE command received for a non-existing nick\n";
+const std::string ERR_NOSUCHNICK = "401 ERR_NOSUCHNICK : Command received for a non-existing nick\n";
 const std::string ERR_NOTONCHANNEL = "442 ERR_NOTONCHANNEL : You're not on that channel\n";
-const std::string ERR_USERONCHANNEL = ": is already on channel\n";
+const std::string ERR_USERONCHANNEL = "443 ERR_USERONCHANNEL : is already on channel\n";
 const std::string ERR_CHANNELISFULL = "471 ERR_CHANNELISFULL : Cannot join channel (+l)\n";
 const std::string ERR_INVITEONLYCHAN = "473 ERR_INVITEONLYCHAN : Cannot join channel (+i)\n";
 const std::string ERR_BADCHANNELKEY = "475 ERR_BADCHANNELKEY : Cannot join channel (+k)\n";
@@ -45,12 +45,14 @@ const std::string ERR_PASSWDMISMATCH = "  464 ERR_PASSWDMISMATCH :Password incor
 const std::string ERR_UMODEUNKNOWNFLAG = "501 ERR_UMODEUNKNOWNFLAG : Unknown MODE flag\n";
 const std::string ERR_USERSDONTMATCH = "502 ERR_USERSDONTMATCH : Cannot change mode for other users\n";
 const std::string ERR_CHANOPRIVSNEEDED = "482 ERR_CHANOPRIVSNEEDED : You're not channel operator\n";
-const std::string ERR_USERNOTINCHANNEL = "441 <nick> <channel> : They aren't on that channel\n";
+const std::string ERR_USERNOTINCHANNEL = "441 ERR_USERNOTINCHANNEL : They aren't on that channel\n";
 const std::string ERR_TOOMANYTARGETS = "407 ERR_TOOMANYTARGETS : Less than 4 target\n";
 const std::string ERR_INVALIDPARAMS = " ERR_INVALIDPARAMS : Too much parameters\n";
 const std::string ERR_ERRONEUSREALNAME = "ERR_ERRONEUSREALNAME : Too much character for realname\n";
 const std::string ERR_ERRORCHANNELNAME = "ERR_ERRORCHANNELNAME : Channel must start with # or & fellowed by a password\n";
 const std::string ERR_LIMITTOSMALL = "ERR_LIMITTOSMALL : Limit must be greater than the number of user already added\n";
+const std::string ERR_INVITEYOURSELF = "ERR_INVITEYOURSELF : You cannot invite yourself\n";
+
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
@@ -108,8 +110,8 @@ public:
     Channel*                        findChannel(const std::string& channelName);
     std::vector<Channel>::iterator  findChannelIt(std::string name);
     void                            deleteChannel(const std::string& name);
-    void messagetoChannel(Client& client, const std::vector<std::string>& params);
-    void    deleteClient(int clientFd);
+    void                            messagetoChannel(Client& client, const std::vector<std::string>& params);
+    void                            deleteClient(int clientFd);
 
 private:
     int                                 port_;
@@ -145,7 +147,7 @@ private:
     void handleMode(Client& client, const std::vector<std::string>& params);
     void handlePrivMsg(Client& client, const std::vector<std::string>& params);
     void handlePass(Client& client, const std::vector<std::string>& params);
-    void handleOper(Client& client, const std::vector<std::string>& params);
+    // void handleOper(Client& client, const std::vector<std::string>& params);
     void handlePing(Client& client, const std::vector<std::string>& params);
     void handleList(Client& client, const std::vector<std::string>& params);
     void handleName(Client& client, const std::vector<std::string>& params);
