@@ -120,9 +120,9 @@ void                    Channel::setTopicOpFlag_(bool flag) {
     this->topicOpFlag_ = flag;
 }
 
-bool    Channel::isClientOperator(Channel *channel, Client *client) {
+bool    Channel::isClientOperator(Channel *channel, std::string clientName) {
 
-    return std::find(channel->channelOperators_.begin(), channel->channelOperators_.end(), client->getUserName()) != channel->channelOperators_.end();
+    return std::find(channel->channelOperators_.begin(), channel->channelOperators_.end(), clientName) != channel->channelOperators_.end();
 }
 
 void    Channel::addChannelOperator(std::string newOp) {

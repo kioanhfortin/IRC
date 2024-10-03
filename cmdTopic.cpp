@@ -20,7 +20,7 @@ void Server::handleTopic(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_NOTONCHANNEL);
         return;
     }
-    if ((channel->getTopicOpFlag_() == true && channel->isClientOperator(channel, &client) == true) || channel->getTopicOpFlag_() == false)
+    if ((channel->getTopicOpFlag_() == true && channel->isClientOperator(channel, client.getNickName()) == true) || channel->getTopicOpFlag_() == false)
     {
         if (params.size() >= 2)
         {

@@ -44,7 +44,7 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
     }
     // Ajouter a la liste de client si sur la liste des clients inviter
     if (!channel->isClientInvited(*targetClient)){
-        if (channel->isClientOperator(channel, &client) == false) {
+        if (channel->isClientOperator(channel, client.getNickName()) == false) {
             client.reply(ERR_CHANOPRIVSNEEDED);
             return;
         }

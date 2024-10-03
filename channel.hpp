@@ -42,7 +42,7 @@ public:
     void                    setLimitMax_(int newlimit);
     int                     getLimitMax_() const;
     bool                    isEmpty() const;
-    bool                    isClientOperator(Channel *channel, Client *client);
+    bool                    isClientOperator(Channel *channel, std::string clientName);
     void                    addChannelOperator(std::string newOp);
     void                    delChannelOperator(std::string delOp);
 

@@ -92,25 +92,23 @@ void Server::handleVPCanalON(Client& client, Channel *channelName, const std::ve
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    if (params[3] != client.getUserName())
-    {
-        client.reply(ERR_USERSDONTMATCH);
-        return;
-    }
-    if (channelName->isClientOperator(channelName, &client))
+    // if (params[3] != client.getUserName())
+    // {
+    //     client.reply(ERR_USERSDONTMATCH);
+    //     return;
+    // }
+
+    if (channelName->isClientOperator(channelName, params[3]))
     {
         client.reply(ERR_OPERATORALEREADYREGISTRED);
         return;
     }
-    if (client.getOperator() == false) {
+    if (channelName->isClientOperator(channelName, client.getNickName()) == false) {
         client.reply(ERR_USERSDONTMATCH);
         return;
     }
-    else
-    {
-        channelName->addChannelOperator(params[3]);
-        std::cout << YELLOW << "VPCanal ON : " << params[3] << " is now an operator!\n" << std::endl;
-    }
+    channelName->addChannelOperator(params[3]);
+    std::cout << YELLOW << "VPCanal ON : " << params[3] << " is now an operator!\n" << std::endl;
 }
 
 void Server::handlelimitON(Client& client, Channel *channelName, const std::vector<std::string>& params) {
@@ -167,7 +165,7 @@ void Server::handleVPCanalOFF(Client& client, Channel *channelName, const std::v
         return;
     }
     channelName->delChannelOperator(params[3]);
-    std::cout << YELLOW << "VPCanal OFF : " << params[3] << "is now deleted !\n"<< std::endl;
+    std::cout << YELLOW << "VPCanal OFF : " << params[3] << " is now deleted !\n"<< std::endl;
 }
 
 void Server::handlelimitOFF(Client& client, Channel *channelName, const std::vector<std::string>& params) {
