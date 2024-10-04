@@ -1,4 +1,5 @@
 #include "server.hpp"
+
 void Server::handleJoin(Client& client, const std::vector<std::string>& params) {
     if (!client.getRegistered())
     {
@@ -92,7 +93,6 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         if (name[0] == '&'){
             name2 = "#" + name.substr(1, name.size());
             channelName = findChannel(name2);
-            name = name2;
         }
         channelName = findChannel(name); // TAKE OUT THE ELSE BECAUSE WHEN TOU DO "JOIN &FOO FUBAR" TWICE IT DOEST NOT WORK
         if (channelName == nullptr)
@@ -109,11 +109,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         }
         if (channelName->hasClient(client.get_Fd()))
         {
-<<<<<<< HEAD
             client.reply("443 " + client.getNickName() + " " + channelName->getName() + ERR_USERONCHANNEL);
-=======
-            client.reply(ERR_USERONCHANNEL);
->>>>>>> join
             return;
         }
         if (name[0] == '0') {
@@ -130,13 +126,9 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         }
         if(channelName->getClients().size() >= (size_t)channelName->getLimit() && channelName->getLimit() != 0)
         {
-        if(channelName->getClients().size() >= (size_t)channelName->getLimit() && channelName->getLimit() != 0)
-        {
             client.reply(ERR_CHANNELISFULL);
             return;
         }
-        if (channelName->getpassworfFlag_() == true)
-        {
         if (channelName->getpassworfFlag_() == true)
         {
             //# channel with no password, & channel avec un password
@@ -148,7 +140,6 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             {
                 if(removeCarriageReturn(params.at(1)) != channelName->getPassword())
                 {
-                    client.reply("Bad password");
                     client.reply("Bad password");
                     return;
                 }
