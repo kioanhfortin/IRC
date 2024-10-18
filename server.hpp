@@ -126,6 +126,8 @@ private:
     struct sockaddr_in                  serverAddr_, clientAddr_;
     socklen_t                           clientAddrLen_;
 
+    std::map<int, std::string>          clientBuffers;
+
     // std::map<std::string, std::set<int> >                   channel_s;
     // std::map<std::string, std::string>                      topics_;
     // std::map<int, std::pair<std::string, std::string> >     userInfo_;

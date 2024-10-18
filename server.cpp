@@ -129,7 +129,6 @@ void    Server::AcceptNewClient()
     fds_.push_back(clientPollfd);
     std::cout << GREEN << "Accepted connection from client" << std::endl;
     displayClientInfo();
-
 }
 
 void    Server::ParseNewData(int fd)
@@ -144,18 +143,35 @@ void    Server::ParseNewData(int fd)
         // Check if client is disconnected
         if (byte_Receive == 0)
         {
+            std::cout << "Client sent EOF (Ctrl+D). Closing connection." << std::endl;
+            if (!clientBuffers[fd].empty()) {
+                std::string finalCommand = clientBuffers[fd];
+                clientBuffers[fd].clear();
+                if (!finalCommand.empty() && !std::all_of(finalCommand.begin(), finalCommand.end(), isspace)) {
+                    std::cout << WHITE << "Client received and process last input: " << finalCommand << std::endl;
+                    ProcessNewData(fd, finalCommand);
+                }
+            }
             std::cout << RED << "Client : <" << findNickname(fd) << "> is disconnected" << std::endl;
             closeClient(fd);
         }
-        else if (byte_Receive < 0){
+        else if (byte_Receive < 0) {
             std::cerr << "recv failed" << std::endl;
             closeClient(fd);
-        }
-        else
-        {
-            std::string data(buffer, byte_Receive);
-            std::cout << WHITE << "Client received input\n" << std::endl;
-            ProcessNewData(fd, data); //code fonction that receive command, trigger command, and write the message receive
+        } 
+        else {
+            clientBuffers[fd] += std::string(buffer, byte_Receive);
+            size_t newlinepos;
+            std::string fullCommand;
+            while ((newlinepos = clientBuffers[fd].find('\n')) != std::string::npos) {
+                fullCommand = clientBuffers[fd].substr(0, newlinepos);
+                clientBuffers[fd].erase(0, newlinepos + 1);
+                if (!fullCommand.empty() && !std::all_of(fullCommand.begin(), fullCommand.end(), isspace)) {
+                    std::cout << WHITE << "Processing command: " << fullCommand << std::endl;
+                    ProcessNewData(fd, fullCommand);
+                }
+            }
+            // std::string data(buffer, byte_Receive);
         }
     }
     catch (const std::exception& e)
