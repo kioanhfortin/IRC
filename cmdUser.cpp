@@ -9,13 +9,8 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
         return;
     }
     if (params[3].at(0) != ':' && params[3].size() <= 1) {
-         //std::cerr << RED << "USAGE : USER <user> <mode> <unused> <:realname>\n" << std::endl; // params[3][0] != ':' MERITE UNE AUTE MSG
+
         client.reply("USAGE : USER <user> <mode> <unused> <:realname>\n");
-        return;
-    }
-    if(params[3].size() > 20)
-    {
-        client.reply(ERR_ERRONEUSREALNAME);
         return;
     }
     // Vérifier que le client n'est pas déjà registered

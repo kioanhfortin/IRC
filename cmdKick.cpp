@@ -19,7 +19,7 @@ void Server::handleKick(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_USERNOTINCHANNEL);
         return;
     }
-    if(channelName->getFd() != client.get_Fd())
+    if(!channelName->isClientOperator(channelName, client.getNickName()))
     {
         client.reply(ERR_CHANOPRIVSNEEDED);
         return;

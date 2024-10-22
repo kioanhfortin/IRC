@@ -53,7 +53,6 @@ const std::string ERR_ERRORCHANNELNAME = "ERR_ERRORCHANNELNAME : Channel must st
 const std::string ERR_LIMITTOSMALL = "ERR_LIMITTOSMALL : Limit must be greater than the number of user already added\n";
 const std::string ERR_INVITEYOURSELF = "ERR_INVITEYOURSELF : You cannot invite yourself\n";
 
-
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
 #endif

@@ -81,8 +81,11 @@ void Server::start()
     struct pollfd serverPollfd = {serverSocket_, POLLIN, 0};
     fds_.push_back(serverPollfd);
 
+    struct pollfd stdinPollfd = {STDIN_FILENO, POLLIN, 0};
+    fds_.push_back(stdinPollfd);
+
     std::cout << GREEN << "IRC Running" << std::endl;
-    while(g_interrupt == false)
+    while(g_interrupt == false )
     {
         if(poll(fds_.begin().base(), fds_.size(), -1) < 0)
             break;
@@ -94,6 +97,17 @@ void Server::start()
             {
                 if(fds_[i].fd == serverSocket_)
                     AcceptNewClient();
+                else if (fds_[i].fd == STDIN_FILENO)
+                {
+                    std::string input;
+                    std::getline(std::cin, input);
+                    if (input == "exit")
+                    {
+                        std::cout << WHITE << "Shutting down server..." << std::endl;
+                        g_interrupt = true;
+                        break;
+                    }
+                }
                 else
                     ParseNewData(fds_[i].fd);
             }
