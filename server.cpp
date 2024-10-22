@@ -143,15 +143,15 @@ void    Server::ParseNewData(int fd)
         // Check if client is disconnected
         if (byte_Receive == 0)
         {
-            std::cout << "Client sent EOF (Ctrl+D). Closing connection." << std::endl;
-            if (!clientBuffers[fd].empty()) {
-                std::string finalCommand = clientBuffers[fd];
-                clientBuffers[fd].clear();
-                if (!finalCommand.empty() && !std::all_of(finalCommand.begin(), finalCommand.end(), isspace)) {
-                    std::cout << WHITE << "Client received and process last input: " << finalCommand << std::endl;
-                    ProcessNewData(fd, finalCommand);
-                }
-            }
+            // std::cout << "Client sent EOF (Ctrl+D). Closing connection." << std::endl;
+            // if (!clientBuffers[fd].empty()) {
+            //     std::string finalCommand = clientBuffers[fd];
+            //     clientBuffers[fd].clear();
+            //     if (!finalCommand.empty() && !std::all_of(finalCommand.begin(), finalCommand.end(), isspace)) {
+            //         std::cout << WHITE << "Client received and process last input: " << finalCommand << std::endl;
+            //         ProcessNewData(fd, finalCommand);
+            //     }
+            // }
             std::cout << RED << "Client : <" << findNickname(fd) << "> is disconnected" << std::endl;
             closeClient(fd);
         }
@@ -159,20 +159,20 @@ void    Server::ParseNewData(int fd)
             std::cerr << "recv failed" << std::endl;
             closeClient(fd);
         } 
-        else {
-            clientBuffers[fd] += std::string(buffer, byte_Receive);
-            size_t newlinepos;
-            std::string fullCommand;
-            while ((newlinepos = clientBuffers[fd].find('\n')) != std::string::npos) {
-                fullCommand = clientBuffers[fd].substr(0, newlinepos);
-                clientBuffers[fd].erase(0, newlinepos + 1);
-                if (!fullCommand.empty() && !std::all_of(fullCommand.begin(), fullCommand.end(), isspace)) {
-                    std::cout << WHITE << "Processing command: " << fullCommand << std::endl;
-                    ProcessNewData(fd, fullCommand);
-                }
-            }
-            // std::string data(buffer, byte_Receive);
+        else
+        {
+            // clientBuffers[fd] += std::string(buffer, byte_Receive);
+            // size_t newlinepos;
+            // std::string fullCommand;
+            // while ((newlinepos = clientBuffers[fd].find("\r\n")) != std::string::npos) {
+            //     fullCommand = clientBuffers[fd].substr(0, newlinepos);
+            //     clientBuffers[fd].erase(0, newlinepos + 1);
+            //     if (!fullCommand.empty() && !std::all_of(fullCommand.begin(), fullCommand.end(), isspace)) {
+                    std::string data(buffer, byte_Receive);
+                    ProcessNewData(fd, data);
+                // } 
         }
+            // std::string data(buffer, byte_Receive);
     }
     catch (const std::exception& e)
     {
@@ -218,7 +218,6 @@ void Server::ProcessNewData(int fd, const std::string& data) {
 
     std::string command = tokens[0];
     tokens.erase(tokens.begin());
-
     CommandMap::iterator it = commandMap_.find(command);
     if (it != commandMap_.end())
     {

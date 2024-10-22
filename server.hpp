@@ -24,7 +24,7 @@
 # include "utils.hpp"
 
 // Error Messages
-const std::string RPL_WELCOME = "Welcome to the Internet Relay Network\n";
+const std::string RPL_WELCOME = "Welcome to the Internet Relay Network\r\n";
 const std::string ERR_NICKNAMEINUSE = "ERR_NICKNAMEINUSE : Nickname is already in use\n";
 const std::string ERR_NONICKNAMEGIVEN = "431 ERR_NONICKNAMEGIVEN : No nickname given\n";
 const std::string ERR_ERRONEUSNICKNAME = "ERR_ERRONEUSNICKNAME : Erroneous nickname\n";

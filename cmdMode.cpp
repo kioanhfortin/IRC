@@ -137,6 +137,7 @@ void Server::handleTopicOFF(Client& client, Channel *channelName, const std::vec
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
+     //check if user in channel and if operator
     channelName->setTopicOpFlag_(false);
     std::cout << YELLOW << "Topic OFF\n" << std::endl;
 }
@@ -158,6 +159,7 @@ void Server::handleVPCanalOFF(Client& client, Channel *channelName, const std::v
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
+    //check if user in channel and if operator
     channelName->delChannelOperator(params[3]);
     std::cout << YELLOW << "VPCanal OFF : " << params[3] << " is now deleted !\n"<< std::endl;
 }

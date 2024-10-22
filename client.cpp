@@ -90,9 +90,9 @@ const std::string& Client::getPassword() const {
 
 void Client::reply(const std::string& message) {
     // Implementation for sending a message to the client
-    std::cout << RED << "Reply to client: " << message << std::endl;
+    std::cout << RED << "Reply to client: " << message << "\r\n" << std::endl;
     if (send(get_Fd(), message.c_str(), message.size(), 0) < 0)
-        throw(std::out_of_range("Error, message not sent"));
+        throw(std::out_of_range("Error, message not sent\r\n"));
 }
 
 std::string Client::getInfoClient() const
@@ -111,14 +111,15 @@ std::string Client::getInfoClient() const
 void Client::welcomeMessage() {
     if(nickName_.empty() || userName_.empty())
     {
-        std::cout << "Error : " << nickName_ <<  " need to registe!r" << std::endl;
+        std::cout << "Error : " << nickName_ <<  " need to registe!\n" << std::endl;
         return ;
     }
     if(!getRegistered())
     {
         registerClient();
-        std::cout << LIME << nickName_ << " is now registered" << BLACK << std::endl;
+        std::cout << LIME << nickName_ << " is now registered\n" << BLACK << std::endl;
     }
-    reply(RPL_WELCOME + getNickName() + "! " + getUserName() + " @" + hostName_ + "\n");
-     std::cout << COLOR_PINK  << "Real name: "  + getRealName() +  " "+ this->getHostname() <<  "\n" << std::endl;
+    // reply(RPL_WELCOME + getNickName() + "! " + getUserName() + " @" + hostName_);
+     reply(RPL_WELCOME);
+     std::cout << COLOR_PINK  << "Real name: "  + getRealName() +  " "+ this->getHostname() <<  "\r\n" << std::endl;
 }

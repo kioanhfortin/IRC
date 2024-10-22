@@ -54,6 +54,7 @@ void Server::handleInvite(Client& client, const std::vector<std::string>& params
             channel->inviteClient(*targetClient);
             std::string response = ":" + client.getNickName() + " 341 "+ targetNick + " " + channelName + "\n";
             send(client.get_Fd(), response.c_str(), response.size(), 0);
+            channel->sendToAll(response);
             std::cerr << GREEN << "User " << targetNick << " has been invited to channel " << channelName << " by " << client.getNickName() << std::endl;
         }
         else {

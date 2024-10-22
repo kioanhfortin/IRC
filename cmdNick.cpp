@@ -85,7 +85,7 @@ Server::ValidInput Server::validNickname(const std::string nickname)
 {
     ValidInput nickStruct;
     
-    if (nickname.size() <= 1 || nickname.size() > 9 )
+    if (nickname.size() <= 1 && nickname.size() > 9 )
     {
         nickStruct.errorMessage = ": Nickname length must be between 2 and 9 characters.\n";
         nickStruct.isValid = false;

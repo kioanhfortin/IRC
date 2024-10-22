@@ -22,7 +22,7 @@ void Server::messagetoChannel(Client& client, const std::vector<std::string>& pa
         if(channelName->hasClient(client.get_Fd()))
             channelName->sendToAll(privMsg(client, params[1], message));
         else
-            client.reply(client.getNickName() +  " is not in the channel " + channelName->getName());
+            client.reply(client.getNickName() +  " is not in the channel " + channelName->getName() + "\r\n");
     }
     catch(const std::exception& e)
     {
@@ -41,7 +41,7 @@ void Server::handlePrivMsg(Client& client, const std::vector<std::string>& param
 	}
     if (!client.getRegistered())
     {
-        client.reply("Register to send private message");
+        client.reply("Register to send private message \r\n");
         return;
     }
     if (params[1].at(0) == '#')

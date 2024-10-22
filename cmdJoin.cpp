@@ -149,7 +149,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             {
                 if(removeCarriageReturn(params.at(1)) != channelName->getPassword())
                 {
-                    client.reply("Bad password");
+                    client.reply(ERR_BADCHANNELKEY);
                     return;
                 }
             }
@@ -159,11 +159,12 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
                 return;
             }
         }
-        //fonction count if more than 4 # 407 ERR_TOOMANYTARGETS
-        std::cout << "Add Client to Channel " << name << std::endl;
+        std::string str = "Add Client to Channel " + name;
+        std::cout << str << std::endl;
         channelName->setLimit(channelName->getLimit() + 1);
         channelName->addClient(client.get_Fd());
         join(channelName, client);
+        channelName->sendToAll(str);
     }
     catch (const std::exception& e) {
         std::cerr << e.what() << '\n';

@@ -33,4 +33,5 @@ void Server::handleKick(Client& client, const std::vector<std::string>& params)
     std::cerr << GREEN << "User " << client.getNickName() << " has been kicked from channel " << channelName->getName() << std::endl;
     client.reply("You've been kick out from channel" + channelName->getName() + "!\n");
     handlePart(findClient(params.at(1)), args);
+    channelName->sendToAll("You've been kick out from channel" + channelName->getName() + "!\n");
 }
