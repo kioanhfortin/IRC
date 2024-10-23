@@ -205,7 +205,7 @@ void    Server::initCommandMap()
         commandMap_["INVITE"] = &Server::handleInvite;
         commandMap_["TOPIC"] = &Server::handleTopic;
         commandMap_["MODE"] = &Server::handleMode;
-        commandMap_["PRIVATE MESSAGE"] = &Server::handlePrivMsg;
+        commandMap_["PRIVMSG"] = &Server::handlePrivMsg;
         commandMap_["PASSWORD"] = &Server::handlePass;
         // commandMap_["OPERATOR"] = &Server::handleOper;
         commandMap_["PING"] = &Server::handlePing;

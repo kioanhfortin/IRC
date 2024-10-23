@@ -124,7 +124,7 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
         }
         if (channelName->hasClient(client.get_Fd()))
         {
-            client.reply("443 " + client.getNickName() + " " + channelName->getName() + ERR_USERONCHANNEL);
+            client.reply("443 " + client.getNickName() + " " + channelName->getName() + ERR_USERONCHANNEL + "\n");
             return;
         }
         if (channelName->isInviteOnly())
@@ -155,11 +155,11 @@ void    Server::joinChannel(Client& client, const std::vector<std::string>& para
             }
             if(channelName->getPassword() != "" && params.size() < 2)
             {
-                client.reply(client.getNickName() + " " + name + ": bad channel mask");
+                client.reply(client.getNickName() + " " + name + ": bad channel mask\n");
                 return;
             }
         }
-        std::string str = "Add Client to Channel " + name;
+        std::string str = "Add " + client.getNickName() + " to Channel " + name + "\n";
         std::cout << str << std::endl;
         channelName->setLimit(channelName->getLimit() + 1);
         channelName->addClient(client.get_Fd());

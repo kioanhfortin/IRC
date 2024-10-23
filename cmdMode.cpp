@@ -4,7 +4,7 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
 {
     // Vérifier les arguments
     if (params.size() < 2 || params.size() > 3) {
-        std::cerr << RED << "ERR_NEEDMOREPARAMS : MODE <#channel> <( - / + ) (i, t, k, o, l)>\n" << std::endl;
+        // std::cerr << RED << "ERR_NEEDMOREPARAMS : MODE <#channel> <( - / + ) (i, t, k, o, l)>\n" << std::endl;
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
@@ -24,6 +24,11 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_NOSUCHCHANNEL);
         return;
     }
+    if(!channelName->isClientOperator(channelName, client.getNickName()))
+    {
+        client.reply(ERR_CHANOPRIVSNEEDED);
+        return;
+    }
     initOptionMap();
     std::string option = params[1];
     OptionMap::iterator it = optionMap_.find(option);
@@ -35,7 +40,6 @@ void Server::handleMode(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_UMODEUNKNOWNFLAG);
         return;
     }
-
 }
 
 void    Server::initOptionMap()
@@ -101,6 +105,11 @@ void Server::handleVPCanalON(Client& client, Channel *channelName, const std::ve
         client.reply(ERR_USERSDONTMATCH);
         return;
     }
+    if(!channelName->hasClient(client.get_Fd()))
+    {
+        client.reply(ERR_USERNOTINCHANNEL);
+        return;
+    }
     channelName->addChannelOperator(params[3]);
     std::cout << YELLOW << "VPCanal ON : " << params[3] << " is now an operator!\n" << std::endl;
 }
@@ -137,7 +146,11 @@ void Server::handleTopicOFF(Client& client, Channel *channelName, const std::vec
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-     //check if user in channel and if operator
+    Channel *channelName2 = findChannel(params[1]);
+    if (channelName2 == nullptr){
+        client.reply(ERR_NOSUCHCHANNEL);
+        return;
+    }
     channelName->setTopicOpFlag_(false);
     std::cout << YELLOW << "Topic OFF\n" << std::endl;
 }
@@ -159,7 +172,11 @@ void Server::handleVPCanalOFF(Client& client, Channel *channelName, const std::v
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     }
-    //check if user in channel and if operator
+    Channel *channelName2 = findChannel(params[3]);
+    if (channelName2 == nullptr){
+        client.reply(ERR_NOSUCHCHANNEL);
+        return;
+    }
     channelName->delChannelOperator(params[3]);
     std::cout << YELLOW << "VPCanal OFF : " << params[3] << " is now deleted !\n"<< std::endl;
 }

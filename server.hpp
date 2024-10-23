@@ -52,6 +52,8 @@ const std::string ERR_ERRONEUSREALNAME = "ERR_ERRONEUSREALNAME : Too much charac
 const std::string ERR_ERRORCHANNELNAME = "ERR_ERRORCHANNELNAME : Channel must start with # or & fellowed by a password\n";
 const std::string ERR_LIMITTOSMALL = "ERR_LIMITTOSMALL : Limit must be greater than the number of user already added\n";
 const std::string ERR_INVITEYOURSELF = "ERR_INVITEYOURSELF : You cannot invite yourself\n";
+const std::string ERR_NOTEXTTOSEND = "412 ERR_NOTEXTTOSEND : No text to send\n";
+
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024

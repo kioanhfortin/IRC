@@ -2,7 +2,7 @@
 
 std::string privMsg(Client client, std::string recipient, std::string message)
 {
-    return (":" + client.getNickName() + " Private Message " + recipient + " :" + message);
+    return (":" + client.getNickName() + " Private Message " + recipient + message);
 }
 
 void Server::messagetoChannel(Client& client, const std::vector<std::string>& params)
@@ -10,17 +10,22 @@ void Server::messagetoChannel(Client& client, const std::vector<std::string>& pa
     std::cout << "this is a test for private message to channel" << std::endl;
 
     std::string message;
-    for (size_t i = 3; i < params.size(); i++){
-        if (i != 3)
+    for (size_t i = 1; i < params.size(); i++)
+    {
+        if (i != 1)
             message += ' ';
         message += params[i];
     }
-    
     try
     {
         Channel *channelName = findChannel(params[0]);
+        if(channelName == nullptr)
+        {
+            client.reply(ERR_NOSUCHCHANNEL);
+            return;
+        }
         if(channelName->hasClient(client.get_Fd()))
-            channelName->sendToAll(privMsg(client, params[1], message));
+            channelName->sendToAll(privMsg(client, params[0], message));
         else
             client.reply(client.getNickName() +  " is not in the channel " + channelName->getName() + "\r\n");
     }
@@ -39,12 +44,17 @@ void Server::handlePrivMsg(Client& client, const std::vector<std::string>& param
         client.reply(ERR_NEEDMOREPARAMS);
 		return;
 	}
-    if (!client.getRegistered())
+    if (params[1].size() <= 1)
     {
-        client.reply("Register to send private message \r\n");
+        client.reply(ERR_NOTEXTTOSEND);
         return;
     }
-    if (params[1].at(0) == '#')
+    if (!client.getRegistered())
+    {
+        client.reply("Register to send private message\r\n");
+        return;
+    }
+    if (params[0].at(0) == '#')
     {
         messagetoChannel(client, params);
         return;
@@ -53,11 +63,11 @@ void Server::handlePrivMsg(Client& client, const std::vector<std::string>& param
     {
         Client receiver = findClient(params[0]);
         std::string message;
-        for (size_t i = 3; i < params.size(); i++)
+        for (size_t i = 1; i < params.size(); i++)
         {
-        if (i != 3)
-            message += ' ';
-        message += params[i];
+            if (i != 1)
+                message += ' ';
+            message += params[i];
         }
         std::string data = privMsg(client, receiver.getNickName(), message);
         std::cout << data << receiver.get_Fd() << std::endl;

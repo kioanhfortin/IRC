@@ -111,7 +111,7 @@ std::string Client::getInfoClient() const
 void Client::welcomeMessage() {
     if(nickName_.empty() || userName_.empty())
     {
-        std::cout << "Error : " << nickName_ <<  " need to registe!\n" << std::endl;
+        std::cout << "Error : " << nickName_ <<  " need to register!\n" << std::endl;
         return ;
     }
     if(!getRegistered())
