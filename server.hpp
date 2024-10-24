@@ -85,7 +85,7 @@ public:
     // Server(const Server &other);
     // Server &operator=(const Server &other);
     ~Server();
-
+    std::map<int, std::string> clientBuffers_;
     int             get_port() const;
     void            set_port(int new_port);
     std::string     get_password() const;

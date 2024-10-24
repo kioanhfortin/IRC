@@ -16,6 +16,7 @@ int main (int argc, char **argv)
 {
 
 	signal(SIGINT, signalHandler);
+
     //check nbre of args
     if (argc != 3)
     {

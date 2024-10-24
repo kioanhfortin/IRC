@@ -14,7 +14,7 @@ public:
     Channel(const std::string& name);
 
     void                    addClient(int clientFd);
-    void                    removeClient(int clientFd);
+    void                    removeClient(int clientFd);  
     bool                    hasClient(int clientFd) const;
     int		                getFd() const;
     void                    setFd(int fd);
