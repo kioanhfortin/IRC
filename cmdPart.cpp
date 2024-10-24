@@ -8,10 +8,10 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_NOTREGISTERED);
         return;
     }
-    if (params.size() < 1) {
+    if (params.size() < 2) {
         client.reply(ERR_NEEDMOREPARAMS);
         return;
-    }
+    } 
     try
     {
         std::string channelName = params[0];
