@@ -307,7 +307,7 @@ Client		&Server::findClient(std::string name)
 		if (clients_[i].getNickName() == name)
 			return (clients_[i]);
 	}
-	throw(std::out_of_range("Error while searching for user"));
+	throw(std::out_of_range(ERR_USERNOTINCHANNEL));
 }
 
 void Server::handlePass(Client& client, const std::vector<std::string>& params) {
@@ -339,7 +339,7 @@ void Server::handleList(Client& client, const std::vector<std::string>& params)
     {
         if (channels_.size() == 0)
         {
-            std::cout << ":No such channel" << std::endl;
+            client.reply(ERR_PASSWDMISMATCH);
             return;
         }
         for (size_t i = 0; i < channels_.size(); i++)

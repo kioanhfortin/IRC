@@ -7,7 +7,6 @@ std::string privMsg(Client client, std::string recipient, std::string message)
 
 void Server::messagetoChannel(Client& client, const std::vector<std::string>& params)
 {
-    std::cout << "this is a test for private message to channel" << std::endl;
 
     std::string message;
     for (size_t i = 1; i < params.size(); i++)
@@ -24,10 +23,12 @@ void Server::messagetoChannel(Client& client, const std::vector<std::string>& pa
             client.reply(ERR_NOSUCHCHANNEL);
             return;
         }
-        if(channelName->hasClient(client.get_Fd()))
-            channelName->sendToAll(privMsg(client, params[0], message));
-        else
-            client.reply(client.getNickName() +  " is not in the channel " + channelName->getName() + "\r\n");
+        if(!channelName->hasClient(client.get_Fd()))
+        {
+            client.reply(ERR_USERNOTINCHANNEL);
+            return;
+        }
+        channelName->sendToAll(privMsg(client, params[0], message));
     }
     catch(const std::exception& e)
     {
@@ -37,7 +38,7 @@ void Server::messagetoChannel(Client& client, const std::vector<std::string>& pa
 
 void Server::handlePrivMsg(Client& client, const std::vector<std::string>& params)
 {
-    std::cout << "Private Channel" << std::endl;
+    std::cout << WHITE << "Private Channel" << RED << std::endl;
     
     if (params.size() < 2)
     {
@@ -62,6 +63,8 @@ void Server::handlePrivMsg(Client& client, const std::vector<std::string>& param
     try
     {
         Client receiver = findClient(params[0]);
+        if (receiver.getNickName().empty())
+            return;
         std::string message;
         for (size_t i = 1; i < params.size(); i++)
         {
@@ -69,9 +72,9 @@ void Server::handlePrivMsg(Client& client, const std::vector<std::string>& param
                 message += ' ';
             message += params[i];
         }
+        std::cout << GREEN << std::endl;
         std::string data = privMsg(client, receiver.getNickName(), message);
-        std::cout << data << receiver.get_Fd() << std::endl;
-        data += "\r\n";
+        data += "\n";
         if (send(receiver.get_Fd(), data.c_str(), data.length(), 0) < 0)
             throw std::out_of_range("error while sending message");
 
