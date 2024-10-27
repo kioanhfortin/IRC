@@ -25,7 +25,6 @@ void Server::handleKick(Client& client, const std::vector<std::string>& params)
     }
    //std::vector<std::string> args;
     //args.push_back(args.at(0));
-    //channelName->setLimit(channelName->getLimit() - 1);
 
     // channelName->sendToAll(client.getInfoClient() + " KICK :" + channelName->getName() + "\n");
     // std::string response = ":" + client.getNickName() + " 341 "+ targetNick + " " + channelName + "\n";
@@ -33,6 +32,7 @@ void Server::handleKick(Client& client, const std::vector<std::string>& params)
     std::cerr << GREEN << "User " << client.getNickName() << " has been kicked from channel " << channelName->getName() << std::endl;
     //client.reply("You've been kick out from channel" + channelName->getName() + "!\n");
     
+    channelName->setLimit(channelName->getLimit() - 1); // important pour le mode +l
     handlePart(findClient(params.at(1)), params);
     channelName->sendToAll( client.getNickName() + " have been kick out from channel: " + channelName->getName() + "!\n");
 }
