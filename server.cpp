@@ -105,6 +105,7 @@ void Server::start()
                     {
                         std::cout << WHITE << "Shutting down server..." << std::endl;
                         g_interrupt = true;
+                    
                         break;
                     }
                 }
@@ -197,7 +198,8 @@ void    Server::ParseNewData(int fd)
 void    Server::initCommandMap()
 {
     if (commandMap_.empty()) {
-        commandMap_["NICK"] = &Server::handleNick; 
+        commandMap_["NICK"] = &Server::handleNick;
+        commandMap_["EXIT"] = &Server::handleExit; 
         commandMap_["USER"] = &Server::handleUser;
         commandMap_["JOIN"] = &Server::handleJoin;
         commandMap_["PART"] = &Server::handlePart;
@@ -244,7 +246,7 @@ void    Server::deleteClient(int clientFd)
 {
 	for (unsigned int i = 0; i < channels_.size(); i++)
 	{
-		channels_[i].removeClient(clientFd);
+		channels_[i].removeClient(clientFd, findNickname(clientFd));
 	}
 	std::vector<Channel>::iterator   it = channels_.begin();
 	while (it != channels_.end())

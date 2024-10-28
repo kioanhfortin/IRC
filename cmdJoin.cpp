@@ -12,10 +12,10 @@ void Server::handleJoin(Client& client, const std::vector<std::string>& params) 
     }
     if (params[1][0] == '0' && params[1].size() == 1) {
         for (std::vector<Channel>::iterator it = channels_.begin(); it != channels_.end(); it++) {
-            it->removeClient(client.get_Fd());
+            it->removeClient(client.get_Fd(), client.getNickName());
             it->setLimit(it->getLimit() - 1);
         }
-        std::cout << "Client " << client.getUserName() << " has left all channels\n" << std::endl;
+        std::cout << "Client " << client.getNickName() << " has left all channels\n" << std::endl;
         return;
     }
     size_t count = 0;

@@ -37,8 +37,9 @@ void Server::handleUser(Client& client, const std::vector<std::string>& params) 
             realname += ' ';
         realname += params[i];
     }
-    if (realname == ":")
+    if(realname.at(0) == ':')
         realname.erase(0, 1);
+    //std::cerr << realname << std::endl;
 
     client.setRealName(realname);
     // Envoyer une confirmation de réussite au client

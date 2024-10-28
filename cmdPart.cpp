@@ -8,7 +8,7 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_NOTREGISTERED);
         return;
     }
-    if (params.size() < 2) {
+    if (params.size() < 1) {
         client.reply(ERR_NEEDMOREPARAMS);
         return;
     } 
@@ -26,7 +26,8 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
         }
         if (chan->getFd() == client.get_Fd())
             chan->setFd(0);
-        chan->removeClient(client.get_Fd());
+        chan->removeClient(client.get_Fd(), client.getNickName());
+
         chan->setLimit(chan->getLimit() - 1);
         if (chan->isEmpty()) {
             deleteChannel(channelName);
@@ -37,4 +38,14 @@ void Server::handlePart(Client& client, const std::vector<std::string>& params)
         client.reply(ERR_NOSUCHCHANNEL);
     }
 
+}
+
+
+
+void Server::handleExit(Client& client, const std::vector<std::string>& params)
+{
+    if(params.empty() || params.size() <= 0)
+        closeClient(client.get_Fd());
+    std::cout << RED << "Client : <" << client.getNickName() << "> has gone" << std::endl;
+    
 }

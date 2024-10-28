@@ -13,8 +13,9 @@ class Channel {
 public:
     Channel(const std::string& name);
 
+    std::string getClientNameByFd(int clientFd);
     void                    addClient(int clientFd);
-    void                    removeClient(int clientFd);
+    void                    removeClient(int clientFd, std::string name);
     bool                    hasClient(int clientFd) const;
     int		                getFd() const;
     void                    setFd(int fd);

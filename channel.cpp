@@ -8,17 +8,17 @@ void Channel::addClient(int clientFd) {
     clients_.push_back(clientFd);
 }
 
-void Channel::removeClient(int clientFd) {
+void Channel::removeClient(int clientFd, std::string name) {
     std::vector<int>::iterator it = std::find(clients_.begin(), clients_.end(), clientFd);
     if (it != clients_.end()) {
+        std::cout << "removing client: "  << name << std::endl;
+        sendToAll("Removing client: " + name +  "from " + getName());
         clients_.erase(it);
     }
 }
 
 
-bool Channel::hasClient(int clientFd) const {
-    return std::find(clients_.begin(), clients_.end(), clientFd) != clients_.end();
-}
+
 
 std::string Channel::getName() const {
     return name_;
@@ -135,3 +135,9 @@ void    Channel::delChannelOperator(std::string delOp) {
         channelOperators_.erase(it);
     }
 }
+
+
+bool Channel::hasClient(int clientFd) const {
+    return std::find(clients_.begin(), clients_.end(), clientFd) != clients_.end();
+}
+

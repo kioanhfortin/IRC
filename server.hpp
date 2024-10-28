@@ -44,7 +44,7 @@ const std::string ERR_BADCHANMASK = "476 ERR_BADCHANMASK : Bad Channel Mask\n";
 const std::string ERR_PASSWDMISMATCH = "  464 ERR_PASSWDMISMATCH :Password incorrect\n";
 const std::string ERR_UMODEUNKNOWNFLAG = "501 ERR_UMODEUNKNOWNFLAG : Unknown MODE flag\n";
 const std::string ERR_USERSDONTMATCH = "502 ERR_USERSDONTMATCH : Cannot change mode for other users\n";
-const std::string ERR_CHANOPRIVSNEEDED = "482 ERR_CHANOPRIVSNEEDED : You're not a girchannel operator\n";
+const std::string ERR_CHANOPRIVSNEEDED = "482 ERR_CHANOPRIVSNEEDED : You're not a channel operator\n";
 const std::string ERR_USERNOTINCHANNEL = "441 ERR_USERNOTINCHANNEL : They aren't on that channel\n";
 const std::string ERR_TOOMANYTARGETS = "407 ERR_TOOMANYTARGETS : Less than 4 target\n";
 const std::string ERR_INVALIDPARAMS = " ERR_INVALIDPARAMS : Too much parameters\n";
@@ -140,6 +140,7 @@ private:
     typedef void (Server::*CommandHandler)(Client&, const std::vector<std::string>&);
     typedef std::map<std::string, CommandHandler> CommandMap;
     CommandMap commandMap_;
+    void handleExit(Client& client, const std::vector<std::string>& params);
     void handleNick(Client& client, const std::vector<std::string>& params);
     void handleUser(Client& client, const std::vector<std::string>& params);
     void handleJoin(Client& client, const std::vector<std::string>& params);
