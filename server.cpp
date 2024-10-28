@@ -101,7 +101,7 @@ void Server::start()
                 {
                     std::string input;
                     std::getline(std::cin, input);
-                    if (input == "exit")
+                    if (input == "EXIT")
                     {
                         std::cout << WHITE << "Shutting down server..." << std::endl;
                         g_interrupt = true;
@@ -155,18 +155,8 @@ void    Server::ParseNewData(int fd)
 
         
         size_t byte_Receive = recv(fd, buffer, BUFFER_SIZE, 0);
-        // Check if client is disconnected
         if (byte_Receive == 0)
         {
-            // std::cout << "Client sent EOF (Ctrl+D). Closing connection." << std::endl;
-            // if (!clientBuffers[fd].empty()) {
-            //     std::string finalCommand = clientBuffers[fd];
-            //     clientBuffers[fd].clear();
-            //     if (!finalCommand.empty() && !std::all_of(finalCommand.begin(), finalCommand.end(), isspace)) {
-            //         std::cout << WHITE << "Client received and process last input: " << finalCommand << std::endl;
-            //         ProcessNewData(fd, finalCommand);
-            //     }
-            // }
             std::cout << RED << "Client : <" << findNickname(fd) << "> is disconnected" << std::endl;
             closeClient(fd);
         }
@@ -175,19 +165,10 @@ void    Server::ParseNewData(int fd)
             closeClient(fd);
         } 
         else
-        {
-            // clientBuffers[fd] += std::string(buffer, byte_Receive);
-            // size_t newlinepos;
-            // std::string fullCommand;
-            // while ((newlinepos = clientBuffers[fd].find("\r\n")) != std::string::npos) {
-            //     fullCommand = clientBuffers[fd].substr(0, newlinepos);
-            //     clientBuffers[fd].erase(0, newlinepos + 1);
-            //     if (!fullCommand.empty() && !std::all_of(fullCommand.begin(), fullCommand.end(), isspace)) {
-                    std::string data(buffer, byte_Receive);
-                    ProcessNewData(fd, data);
-                // } 
+        { 
+            std::string data(buffer, byte_Receive);
+            ProcessNewData(fd, data);
         }
-            // std::string data(buffer, byte_Receive);
     }
     catch (const std::exception& e)
     {
